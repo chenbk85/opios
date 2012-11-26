@@ -9,7 +9,7 @@ git clone git@github.com:openpeer/OP.git
 This repository will yield the C++ open peer core, stack, media and libraries needed to support the underlying SDK.
 
 Next, from your terminal, please clone the "OPiOS" git repository:
-git clone igit@github.com:openpeer/OPiOS.git
+git clone git@github.com:openpeer/OPiOS.git
 
 This repository contains the iOS SDK objective-C source code wrapper to the C++ SDK. This allows you to build objective-C applications without learning the C++ code.
 

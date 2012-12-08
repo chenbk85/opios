@@ -31,7 +31,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import <hookflash/provisioning/hookflashTypes.h>
+//#import <hookflash/provisioning/hookflashTypes.h>
 #import "HOPProtocols.h"
 
 enum OpenpeerProvisioning_AccountStates
@@ -130,26 +130,84 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 @interface HOPProvisioningAccount_ForFutureUse : NSObject
 
+/**
+ Converts account state enum to string.
+ @param state HOPProvisioningAccountStates Account state enum
+ @returns String representation of account state
+ */
 + (NSString*) stateToString: (OpenpeerProvisioning_AccountStates) state;
 
+/**
+ Converts account error code enum to string.
+ @param errorCode HOPProvisioningAccountErrorCodes Account error code enum
+ @returns String representation of account error code
+ */
 + (NSString*) errorCodeToString: (OpenpeerProvisioning_AccountErrorCodes) errorCode;
 
+/**
+ Construct a provisioning account object and optionally login to the peer contact service if the private peer file information is already known in advance.
+ @param stack HOPStack Stack object pointer
+ @param provisioningAccountDelegate HOPProvisioningAccountDelegate Pointer to the protocol implementation class for provisioning account. All events from provisioning account will be handled within this class.
+ @param openpeerAccountDelegate HOPAccountDelegate Pointer to the protocol implementation class for openpeer account. All events from openpeer account will be handled within this class.
+ @param peerContactServiceBootstrappedDomain NSString Domain of the identity provider.
+ @param privatePeerFileSecret NSString Private peer file secret.
+ @param privatePeerFileEl NSString Private peer file.
+ @returns YES if success, NO for failure
+ */
 + (BOOL) create: (HOPStack*) stack provisioningAccountDelegate: (id<HOPOpenpeerProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate peerContactServiceBootstrappedDomain: (NSString*) peerContactServiceBootstrappedDomain privatePeerFileSecret: (NSString*) privatePeerFileSecret privatePeerFileEl: (NSString*) privatePeerFileEl;
 
+/**
+ Login to an existing identity or add a new identity to the identity list associated to the peer contact.
+ @param delegate OpenpeerProvisioning_IdentityLoginSessionDelegate Pointer to the protocol implementation class for identity login session
+ @param identityBaseURI NSString Base or full identity URI.
+ @param identityProvider NSString Identity provider.
+ @returns Identity login session pointer
+ */
 - (OpenpeerProvisioning_IdentityLoginSession*) identityLogin: (id<OpenpeerProvisioning_IdentityLoginSessionDelegate>) delegate identityBaseURI: (NSString*) identityBaseURI identityProvider: (NSString*) identityProvider;
 
+/**
+ Shutdown of the provisioning account.
+ */
 - (void) shutdown;
 
+/**
+ Retrieves identities of the current user.
+ @param outIdentities NSArray Array of identities.
+ */
 - (void) getKnownIdentities: (NSArray*) outIdentities; //List of OpenpeerIdentity objects
 
+/**
+ Sets identities of the current user.
+ @param identities NSArray Array of identities.
+ */
 - (void) setKnownIdentities: (NSArray*) identities; //List of OpenpeerIdentity objects
 
+/**
+ Retrieves private peer file secret.
+ @return String representation of private peer file secret.
+ */
 - (NSString*) getPrivatePeerFileSecret;
 
+/**
+ Retrieves private peer file.
+ @return String representation of private peer file.
+ */
 - (NSString*) exportPrivatePeerFile;
 
+/**
+ Creation of identity lookup subclass and initiating identity lookup process.
+ @param delegate OpenpeerProvisioning_AccountIdentityLookupQueryDelegate Delegate for receiving identity lookup response.
+ @param identities NSArray List of identities for which identity lookup procedure will be called.
+ @return Identity lookup subclass pointer.
+ */
 - (OpenpeerProvisioning_AccountIdentityLookupQuery*) identityLookup: (id<OpenpeerProvisioning_AccountIdentityLookupQueryDelegate>) delegate identities: (NSArray*) identities; // List of NSString objects
 
+/**
+ Creation of peer file lookup subclass and initiating peer file lookup process.
+ @param delegate OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate Delegate for receiving peer file lookup response.
+ @param peerContacts NSArray List of peer contacts for which peer file lookup procedure will be called.
+ @return Peer file lookup subclass pointer.
+ */
 - (OpenpeerProvisioning_AccountPeerFileLookupQuery*) peerFileLookup: (id<OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate>) delegate peerContacts: (NSArray*) peerContacts;
 
 @end
@@ -157,34 +215,92 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 @interface OpenpeerProvisioning_IdentityLoginSession : NSObject
 
+/**
+ Retrieves identity base.
+ @return String representation of identity base.
+ */
 - (NSString*) getIdentityBase;
 
+/**
+ Retrieves identity provider.
+ @return String representation of identity provider
+ */
 - (NSString*) getIdentityProvider;
 
+/**
+ Retrieves identity URI.
+ @return String representation of identity URI.
+ */
 - (NSString*) getIdentityURI;
 
+/**
+ Retrieves client token.
+ @return String representation of server token.
+ */
 - (NSString*) getClientToken;
 
+/**
+ Retrieves server token.
+ @return String representation of server token.
+ */
 - (NSString*) getServerToken;
 
+/**
+ Retrieves client login secret.
+ @return String representation of client login secret.
+ */
 - (NSString*) getClientLoginSecret;
 
+/**
+ Checks if login session is complete.
+ @return YES if session is completed, NO if not.
+ */
 - (BOOL) isComplete;
 
+/**
+ Checks if login session is complete.
+ @return YES if session was successful, NO if not.
+ */
 - (BOOL) wasSuccessful;
 
+/**
+ Retrieves session error code.
+ @return Session error code.
+ */
 - (unsigned int) getErrorCode;
 
+/**
+ Retrieves hidden window browser URL.
+ @return String representation of hidden window browser URL.
+ */
 - (NSString*) getHiddenWindowBrowserURL;
 
+/**
+ Retrieves login expires timestamp.
+ @return Timestamp of login expiry.
+ */
 - (NSDate*) getLoginExpires;
 
+/**
+ Retrieves identity relogin token.
+ @return String representation of identity relogin token.
+ */
 - (NSString*) getIdentityReloginToken;
 
+/**
+ Retrieves custom login element.
+ @return String representation of custom login element.
+ */
 - (NSString*) getCustomLoginElement;
 
+/**
+ Cancel login session.
+ */
 - (void) cancel;
 
+/**
+ Complete login session.
+ */
 - (void) complete;
 
 @end

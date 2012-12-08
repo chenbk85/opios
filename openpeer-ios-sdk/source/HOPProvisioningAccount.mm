@@ -31,7 +31,9 @@
 
 
 #import <hookflash/provisioning/IAccount.h>
+#import <hookflash/IAccount.h>
 #import <hookflash/IXML.h>
+#include <zsLib/zsHelpers.h>
 
 #import "HOPProvisioningAccountOAuthIdentityAssociation_Internal.h"
 #import "OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate.h"
@@ -45,13 +47,15 @@
 #import "HOPProvisioningAccount_Internal.h"
 #import "HOPProvisioningAccount.h"
 #import "HOPStack_Internal.h"
-#import "HOPAccount_Internal.h"
 #import "HOPIdentityInfo.h"
 #import "HOPIdentity.h"
 #import "HOPProtocols.h"
 #import "HOPProvisioningAccountOAuthIdentityAssociation.h"
-#import "HOPAccount.h"
 #import "OpenPeerUtility.h"
+#import "OpenPeerStorageManager.h"
+#import "HOPContact_Internal.h"
+#import "HOPAccountSubscription.h"
+#import "HOPAccountSubscription_Internal.h"
 
 @implementation HOPProvisioningAccount
 
@@ -118,111 +122,273 @@
     return (HOPProvisioningAccountIdentityValidationStates) hookflash::provisioning::IAccount::toValidationState([validationState UTF8String]);
 }
 
+#pragma mark private constructors
+/*- (id) initWithAccountPtr:(provisioning::IAccountPtr) inAccountPtr provisioningAccountDelegate:(boost::shared_ptr<OpenPeerProvisioningAccountDelegate>) inProvisioningAccountDelegate accountDelegate:(boost::shared_ptr<OpenPeerAccountDelegate>) inAccountDelegate
+{
+    self = [super init];
+    
+    if (self)
+    {
+        provisioningAccountPtr = inAccountPtr;
+        openpeerProvisioningAccountDelegatePtr = inProvisioningAccountDelegate;
+        openpeerAccountDelegatePtr = inAccountDelegate;
+    }
+    
+    return self;
+}
+
+- (id)init
+{
+    [self release];
+    [NSException raise:NSInvalidArgumentException format:@"Don't use init for object creation. Use class methods provisioningAccountForFirstTimeLogin, provisioningAccountForFirstOAuthLogin or provisioningAccountForRelogin"];
+    return nil;
+}*/
 
 #pragma mark Login methods
+/*+ (id) provisioningAccountForFirstTimeLogin: (HOPStack*) stack provisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken name: (NSString*) name knownIdentities: (NSArray*) knownIdentities
+{
+    HOPProvisioningAccount* ret = nil;
+    
+    if (!stack || !provisioningAccountDelegate || !openpeerAccountDelegate)
+        return ret;
+    
+    if ( ([provisioningURI length] == 0 ) || ([deviceToken length] == 0 ) || ([name length] == 0 ) || ([knownIdentities count] == 0) )
+        return ret;
+    
+    boost::shared_ptr<OpenPeerProvisioningAccountDelegate> tempOpenpeerProvisioningAccountDelegatePtr = OpenPeerProvisioningAccountDelegate::create(provisioningAccountDelegate);
+    if (!tempOpenpeerProvisioningAccountDelegatePtr)
+        return ret;
+    
+    boost::shared_ptr<OpenPeerAccountDelegate> tempOpenpeerAccountDelegatePtr = OpenPeerAccountDelegate::create(openpeerAccountDelegate);
+    if (!tempOpenpeerAccountDelegatePtr)
+        return ret;
+    
+    provisioning::IAccount::IdentityInfoList identities;
+    for (HOPIdentityInfo* identity in knownIdentities)
+    {
+        provisioning::IAccount::IdentityInfo info;
+        info.mType = (provisioning::IAccount::IdentityTypes) identity.type;
+        if (identity.uniqueId)
+            info.mUniqueID = [identity.uniqueId UTF8String];
+        if (identity.uniqueIDProof)
+            info.mUniqueIDProof = [identity.uniqueIDProof UTF8String];
+        info.mValidationState = (provisioning::IAccount::IdentityValidationStates) identity.validationState;
+        if (identity.validationId)
+            info.mValidationID = [identity.validationId UTF8String];
+        info.mPriority = identity.priority;
+        info.mWeight = identity.weight;
+        
+        identities.push_back(info);
+    }
+    
+    provisioning::IAccountPtr tempAccountPtr = provisioning::IAccount::firstTimeLogin([stack getStackPtr], tempOpenpeerProvisioningAccountDelegatePtr, tempOpenpeerAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], [name UTF8String], identities);
+    
+    if (tempAccountPtr)
+    {
+        ret = [[self alloc] initWithAccountPtr:tempAccountPtr provisioningAccountDelegate:tempOpenpeerProvisioningAccountDelegatePtr accountDelegate:tempOpenpeerAccountDelegatePtr];
+    }
+    
+    return [ret autorelease];
+}
+
++ (id) provisioningAccountForFirstOAuthLogin: (HOPStack*) stack provisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken oauthIdentityType: (HOPProvisioningAccountIdentityTypes) oauthIdentityType
+{
+    HOPProvisioningAccount* ret = nil;
+    
+    if (!stack || !provisioningAccountDelegate || !openpeerAccountDelegate)
+        return ret;
+    
+    if ( ([provisioningURI length] == 0 ) || ([deviceToken length] == 0 ) )
+        return ret;
+    
+    boost::shared_ptr<OpenPeerProvisioningAccountDelegate> tempOpenpeerProvisioningAccountDelegatePtr = OpenPeerProvisioningAccountDelegate::create(provisioningAccountDelegate);
+    if (!tempOpenpeerProvisioningAccountDelegatePtr)
+        return ret;
+    
+    boost::shared_ptr<OpenPeerAccountDelegate> tempOpenpeerAccountDelegatePtr = OpenPeerAccountDelegate::create(openpeerAccountDelegate);
+    if (!tempOpenpeerAccountDelegatePtr)
+        return ret;
+    
+    provisioning::IAccountPtr tempAccountPtr = provisioning::IAccount::firstTimeOAuthLogin([stack getStackPtr], tempOpenpeerProvisioningAccountDelegatePtr, tempOpenpeerAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], (hookflash::provisioning::IAccount::IdentityTypes) oauthIdentityType);
+    
+    if (tempAccountPtr)
+    {
+        ret = [[self alloc] initWithAccountPtr:tempAccountPtr provisioningAccountDelegate:tempOpenpeerProvisioningAccountDelegatePtr accountDelegate:tempOpenpeerAccountDelegatePtr];
+    }
+    
+    return [ret autorelease];
+}
+
++ (id) provisioningAccountForRelogin: (HOPStack*) stack provisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken userID: (NSString*) userID accountSalt: (NSString*) accountSalt passwordNonce: (NSString*) passwordNonce password: (NSString*) password privatePeerFile: (NSString*) privatePeerFile lastProfileUpdatedTimestamp: (NSDate*) lastProfileUpdatedTimestamp previousIdentities: (NSArray*) previousIdentities
+{
+    HOPProvisioningAccount* ret = nil;
+    
+    if (!stack || !provisioningAccountDelegate || !openpeerAccountDelegate)
+        return ret;
+    
+    if ( ([provisioningURI length] == 0 ) || ([deviceToken length] == 0 ) || ([userID length] == 0 ) || ([accountSalt length] == 0 ) || ([passwordNonce length] == 0 ) || ([password length] == 0 ) || ([privatePeerFile length] == 0 ) || ([previousIdentities count] == 0))
+        return ret;
+    
+    boost::shared_ptr<OpenPeerProvisioningAccountDelegate> tempOpenpeerProvisioningAccountDelegatePtr = OpenPeerProvisioningAccountDelegate::create(provisioningAccountDelegate);
+    if (!tempOpenpeerProvisioningAccountDelegatePtr)
+        return ret;
+    
+    boost::shared_ptr<OpenPeerAccountDelegate> tempOpenpeerAccountDelegatePtr = OpenPeerAccountDelegate::create(openpeerAccountDelegate);
+    if (!tempOpenpeerAccountDelegatePtr)
+        return ret;
+    
+    provisioning::IAccount::IdentityInfoList identities;
+    for (HOPIdentityInfo* identity in previousIdentities)
+    {
+        provisioning::IAccount::IdentityInfo info;
+        info.mType = (provisioning::IAccount::IdentityTypes) identity.type;
+        if (identity.uniqueId)
+            info.mUniqueID = [identity.uniqueId UTF8String];
+        if (identity.uniqueIDProof)
+            info.mUniqueIDProof = [identity.uniqueIDProof UTF8String];
+        info.mValidationState = (provisioning::IAccount::IdentityValidationStates) identity.validationState;
+        if (identity.validationId)
+            info.mValidationID = [identity.validationId UTF8String];
+        info.mPriority = identity.priority;
+        info.mWeight = identity.weight;
+        
+        identities.push_back(info);
+    }
+    
+    zsLib::Time lastProfileUpdateTimestampTemp = boost::posix_time::from_time_t([lastProfileUpdatedTimestamp timeIntervalSince1970]) ;
+    
+    provisioning::IAccountPtr tempAccountPtr = provisioning::IAccount::relogin([stack getStackPtr], tempOpenpeerProvisioningAccountDelegatePtr, tempOpenpeerAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], [userID UTF8String], [accountSalt UTF8String], [passwordNonce UTF8String], [password UTF8String], IXML::createFromString([privatePeerFile UTF8String]), lastProfileUpdateTimestampTemp, identities);
+    
+    if (tempAccountPtr)
+    {
+        ret = [[self alloc] initWithAccountPtr:tempAccountPtr provisioningAccountDelegate:tempOpenpeerProvisioningAccountDelegatePtr accountDelegate:tempOpenpeerAccountDelegatePtr];
+    }
+    
+    return [ret autorelease];
+}
+*/
 - (BOOL) firstTimeLogin: (HOPStack*) stack provisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken name: (NSString*) name knownIdentities: (NSArray*) knownIdentities
 {
     BOOL passedWithoutErrors = NO;
     
-    if (!stack || !provisioningAccountDelegate || !openpeerAccountDelegate)
-        return passedWithoutErrors;
-    
-    if ( ([provisioningURI length] == 0 ) || ([deviceToken length] == 0 ) || ([name length] == 0 ) || ([knownIdentities count] == 0) )
-        return passedWithoutErrors;
-    
-    BOOL delegatesCreated = [self createLocalDelegates:provisioningAccountDelegate openpeerAccountDelegate:openpeerAccountDelegate];
-    
-    if (delegatesCreated)
+    @synchronized(self)
     {
-        provisioning::IAccount::IdentityInfoList identities;
-        for (HOPIdentityInfo* identity in knownIdentities)
+        if (!stack || !provisioningAccountDelegate || !openpeerAccountDelegate)
+            return passedWithoutErrors;
+        
+        if ( ([provisioningURI length] == 0 ) || ([deviceToken length] == 0 ) || ([name length] == 0 ) || ([knownIdentities count] == 0) )
+            return passedWithoutErrors;
+        
+        if (provisioningAccountPtr)
+            provisioningAccountPtr->shutdown();
+        
+        BOOL delegatesCreated = [self createLocalDelegates:provisioningAccountDelegate];
+        
+        if (delegatesCreated)
         {
-            provisioning::IAccount::IdentityInfo info;
-            info.mType = (provisioning::IAccount::IdentityTypes) identity.type;
-            if (identity.uniqueId)
-                info.mUniqueID = [identity.uniqueId UTF8String];
-            if (identity.uniqueIDProof)
-                info.mUniqueIDProof = [identity.uniqueIDProof UTF8String];
-            info.mValidationState = (provisioning::IAccount::IdentityValidationStates) identity.validationState;
-            if (identity.validationId)
-                info.mValidationID = [identity.validationId UTF8String];
-            info.mPriority = identity.priority;
-            info.mWeight = identity.weight;
+            provisioning::IAccount::IdentityInfoList identities;
+            for (HOPIdentityInfo* identity in knownIdentities)
+            {
+                provisioning::IAccount::IdentityInfo info;
+                info.mType = (provisioning::IAccount::IdentityTypes) identity.type;
+                if (identity.uniqueId)
+                    info.mUniqueID = [identity.uniqueId UTF8String];
+                if (identity.uniqueIDProof)
+                    info.mUniqueIDProof = [identity.uniqueIDProof UTF8String];
+                info.mValidationState = (provisioning::IAccount::IdentityValidationStates) identity.validationState;
+                if (identity.validationId)
+                    info.mValidationID = [identity.validationId UTF8String];
+                info.mPriority = identity.priority;
+                info.mWeight = identity.weight;
+                
+                identities.push_back(info);
+            }
             
-            identities.push_back(info);
+            provisioningAccountPtr = provisioning::IAccount::firstTimeLogin([stack getStackPtr], openpeerProvisioningAccountDelegatePtr, openpeerProvisioningAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], [name UTF8String], identities);
+            
+            if (provisioningAccountPtr)
+                passedWithoutErrors = YES;
         }
-        
-        accountPtr = provisioning::IAccount::firstTimeLogin([stack getStackPtr], openpeerProvisioningAccountDelegatePtr, openpeerAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], [name UTF8String], identities);
-        
-        if (accountPtr)
-            passedWithoutErrors = YES;
     }
     
     return passedWithoutErrors;
 }
 
-- (BOOL) firstTimeOAuthLogin: (HOPStack*) stack provisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken oauthIdentityType: (HOPProvisioningAccountIdentityTypes) oauthIdentityType
+- (BOOL) firstTimeOAuthLoginWithProvisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken oauthIdentityType: (HOPProvisioningAccountIdentityTypes) oauthIdentityType
 {
     BOOL passedWithoutErrors = NO;
     
-    if (!stack || !provisioningAccountDelegate || !openpeerAccountDelegate)
-        return passedWithoutErrors;
-    
-    if ( ([provisioningURI length] == 0 ) || ([deviceToken length] == 0 ) )
-        return passedWithoutErrors;
-    
-    BOOL delegatesCreated = [self createLocalDelegates:provisioningAccountDelegate openpeerAccountDelegate:openpeerAccountDelegate];
-    
-    if (delegatesCreated)
+    @synchronized(self)
     {
+        if (!provisioningAccountDelegate)
+            return passedWithoutErrors;
         
-        accountPtr = provisioning::IAccount::firstTimeOAuthLogin([stack getStackPtr], openpeerProvisioningAccountDelegatePtr, openpeerAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], (hookflash::provisioning::IAccount::IdentityTypes) oauthIdentityType);
+        if ( ([provisioningURI length] == 0 ) || deviceToken == nil )
+            return passedWithoutErrors;
         
-        if (accountPtr)
-            passedWithoutErrors = YES;
+        if (provisioningAccountPtr)
+            provisioningAccountPtr->shutdown();
+        
+        BOOL delegatesCreated = [self createLocalDelegates:provisioningAccountDelegate];
+        
+        if (delegatesCreated)
+        {
+            
+            provisioningAccountPtr = provisioning::IAccount::firstTimeOAuthLogin([[HOPStack sharedStack] getStackPtr], openpeerProvisioningAccountDelegatePtr, openpeerProvisioningAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], (hookflash::provisioning::IAccount::IdentityTypes) oauthIdentityType);
+            
+            if (provisioningAccountPtr)
+                passedWithoutErrors = YES;
+        }
     }
     
     return passedWithoutErrors;
 }
 
-- (BOOL) relogin: (HOPStack*) stack provisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken userID: (NSString*) userID accountSalt: (NSString*) accountSalt passwordNonce: (NSString*) passwordNonce password: (NSString*) password privatePeerFile: (NSString*) privatePeerFile lastProfileUpdatedTimestamp: (NSDate*) lastProfileUpdatedTimestamp previousIdentities: (NSArray*) previousIdentities
+- (BOOL) reloginWithProvisioningAccountDelegate: (id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate provisioningURI: (NSString*) provisioningURI deviceToken: (NSString*) deviceToken userID: (NSString*) userID accountSalt: (NSString*) accountSalt passwordNonce: (NSString*) passwordNonce password: (NSString*) password privatePeerFile: (NSString*) privatePeerFile lastProfileUpdatedTimestamp: (NSTimeInterval) lastProfileUpdatedTimestamp previousIdentities: (NSArray*) previousIdentities
 {
     BOOL passedWithoutErrors = NO;
     
-    if (!stack || !provisioningAccountDelegate || !openpeerAccountDelegate)
-        return passedWithoutErrors;
-  
-    if ( ([provisioningURI length] == 0 ) || ([deviceToken length] == 0 ) || ([userID length] == 0 ) || ([accountSalt length] == 0 ) || ([passwordNonce length] == 0 ) || ([password length] == 0 ) || ([privatePeerFile length] == 0 ) || ([previousIdentities count] == 0))
-        return passedWithoutErrors;
-    
-    BOOL delegatesCreated = [self createLocalDelegates:provisioningAccountDelegate openpeerAccountDelegate:openpeerAccountDelegate];
-    
-    if (delegatesCreated)
+    @synchronized(self)
     {
-        provisioning::IAccount::IdentityInfoList identities;
-        for (HOPIdentityInfo* identity in previousIdentities)
+        if (!provisioningAccountDelegate)
+            return passedWithoutErrors;
+      
+        if ( ([provisioningURI length] == 0 ) || ([userID length] == 0 ) || ([accountSalt length] == 0 ) || ([passwordNonce length] == 0 ) || ([password length] == 0 ) || ([privatePeerFile length] == 0 ) || ([previousIdentities count] == 0))
+            return passedWithoutErrors;
+        
+        if (provisioningAccountPtr)
+            provisioningAccountPtr->shutdown();
+        
+        BOOL delegatesCreated = [self createLocalDelegates:provisioningAccountDelegate];
+        
+        if (delegatesCreated)
         {
-            provisioning::IAccount::IdentityInfo info;
-            info.mType = (provisioning::IAccount::IdentityTypes) identity.type;
-            if (identity.uniqueId)
-                info.mUniqueID = [identity.uniqueId UTF8String];
-            if (identity.uniqueIDProof)
-                info.mUniqueIDProof = [identity.uniqueIDProof UTF8String];
-            info.mValidationState = (provisioning::IAccount::IdentityValidationStates) identity.validationState;
-            if (identity.validationId)
-                info.mValidationID = [identity.validationId UTF8String];
-            info.mPriority = identity.priority;
-            info.mWeight = identity.weight;
+            provisioning::IAccount::IdentityInfoList identities;
+            for (HOPIdentityInfo* identity in previousIdentities)
+            {
+                provisioning::IAccount::IdentityInfo info;
+                info.mType = (provisioning::IAccount::IdentityTypes) identity.type;
+                if (identity.uniqueId)
+                    info.mUniqueID = [identity.uniqueId UTF8String];
+                if (identity.uniqueIDProof)
+                    info.mUniqueIDProof = [identity.uniqueIDProof UTF8String];
+                info.mValidationState = (provisioning::IAccount::IdentityValidationStates) identity.validationState;
+                if (identity.validationId)
+                    info.mValidationID = [identity.validationId UTF8String];
+                info.mPriority = identity.priority;
+                info.mWeight = identity.weight;
+                
+                identities.push_back(info);
+            }
             
-            identities.push_back(info);
+            //zsLib::Time lastProfileUpdateTimestampTemp = boost::posix_time::from_time_t([lastProfileUpdatedTimestamp timeIntervalSince1970]) ;
+            zsLib::Time lastProfileUpdateTimestampTemp = boost::posix_time::from_time_t(lastProfileUpdatedTimestamp) ;
+            
+            provisioningAccountPtr = provisioning::IAccount::relogin([[HOPStack sharedStack] getStackPtr], openpeerProvisioningAccountDelegatePtr, openpeerProvisioningAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], [userID UTF8String], [accountSalt UTF8String], [passwordNonce UTF8String], [password UTF8String], IXML::createFromString([privatePeerFile UTF8String]), lastProfileUpdateTimestampTemp, identities);
+            
+            if (provisioningAccountPtr)
+                passedWithoutErrors = YES;
         }
-        
-        zsLib::Time lastProfileUpdateTimestampTemp = boost::posix_time::from_time_t([lastProfileUpdatedTimestamp timeIntervalSince1970]) ;
-        
-        accountPtr = provisioning::IAccount::relogin([stack getStackPtr], openpeerProvisioningAccountDelegatePtr, openpeerAccountDelegatePtr, [provisioningURI UTF8String], [deviceToken UTF8String], [userID UTF8String], [accountSalt UTF8String], [passwordNonce UTF8String], [password UTF8String], IXML::createFromString([privatePeerFile UTF8String]), lastProfileUpdateTimestampTemp, identities);
-        
-        if (accountPtr)
-            passedWithoutErrors = YES;
     }
     
     return passedWithoutErrors;
@@ -231,9 +397,9 @@
 - (HOPIdentity*) getAuthorizationPINIdentity
 {
     HOPIdentity* ret = nil;
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        std::pair<hookflash::provisioning::IAccount::IdentityTypes, const char*> coreIdentity = accountPtr->getAuthorizationPINIdentity();
+        std::pair<hookflash::provisioning::IAccount::IdentityTypes, const char*> coreIdentity = provisioningAccountPtr->getAuthorizationPINIdentity();
 
         ret.identityType = (HOPProvisioningAccountIdentityTypes) coreIdentity.first;
         ret.identityId = [NSString stringWithUTF8String: coreIdentity.second];
@@ -248,10 +414,10 @@
 
 - (void) setAuthorizationPIN: (NSString*) authorizationPIN
 {
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
         if (authorizationPIN)
-            accountPtr->setAuthorizationPIN([authorizationPIN UTF8String]);
+            provisioningAccountPtr->setAuthorizationPIN([authorizationPIN UTF8String]);
     }
     else
     {
@@ -263,9 +429,9 @@
 {
     NSString* ret = nil;
   
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        ret = [NSString stringWithUTF8String: accountPtr->getOAuthLoginURL()];
+        ret = [NSString stringWithUTF8String: provisioningAccountPtr->getOAuthLoginURL()];
     }
     else
     {
@@ -276,10 +442,10 @@
 
 - (void) completeOAuthLoginProcess: (NSString*) xmlResultFromJavascript
 {
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
         if (xmlResultFromJavascript)
-            accountPtr->completeOAuthLoginProcess(IXML::createFromString([xmlResultFromJavascript UTF8String]));
+            provisioningAccountPtr->completeOAuthLoginProcess(IXML::createFromString([xmlResultFromJavascript UTF8String]));
     }
     else
     {
@@ -292,9 +458,9 @@
 {
     NSString* ret = nil;
     
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        ret = [NSString stringWithUTF8String: accountPtr->getUserID()];
+        ret = [NSString stringWithUTF8String: provisioningAccountPtr->getUserID()];
     }
     else
     {
@@ -303,13 +469,29 @@
     return ret;
 }
 
+- (NSString*) getContactID
+{
+    NSString* ret = nil;
+    
+    if(provisioningAccountPtr)
+    {
+        ret = [NSString stringWithUTF8String: provisioningAccountPtr->getOpenPeerAccount()->getSelfContact()->getContactID()];
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
+    }
+    return ret;
+
+}
+
 - (NSString*) getAccountSalt
 {
     NSString* ret = nil;
     
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        ret = [NSString stringWithUTF8String: accountPtr->getAccountSalt()];
+        ret = [NSString stringWithUTF8String: provisioningAccountPtr->getAccountSalt()];
     }
     else
     {
@@ -322,9 +504,9 @@
 {
     NSString* ret = nil;
     
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        ret = [NSString stringWithUTF8String: accountPtr->getPasswordNonce()];
+        ret = [NSString stringWithUTF8String: provisioningAccountPtr->getPasswordNonce()];
     }
     else
     {
@@ -337,9 +519,9 @@
 {
     NSString* ret = nil;
     
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        ret = [NSString stringWithUTF8String: accountPtr->getPassword()];
+        ret = [NSString stringWithUTF8String: provisioningAccountPtr->getPassword()];
     }
     else
     {
@@ -352,9 +534,9 @@
 {
     NSString* ret = nil;
     
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        ret = [NSString stringWithUTF8String: IXML::convertToString(accountPtr->getPrivatePeerFile())];
+        ret = [NSString stringWithUTF8String: IXML::convertToString(provisioningAccountPtr->getPrivatePeerFile())];
     }
     else
     {
@@ -363,13 +545,13 @@
     return ret;
 }
 
-- (NSDate*) getLastProfileUpdatedTime
+- (NSTimeInterval) getLastProfileUpdatedTime
 {
-    NSDate* date = nil;
+    NSTimeInterval date = nil;
     
-    if(!accountPtr)
+    if(provisioningAccountPtr)
     {
-        date = [OpenPeerUtility convertPosixTimeToDate:accountPtr->getLastProfileUpdatedTime()];
+        date = zsLib::toEpoch(provisioningAccountPtr->getLastProfileUpdatedTime());//[OpenPeerUtility convertPosixTimeToDate:provisioningAccountPtr->getLastProfileUpdatedTime()];
     }
     else
     {
@@ -379,34 +561,35 @@
 }
 
 
-- (HOPAccount*) getOpenPeerAccount
-{
-    if (!hopAccount)
-    {
-        if(accountPtr)
-        {
-            hookflash::IAccountPtr openPeerAccountPtr = accountPtr->getOpenPeerAccount();
-            if (openPeerAccountPtr)
-            {
-                hopAccount = [[HOPAccount alloc] init];
-                [hopAccount setAccountPtr:openPeerAccountPtr];
-            }
-        }
-        else
-        {
-            [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
-        }
-    }
-    
-    return hopAccount;
-}
+//- (HOPProvisioningAccount*) getProvisioningAccount
+//{
+////    if (!hopAccount)
+////    {
+////        if(accountPtr)
+////        {
+////            hookflash::IAccountPtr openPeerAccountPtr = accountPtr->getOpenPeerAccount();
+////            if (openPeerAccountPtr)
+////            {
+////                hopAccount = [[HOPAccount alloc] init];
+////                [hopAccount setAccountPtr:openPeerAccountPtr];
+////            }
+////        }
+////        else
+////        {
+////            [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
+////        }
+////    }
+//    
+//    return self;
+//}
 
+// This method will return only provisioning account state, and not openpeer account state. This is done by purpose because provisioning account owns openpeer account, therefore, it always has lesser state than openpeer account.
 - (HOPProvisioningAccountStates) getState
 {
     HOPProvisioningAccountStates ret = HOPProvisioningAccountStateNone;
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
-        ret = (HOPProvisioningAccountStates) accountPtr->getState();
+        ret = (HOPProvisioningAccountStates) provisioningAccountPtr->getState();
     }
     else
     {
@@ -419,9 +602,31 @@
 - (HOPProvisioningAccountErrorCodes) getLastError
 {
     HOPProvisioningAccountErrorCodes ret = HOPProvisioningAccountErrorCodeNone;
-    if(accountPtr)
+    hookflash::IAccount::AccountErrors coreAccError = hookflash::IAccount::AccountError_None;
+    if(provisioningAccountPtr)
     {
-        ret = (HOPProvisioningAccountErrorCodes) accountPtr->getLastError();
+        coreAccError = provisioningAccountPtr->getOpenPeerAccount()->getLastError();
+        switch (coreAccError) {
+            case hookflash::IAccount::AccountError_None:
+                ret = (HOPProvisioningAccountErrorCodes) provisioningAccountPtr->getLastError();
+                break;
+            case hookflash::IAccount::AccountError_InternalError:
+                ret = HOPProvisioningAccountErrorCodeInternalFailure;
+                break;
+            case hookflash::IAccount::AccountError_StackFailed:
+                ret = HOPProvisioningAccountErrorCodeStackFailed;
+                break;
+            case hookflash::IAccount::AccountError_BootstrappedNetworkFailed:
+                ret = HOPProvisioningAccountErrorCodeBootstrappedNetworkFailed;
+                break;
+            case hookflash::IAccount::AccountError_CallTransportFailed:
+                ret = HOPProvisioningAccountErrorCodeCallTransportFailed;
+                break;
+                
+            default:
+                ret = (HOPProvisioningAccountErrorCodes) provisioningAccountPtr->getLastError();
+                break;
+        }
     }
     else
     {
@@ -434,10 +639,10 @@
 - (NSArray*) getIdentities
 {
     NSMutableArray* array = nil;
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
         std::list<hookflash::provisioning::IAccount::IdentityInfo> coreIdentities;
-        accountPtr->getIdentities(coreIdentities);
+        provisioningAccountPtr->getIdentities(coreIdentities);
         
         if (coreIdentities.size() > 0)
             array = [[NSMutableArray alloc] init];
@@ -454,6 +659,7 @@
             tmpInfo.weight = it->mWeight;
             
             [array addObject:tmpInfo];
+            [tmpInfo release];
         }
     }
     else
@@ -465,7 +671,7 @@
 
 - (void) setIdentities: (NSArray*) identities
 {
-    if(!accountPtr)
+    if(!provisioningAccountPtr)
     {
         if ([identities count] > 0)
         {
@@ -485,7 +691,7 @@
                 coreIdentitiesToSet.push_back(tmpInfo);
             }
             
-            accountPtr->setIdentities(coreIdentitiesToSet);
+            provisioningAccountPtr->setIdentities(coreIdentitiesToSet);
         }
     }
     else
@@ -498,13 +704,13 @@
 {
     HOPProvisioningAccountIdentityValidationStates ret = HOPProvisioningAccountIdentityValidationStateNone;
   
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
         hookflash::provisioning::IAccount::IdentityID coreID;
         coreID.first = (hookflash::provisioning::IAccount::IdentityTypes) identity.identityType;
         coreID.second = [identity.identityId UTF8String];
 
-        ret = (HOPProvisioningAccountIdentityValidationStates) accountPtr->getIdentityValidationState(coreID);
+        ret = (HOPProvisioningAccountIdentityValidationStates) provisioningAccountPtr->getIdentityValidationState(coreID);
     }
     else
     {
@@ -516,7 +722,7 @@
 
 - (void) validateIdentitySendPIN: (HOPIdentity*) identity
 {
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
         if (identity)
         {
@@ -525,7 +731,7 @@
             if (identity.identityId)
                 coreID.second = [identity.identityId UTF8String];
     
-            accountPtr->validateIdentitySendPIN(coreID);
+            provisioningAccountPtr->validateIdentitySendPIN(coreID);
         }
     }
     else
@@ -536,7 +742,7 @@
 
 - (void) validateIdentityComplete: (HOPIdentity*) identity identityPIN: (NSString*) identityPIN
 {
-    if(accountPtr)
+    if(provisioningAccountPtr)
     {
         if (identity)
         {
@@ -547,7 +753,7 @@
                 coreID.second = [identity.identityId UTF8String];
             }
             
-            accountPtr->validateIdentityComplete(coreID, [identityPIN UTF8String]);
+            provisioningAccountPtr->validateIdentityComplete(coreID, [identityPIN UTF8String]);
         }
     }
     else
@@ -562,13 +768,13 @@
 - (HOPProvisioningAccountOAuthIdentityAssociation*) associateOAuthIdentity :(HOPProvisioningAccountIdentityTypes) type delegate:(id<HOPProvisioningAccountOAuthIdentityAssociationDelegate>) delegate
 {
     HOPProvisioningAccountOAuthIdentityAssociation* ret = nil;
-    if (accountPtr)
+    if (provisioningAccountPtr)
     {
         boost::shared_ptr<OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate> openPeerProvisioningAccountOAuthIdentityAssociationDelegatePtr = OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate::create(delegate);
         
         if (openPeerProvisioningAccountOAuthIdentityAssociationDelegatePtr)
         {
-            IAccountOAuthIdentityAssociationPtr accountOAuthIdentityAssociationPtr = accountPtr->associateOAuthIdentity((hookflash::provisioning::IAccount::IdentityTypes) type, openPeerProvisioningAccountOAuthIdentityAssociationDelegatePtr);
+            IAccountOAuthIdentityAssociationPtr accountOAuthIdentityAssociationPtr = provisioningAccountPtr->associateOAuthIdentity((hookflash::provisioning::IAccount::IdentityTypes) type, openPeerProvisioningAccountOAuthIdentityAssociationDelegatePtr);
             if (accountOAuthIdentityAssociationPtr)
             {
                 ret = [[HOPProvisioningAccountOAuthIdentityAssociation alloc] init];
@@ -581,13 +787,13 @@
         [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
     }
     
-    return ret;
+    return [ret autorelease];
 }
 
 - (HOPProvisioningAccountPush*) apnsPush: (id<HOPAPNSDelegate>) delegate userIDs: (NSArray*) userIDs messageType: (NSString*) messageType message: (NSString*) message
 {
     HOPProvisioningAccountPush* ret = nil;
-    if (accountPtr)
+    if (provisioningAccountPtr)
     {
         boost::shared_ptr<OpenPeerAPNSDelegate> openPeerAPNSDelegatePtr = OpenPeerAPNSDelegate::create(delegate);
         
@@ -601,7 +807,7 @@
                     zsLib::String userID = [userId UTF8String];
                     userIDlist.push_back(userID);
                     
-                    IAccountPushPtr accountPushPtr = accountPtr->apnsPush(openPeerAPNSDelegatePtr, userIDlist, [messageType UTF8String], [message UTF8String]);
+                    IAccountPushPtr accountPushPtr = provisioningAccountPtr->apnsPush(openPeerAPNSDelegatePtr, userIDlist, [messageType UTF8String], [message UTF8String]);
                     if (accountPushPtr)
                     {
                         ret = [[HOPProvisioningAccountPush alloc] init];
@@ -616,13 +822,13 @@
         [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
     }
     
-    return ret;
+    return [ret autorelease];
 }
 
 - (HOPProvisioningAccountIdentityLookupQuery*) identityLookup: (id<HOPProvisioningAccountIdentityLookupQueryDelegate>) delegate identities: (NSArray*) identities
 {
     HOPProvisioningAccountIdentityLookupQuery* ret = nil;
-    if (accountPtr)
+    if (provisioningAccountPtr)
     {
         boost::shared_ptr<OpenPeerAccountIdentityLookupQueryDelegate> openPeerAccountIdentityLookupQueryDelegatePtr = OpenPeerAccountIdentityLookupQueryDelegate::create(delegate);
         
@@ -638,7 +844,7 @@
                     identityID.second = [identity.identityId UTF8String];
                     identityList.push_back(identityID);
                 }
-                IAccountIdentityLookupQueryPtr accountIdentityLookupQueryPtr = accountPtr->lookup(openPeerAccountIdentityLookupQueryDelegatePtr, identityList);
+                IAccountIdentityLookupQueryPtr accountIdentityLookupQueryPtr = provisioningAccountPtr->lookup(openPeerAccountIdentityLookupQueryDelegatePtr, identityList);
                 
                 if (accountIdentityLookupQueryPtr)
                 {
@@ -653,14 +859,14 @@
         [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
     }
     
-    return ret;
+    return [ret autorelease];
 }
 
 - (HOPProvisioningAccountPeerFileLookupQuery*) peerFileLookup: (id<HOPProvisioningAccountPeerFileLookupQueryDelegate>) delegate userIDs: (NSArray*) userIDs associatedContactIDs: (NSArray*) associatedContactIDs
 {
     HOPProvisioningAccountPeerFileLookupQuery* ret = nil;
     
-    if (accountPtr)
+    if (provisioningAccountPtr)
     {
         boost::shared_ptr<OpenPeerAccountPeerFileLookupQueryDelegate> openPeerAccountPeerFileLookupQueryDelegatePtr = OpenPeerAccountPeerFileLookupQueryDelegate::create(delegate);
         
@@ -682,7 +888,7 @@
                     contactIDList.push_back(contactID);
                 }
                 
-                IAccountPeerFileLookupQueryPtr accountPeerFileLookupQueryPtr = accountPtr->lookup(openPeerAccountPeerFileLookupQueryDelegatePtr, userIDList, contactIDList);
+                IAccountPeerFileLookupQueryPtr accountPeerFileLookupQueryPtr = provisioningAccountPtr->lookup(openPeerAccountPeerFileLookupQueryDelegatePtr, userIDList, contactIDList);
                 
                 if (accountPeerFileLookupQueryPtr)
                 {
@@ -698,29 +904,285 @@
         [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
     }
     
-    return ret;
+    return [ret autorelease];
 }
 
 
-- (BOOL) createLocalDelegates:(id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate:(id<HOPAccountDelegate>) openpeerAccountDelegate
+- (BOOL) createLocalDelegates:(id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate
 {
     BOOL ret = NO;
     
     openpeerProvisioningAccountDelegatePtr = OpenPeerProvisioningAccountDelegate::create(provisioningAccountDelegate);
-    openpeerAccountDelegatePtr = OpenPeerAccountDelegate::create(openpeerAccountDelegate);
     
-    if (openpeerProvisioningAccountDelegatePtr && openpeerAccountDelegatePtr)
+    if (openpeerProvisioningAccountDelegatePtr)
         ret = YES;
     return ret;
 }
+
 - (void) deleteLocalDelegates
 {
-    
+    openpeerProvisioningAccountDelegatePtr.reset();
 }
 
 - (provisioning::IAccountPtr)  getAccountPtr
 {
-    return accountPtr;
+    return provisioningAccountPtr;
+}
+
+- (hookflash::IAccountPtr)  getOpenpeerAccountPtr
+{
+    return provisioningAccountPtr->getOpenPeerAccount();
+}
+
+#pragma mark - HOPAccount methods
+
+/**
+ Converts State enum to string
+ @param state OpenPeer_AccountStates enum
+ @returns NSString representation of enum
+ */
+//HOP_TODO: Make this to work for merged account
+/*+ (NSString*) stateToString:(HOPAccountStates) state
+{
+    return [NSString stringWithUTF8String: IAccount::toString((hookflash::IAccount::AccountStates) state)];
+}*/
+
+
+/**
+ Converts Error enum to string
+ @param errorCode OpenPeer_AccountErrors enum
+ @returns NSString representation of enum
+ */
+//HOP_TODO: Make this to work for merged account
+/*+ (NSString*) errorToString:(HOPAccountErrors) errorCode
+{
+    return [NSString stringWithUTF8String: IAccount::toString((hookflash::IAccount::AccountErrors) errorCode)];
+}*/
+
+/**
+ Shutdown of the openpeer account.
+ */
+- (void) shutdown
+{
+    if (provisioningAccountPtr && provisioningAccountPtr->getOpenPeerAccount())
+    {
+        provisioningAccountPtr->shutdown();
+        provisioningAccountPtr.reset();
+    }
+    else
+    {
+        [NSException raise:NSInternalInconsistencyException format:@"Invalid OpenPeer account pointer!"];
+    }
+}
+
+/**
+ Retrieves current openpeer account state
+ @returns OpenPeer_AccountStates current state of the openpeer account
+ */
+/*- (HOPAccountStates) getState
+{
+    HOPAccountStates ret = HOPAccountStateShuttingDown;
+    
+    if (accountPtr)
+    {
+        ret = (HOPAccountStates) accountPtr->getState();
+    }
+    else
+    {
+        [NSException raise:NSInternalInconsistencyException format:@"Invalid OpenPeer account pointer!"];
+    }
+    return ret;
+}*/
+
+
+/**
+ Retrieves last openpeer account error
+ @returns OpenPeer_AccountStates current state of the openpeer account
+ */
+//HOP_TODO: handle error for provisioning and opnepeer account
+/*- (HOPAccountErrors) getLastError
+{
+    HOPAccountErrors ret = HOPAccountErrorInternalError;
+    
+    if (accountPtr)
+    {
+        ret = (HOPAccountErrors) accountPtr->getLastError();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+    return ret;
+}*/
+
+
+- (HOPAccountSubscription*) subscribe: (id<HOPProvisioningAccountDelegate>) delegate
+{
+    HOPAccountSubscription* accountSubscription = nil;
+    
+    if (provisioningAccountPtr && provisioningAccountPtr->getOpenPeerAccount())
+    {
+        boost::shared_ptr<OpenPeerProvisioningAccountDelegate> openPeerAccountDelegatePtr = OpenPeerProvisioningAccountDelegate::create(delegate);
+        
+        if (openPeerAccountDelegatePtr)
+        {
+            listOfOpenPeerAccountDelegates.push_back(openPeerAccountDelegatePtr);
+            IAccountSubscriptionPtr accountSubscriptionPtr = provisioningAccountPtr->getOpenPeerAccount()->subscribe(openPeerAccountDelegatePtr);
+            
+            accountSubscription = [[HOPAccountSubscription alloc] init];
+            [accountSubscription setAccountSubscription:accountSubscriptionPtr];
+            return [accountSubscription autorelease];
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+    return accountSubscription;
+}
+
+/**
+ Retrieves self contact
+ @returns HOPContact contact object for self
+ */
+- (HOPContact*) getSelfContact
+{
+    HOPContact* hopContact = nil;
+    if (provisioningAccountPtr && provisioningAccountPtr->getOpenPeerAccount())
+    {
+        IContactPtr contactPtr = provisioningAccountPtr->getOpenPeerAccount()->getSelfContact();
+        if (contactPtr)
+        {
+            hopContact = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:contactPtr->getContactID()]];
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+    return hopContact;
+}
+
+/**
+ Retrieves openpeer account location ID
+ @returns NSString representation of openpeer account location ID
+ */
+- (NSString*) getLocationID
+{
+    NSString* locationId = nil;
+    
+    if(provisioningAccountPtr && provisioningAccountPtr->getOpenPeerAccount())
+    {
+        locationId = [NSString stringWithUTF8String: provisioningAccountPtr->getOpenPeerAccount()->getLocationID()];
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+    return locationId;
+}
+
+/**
+ Saves private peer file.
+ @returns NSString private peer xml file
+ */
+- (NSString*) privatePeerToString
+{
+    NSString* xml = nil;
+    if(provisioningAccountPtr->getOpenPeerAccount())
+    {
+        zsLib::XML::ElementPtr element = provisioningAccountPtr->getOpenPeerAccount()->savePrivatePeer();
+        if (element)
+        {
+            xml = [NSString stringWithUTF8String: IXML::convertToString(element)];
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+    return xml;
+}
+
+/**
+ Saves public peer file.
+ @returns NSString public peer xml file
+ */
+- (NSString*) publicPeerToString
+{
+    NSString* xml = nil;
+    if(provisioningAccountPtr && provisioningAccountPtr->getOpenPeerAccount())
+    {
+        zsLib::XML::ElementPtr element = provisioningAccountPtr->getOpenPeerAccount()->savePublicPeer();
+        if (element)
+        {
+            xml = [NSString stringWithUTF8String: IXML::convertToString(element)];
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+    return xml;
+}
+
+/**
+ Subscribe to the notification of specific contact.
+ @param contact HOPContact contact to receive notifications about
+ */
+- (void) notifyAboutContact:(HOPContact*) contact
+{
+    if (provisioningAccountPtr && provisioningAccountPtr->getOpenPeerAccount())
+    {
+        if (contact)
+            provisioningAccountPtr->getOpenPeerAccount()->notifyAboutContact([contact getContactPtr]);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+}
+
+/**
+ Hint about contact location.
+ @param contact HOPContact contact to receive notifications about
+ @param locationID NSString location id
+ */
+- (void) hintAboutContactLocation:(HOPContact*) contact locationID:(NSString*) locationID
+{
+    if (provisioningAccountPtr && provisioningAccountPtr->getOpenPeerAccount())
+    {
+        if (contact)
+            provisioningAccountPtr->getOpenPeerAccount()->hintAboutContactLocation([contact getContactPtr], [locationID UTF8String]);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+    }
+}
+
+/**
+ Retrieves conversation thread object based on ts ID.
+ @return threadID NSString conversation thread ID
+ */
+- (HOPConversationThread*) getConversationThreadByID:(NSString*) threadID
+{
+    HOPConversationThread* hopConversationThread = nil;
+    if ([threadID length] > 0)
+    {
+        hopConversationThread = [[OpenPeerStorageManager sharedInstance] getConversationThreadForId:threadID];
+    }
+    
+    return hopConversationThread;
+}
+
+/**
+ Retrieves all conversation threads
+ @return outConversationThreads std::list<HOPConversationThread> list of conversation threads
+ */
+- (NSArray*) getConversationThreads
+{
+    return [[OpenPeerStorageManager sharedInstance] getConversationThreads];
 }
 @end
 

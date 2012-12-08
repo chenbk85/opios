@@ -29,23 +29,9 @@
  
  */
 
+#import <Foundation/Foundation.h>
+#import <OpenpeerSDK/HOPProtocols.h>
 
-#import "HOPAccount.h"
-#import <hookflash/hookflashTypes.h>
-#import "OpenPeerAccountDelegate.h"
+@interface CallDelegate : NSObject<HOPCallDelegate>
 
-using namespace hookflash;
-
-@interface HOPAccount()
-{
-    hookflash::IAccountPtr accountPtr;
-    HOPContact* selfContact;
-    
-    //boost::shared_ptr<OpenPeerAccountDelegate> openPeerAccountDelegatePtr;
-    std::list<boost::shared_ptr<OpenPeerAccountDelegate> > listOfOpenPeerAccountDelegates;
-}
-
-- (void) setAccountPtr:(hookflash::IAccountPtr) inAccountPtr;
-- (hookflash::IAccountPtr) getAccountPtr;
 @end
-

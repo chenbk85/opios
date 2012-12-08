@@ -29,22 +29,14 @@
  
  */
 
-
 #import <Foundation/Foundation.h>
-#include <hookflash/hookflashTypes.h>
-#include <hookflash/IAccount.h>
-#import "HOPProtocols.h"
 
-using namespace hookflash;
+@interface Utility : NSObject
 
-class OpenPeerAccountDelegate : public hookflash::IAccountDelegate
-{
-protected:
-    id<HOPAccountDelegate> accountDelegate;
-    
-    OpenPeerAccountDelegate(id<HOPAccountDelegate> inAccountDelegate);
-public:
-    static boost::shared_ptr<OpenPeerAccountDelegate> create(id<HOPAccountDelegate> inAccountDelegate);
-    virtual void onAccountStateChanged(hookflash::IAccountPtr account,AccountStates state);
-};
-
++ (NSString *) base64StringFromData: (NSData *)data length: (int)length;
++ (NSString *)decodeBase64:(NSString *)data64based;
++ (NSString*) getDeviceOs;
++ (NSString*) getPlatform;
++ (NSString*) getUserAgentName;
++ (void)removeCookiesAndClearCredentialsForUrl:(NSString*) url;
+@end

@@ -60,15 +60,15 @@ using namespace hookflash;
 
 /**
  Sets window for rendering local capture video.
- @param renderView UIView Window where local capture video will be rendered
+ @param renderView UIImageView Window where local capture video will be rendered
  */
-- (void) setCaptureRenderView: (UIView*) renderView;
+- (void) setCaptureRenderView: (UIImageView*) renderView;
 
 /**
  Sets window for rendering video received from channel.
  @param renderView UIView Window where video received from channel will be rendered
  */
-- (void) setChannelRenderView: (UIView*) renderView;
+- (void) setChannelRenderView: (UIImageView*) renderView;
 
 /**
  Turns echo cancelation ON/OFF.

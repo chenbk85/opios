@@ -41,5 +41,6 @@ using namespace hookflash;
     IConversationThreadPtr conversationThreadPtr;
 }
 
+- (id) initWithConversationThread:(IConversationThreadPtr) inConversationThreadPtr;
 - (IConversationThreadPtr) getConversationThreadPtr;
 @end

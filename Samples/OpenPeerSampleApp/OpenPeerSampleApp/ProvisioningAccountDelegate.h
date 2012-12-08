@@ -29,33 +29,9 @@
  
  */
 
-
 #import <Foundation/Foundation.h>
-#include <hookflash/hookflashTypes.h>
-#include <hookflash/IClient.h>
-#import "HOPProtocols.h"
+#import "OpenpeerSDK/HOPProtocols.h"
 
-using namespace hookflash;
-using hookflash::IClient;
+@interface ProvisioningAccountDelegate : NSObject<HOPProvisioningAccountDelegate>
 
-struct OpenPeerClientLogDelegate : public IClientLogDelegate
-{
-protected:
-    id<HOPClientLogDelegate> clientLogDelegate;
-    OpenPeerClientLogDelegate(id<HOPClientLogDelegate> inClientLogDelegate);
-public:
-    static boost::shared_ptr<OpenPeerClientLogDelegate> create(id<HOPClientLogDelegate> inClientLogDelegate);
-    
-    virtual void onNewSubsystem(zsLib::PTRNUMBER subsystemID,const char *subsystemName);
-    
-    virtual void onLog(
-                       zsLib::PTRNUMBER subsystemID,
-                       const char *subsystemName,
-                       IClient::Log::Severity inSeverity,
-                       IClient::Log::Level inLevel,
-                       const char *inMessage,
-                       const char *inFunction,
-                       const char *inFilePath,
-                       zsLib::ULONG inLineNumber
-                       );
-};
+@end

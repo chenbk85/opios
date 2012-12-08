@@ -33,8 +33,6 @@
 #import <Foundation/Foundation.h>
 #import "HOPProtocols.h"
 
-@class IStackPtrWrapper;
-
 /**
  Singleton class to represent the openpeer stack.
  */
@@ -43,7 +41,7 @@
 /**
  Returns singleton object of this class.
  */
-+ (id)sharedInstance;
++ (id)sharedStack;
 
 /**
  Initialise delegates objects required for communication between core and client.
@@ -59,7 +57,110 @@
 - (BOOL) initStackDelegate:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) conversationThreadDelegate callDelegate:(id<HOPCallDelegate>) callDelegate userAgent:(NSString*) userAgent deviceOs:(NSString*) deviceOs platform:(NSString*) platform;
 
 /**
- Shoutdown stack.
+ Shutdown stack.
  */
-- (void) startShutdown;
+- (void) shutdown;
+
+#pragma mark IClient interface wrapper
+
+/**
+ This routine must be called only ONCE from the GUI thread. This method will through an invalid usage exception if the HOPClient::setup routine was already called.
+ */
++ (void) setup;
+
+/**
+ This method is to notify the hookflash client that a messaage put GUI queue is now being processed by the GUI queue.
+ */
+- (void) processMessagePutInGUIQueue;
+
+/**
+ This method will block until the hookflash API is fully shutdown.
+ */
+- (void) finalizeShutdown;
+
+/**
+ Install a logger to output to the standard out.
+ @param colorizeOutput BOOL Flag to enable/disable output colorization
+ */
++ (void) installStdOutLogger: (BOOL) colorizeOutput;
+
+/**
+ Install a logger to output to a file.
+ @param filename NSString Name of the log file
+ @param colorizeOutput BOOL Flag to enable/disable output colorization
+ */
++ (void) installFileLogger: (NSString*) filename colorizeOutput: (BOOL) colorizeOutput;
+
+/**
+ Install a logger to output to a telnet prompt.
+ @param listenPort unsigned short Port for listening
+ @param maxSecondsWaitForSocketToBeAvailable unsigned long Specify how long will logger wait for socket
+ @param colorizeOutput BOOL Flag to enable/disable output colorization
+ */
++ (void) installTelnetLogger: (unsigned short) listenPort maxSecondsWaitForSocketToBeAvailable:(unsigned long) maxSecondsWaitForSocketToBeAvailable colorizeOutput: (BOOL) colorizeOutput;
+
+/**
+ Install a logger that sends a telnet outgoing to a telnet server.
+ @param serverToConnect NSString Call Server address
+ @param colorizeOutput BOOL Flag to enable/disable output colorization
+ @param stringToSendUponConnection NSString String to send to the server when connection is established
+ */
++ (void) installOutgoingTelnetLogger: (NSString*) serverToConnect colorizeOutput: (BOOL) colorizeOutput stringToSendUponConnection: (NSString*) stringToSendUponConnection;
+
+/**
+ Install a logger to output to the windows debugger window.
+ */
++ (void) installWindowsDebuggerLogger;
+
+/**
+ Install a logger to monitor the functioning of the application internally.
+ */
++ (void) installCustomLogger: (id<HOPStackDelegate>) delegate;
+
+/**
+ Gets the unique ID for the GUI's subsystem (to pass into the log routine for GUI logging)
+ @return Return subsystem unique ID
+ */
++ (unsigned int) getGUISubsystemUniqueID;
+
+/**
+ Gets the currently set log level for a particular subsystem.
+ @param subsystemUniqueID unsigned int Unique ID of the log subsystem
+ @returns Log level enum
+ */
++ (HOPClientLogLevels) getLogLevel: (unsigned int) subsystemUniqueID;
+
+/**
+ Sets all subsystems to a specific log level.
+ @param level HOPClientLogLevels Level to set
+ */
++ (void) setLogLevel: (HOPClientLogLevels) level;
+
+/**
+ Sets a particular subsystem's log level by unique ID.
+ @param subsystemUniqueID unsigned long Unique ID of the log subsystem
+ @param level HOPClientLogLevels Level to set
+ */
++ (void) setLogLevelByID: (unsigned long) subsystemUniqueID level: (HOPClientLogLevels) level;
+
+/**
+ Sets a particular subsystem's log level by its subsystem name.
+ @param subsystemName NSString Name of the log subsystem
+ @param level HOPClientLogLevels Level to set
+ */
++ (void) setLogLevelbyName: (NSString*) subsystemName level: (HOPClientLogLevels) level;
+
+/**
+ Sends a message to the logger(s) for a particular subsystem.
+ @param subsystemUniqueID unsigned long Unique ID of the log subsystem
+ @param severity HOPClientLogSeverities Log severity
+ @param level HOPClientLogLevels Log level
+ @param message NSString Message to log
+ @param function NSString Log function
+ @param filePath NSString Path to log file
+ @param lineNumber unsigned long Number of the log line
+ @returns String representation of call closed reason enum
+ */
++ (void) log: (unsigned int) subsystemUniqueID severity: (HOPClientLogSeverities) severity level: (HOPClientLogLevels) level message: (NSString*) message function: (NSString*) function filePath: (NSString*) filePath lineNumber: (unsigned long) lineNumber;
+
 @end

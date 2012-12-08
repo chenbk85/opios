@@ -45,7 +45,7 @@ boost::shared_ptr<OpenPeerConversationThreadDelegate> OpenPeerConversationThread
     return boost::shared_ptr<OpenPeerConversationThreadDelegate> (new OpenPeerConversationThreadDelegate(inConversationThreadDelegate));
 }
 
-HOPConversationThread* getOpenPeerConversationThread(IConversationThreadPtr conversationThread)
+HOPConversationThread* OpenPeerConversationThreadDelegate::getOpenPeerConversationThread(IConversationThreadPtr conversationThread)
 {
     HOPConversationThread * hopConversationThread = nil;
     

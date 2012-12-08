@@ -40,6 +40,13 @@
 @optional
 - (void) onShutdownReady;
 
+//IClientDelegate method wrapper
+- (void) onMessagePutInGUIQueue;
+
+//IClientLogDelegate method wrapper
+- (void) onNewSubsystem:(unsigned short) subsystemUniqueID subsystemName:(NSString*) subsystemName;
+- (void) onLog:(unsigned short) subsystemUniqueID subsystemName:(NSString*)subsystemName severity:(HOPClientLogSeverities) severity level:(HOPClientLogLevels) level message:(NSString*) message function:(NSString*) function filePath:(NSString*) filePath lineNumber:(unsigned long) lineNumber;
+
 @end
 
 
@@ -50,7 +57,7 @@
 
 @end
 
-
+#pragma mark - Provisioning account for future use delegate
 @class HOPAccount;
 
 @protocol HOPAccountDelegate <NSObject>
@@ -70,17 +77,17 @@
 @end
 
 
-@protocol HOPClientDelegate <NSObject>
-@optional
-- (void) onMessagePutInGUIQueue;
-@end
-
-
-@protocol HOPClientLogDelegate <NSObject>
-@optional
-- (void) onNewSubsystem:(unsigned short) subsystemUniqueID subsystemName:(NSString*) subsystemName;
-- (void) onLog:(unsigned short) subsystemUniqueID subsystemName:(NSString*)subsystemName severity:(HOPClientLogSeverities) severity level:(HOPClientLogLevels) level message:(NSString*) message function:(NSString*) function filePath:(NSString*) filePath lineNumber:(unsigned long) lineNumber;
-@end
+//@protocol HOPClientDelegate <NSObject>
+//@optional
+//- (void) onMessagePutInGUIQueue;
+//@end
+//
+//
+//@protocol HOPClientLogDelegate <NSObject>
+//@optional
+//- (void) onNewSubsystem:(unsigned short) subsystemUniqueID subsystemName:(NSString*) subsystemName;
+//- (void) onLog:(unsigned short) subsystemUniqueID subsystemName:(NSString*)subsystemName severity:(HOPClientLogSeverities) severity level:(HOPClientLogLevels) level message:(NSString*) message function:(NSString*) function filePath:(NSString*) filePath lineNumber:(unsigned long) lineNumber;
+//@end
 
 @class HOPConversationThread;
 @class HOPContact;
@@ -127,7 +134,7 @@
 
 @protocol HOPProvisioningAccountDelegate <NSObject>
 
-- (void) onProvisioningAccountStateChanged:(HOPProvisioningAccount*) account accountStates:(HOPAccountStates) state;
+- (void) onProvisioningAccountStateChanged:(HOPProvisioningAccount*) account accountStates:(HOPProvisioningAccountStates) state;
 
 - (void) onProvisioningAccountError:(HOPProvisioningAccount*) account errorCodes:(HOPProvisioningAccountErrorCodes) error;
 

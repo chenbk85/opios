@@ -32,11 +32,19 @@
 
 #import <Foundation/Foundation.h>
 
-@class HOPAccount;
+@class HOPProvisioningAccount;
 
 @interface HOPAccountSubscription : NSObject
 
-- (HOPAccount*) getAccount;
+/**
+ Retrieves the reference to the account subscription object.
+ @returns Reference to the account subscription object.
+ */
+- (HOPProvisioningAccount*) getAccount;
+
+/**
+ Cancel account subscription.
+ */
 - (void) cancel;
 
 @end

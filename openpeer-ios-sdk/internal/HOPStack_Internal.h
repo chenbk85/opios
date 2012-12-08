@@ -41,6 +41,7 @@
 @interface HOPStack ()
 {
     IStackPtr stackPtr;
+    IClientPtr clientPtr;
     
     boost::shared_ptr<OpenPeerCallDelegate> openPeerCallDelegatePtr;
     boost::shared_ptr<OpenPeerStackDelegate> openPeerStackDelegatePtr;
@@ -52,4 +53,6 @@
 - (void) deleteLocalDelegates;
 
 - (IStackPtr) getStackPtr;
+
+- (IClientPtr) getClientPtr;
 @end

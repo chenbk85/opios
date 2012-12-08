@@ -35,15 +35,17 @@
 
 #include <hookflash/hookflashTypes.h>
 #include <hookflash/provisioning/IAccount.h>
+#include <hookflash/IAccount.h>
 #import "HOPProtocols.h"
 
 using namespace hookflash;
 using namespace hookflash::provisioning;
 
-class OpenPeerProvisioningAccountDelegate : public provisioning::IAccountDelegate//, public provisioning::IAccountPeerFileLookupQueryDelegate
+class OpenPeerProvisioningAccountDelegate : public provisioning::IAccountDelegate, public hookflash::IAccountDelegate
 {
 protected:
     id<HOPProvisioningAccountDelegate> provisioningAccountDelegate;
+    //id<HOPAccountDelegate> openpeerAccountDelegate;
     
     OpenPeerProvisioningAccountDelegate(id<HOPProvisioningAccountDelegate> inProvisioningAccountDelegate);
     
@@ -51,7 +53,9 @@ protected:
 public:
     static boost::shared_ptr<OpenPeerProvisioningAccountDelegate> create(id<HOPProvisioningAccountDelegate> inProvisioningAccountDelegate);
     
-    virtual void onProvisioningAccountStateChanged(provisioning::IAccountPtr account,AccountStates state);
+#pragma mark - provisioning::IAccount delegate methods
+
+    virtual void onProvisioningAccountStateChanged(provisioning::IAccountPtr account,provisioning::IAccount::AccountStates state);
     
     virtual void onProvisioningAccountError(provisioning::IAccountPtr account,AccountErrorCodes error);
     
@@ -59,6 +63,9 @@ public:
     
     virtual void onProvisioningAccountIdentityValidationResult(provisioning::IAccountPtr account,IdentityID identity,IdentityValidationResultCode result);
     
+#pragma mark - hookflash::IAccount delegate methods
+    
+    virtual void onAccountStateChanged(hookflash::IAccountPtr account, hookflash::IAccount::AccountStates state);
     
     //virtual void onAccountPeerFileLookupQueryComplete(provisioning::IAccountPeerFileLookupQueryPtr query);
 };

@@ -32,6 +32,7 @@
 
 #include "OpenPeerProvisioningAccountDelegate.h"
 #import "HOPProvisioningAccount.h"
+#import "HOPProvisioningAccount_Internal.h"
 #import "OpenPeerStorageManager.h"
 
 OpenPeerProvisioningAccountDelegate::OpenPeerProvisioningAccountDelegate(id<HOPProvisioningAccountDelegate> inProvisioningAccountDelegate)
@@ -56,28 +57,37 @@ HOPProvisioningAccount* OpenPeerProvisioningAccountDelegate::getOpenPeerProvisio
     return hopProvisioningAccount;
 }
 
-void OpenPeerProvisioningAccountDelegate::onProvisioningAccountStateChanged(hookflash::provisioning::IAccountPtr account,AccountStates state)
+void OpenPeerProvisioningAccountDelegate::onProvisioningAccountStateChanged(hookflash::provisioning::IAccountPtr account,provisioning::IAccount::AccountStates state)
 {
-    HOPProvisioningAccount* hopProvisioningAccount = this->getOpenPeerProvisioningAccount(account);
-    if (hopProvisioningAccount)
-        [provisioningAccountDelegate onProvisioningAccountStateChanged:hopProvisioningAccount accountStates:(HOPAccountStates) state];
+    [provisioningAccountDelegate onProvisioningAccountStateChanged:[HOPProvisioningAccount sharedInstance] accountStates:(HOPProvisioningAccountStates) state];
+    
+    if (state == provisioning::IAccount::AccountState_Shutdown) {
+        [[HOPProvisioningAccount sharedInstance] deleteLocalDelegates];
+    }
 }
 
 void OpenPeerProvisioningAccountDelegate::onProvisioningAccountError(provisioning::IAccountPtr account,AccountErrorCodes error)
 {
-    HOPProvisioningAccount* hopProvisioningAccount = this->getOpenPeerProvisioningAccount(account);
-    if (hopProvisioningAccount)
-        [provisioningAccountDelegate onProvisioningAccountError:hopProvisioningAccount errorCodes:(HOPProvisioningAccountErrorCodes) error];
+    [provisioningAccountDelegate onProvisioningAccountError:[HOPProvisioningAccount sharedInstance] errorCodes:(HOPProvisioningAccountErrorCodes) error];
 }
 
 void OpenPeerProvisioningAccountDelegate::onProvisioningAccountProfileChanged(provisioning::IAccountPtr account)
 {
-    HOPProvisioningAccount* hopProvisioningAccount = this->getOpenPeerProvisioningAccount(account);
-    if (hopProvisioningAccount)
-        [provisioningAccountDelegate onProvisioningAccountProfileChanged:hopProvisioningAccount];
+    [provisioningAccountDelegate onProvisioningAccountProfileChanged:[HOPProvisioningAccount sharedInstance]];
 }
 
 void OpenPeerProvisioningAccountDelegate::onProvisioningAccountIdentityValidationResult(provisioning::IAccountPtr account,IdentityID identity,IdentityValidationResultCode result)
 {
    
+}
+
+void OpenPeerProvisioningAccountDelegate::onAccountStateChanged(hookflash::IAccountPtr account, hookflash::IAccount::AccountStates state)
+{
+    //check if openpeer account is existing
+    if (account) {
+        //in case openpeer account is shutting down, error code will be filled so we can throw error event. later on, provisioning account will throw state change
+        if ((account->getState() == hookflash::IAccount::AccountState_ShuttingDown) || (account->getState() == hookflash::IAccount::AccountState_Shutdown)) {
+            [provisioningAccountDelegate onProvisioningAccountError:[HOPProvisioningAccount sharedInstance] errorCodes:(HOPProvisioningAccountErrorCodes)account->getLastError()];
+        }
+    }
 }

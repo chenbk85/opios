@@ -35,23 +35,19 @@
 #import "HOPAccountSubscription.h"
 #import "HOPAccountSubscription_Internal.h"
 #import "HOPProvisioningAccount.h"
-#import "HOPAccount_Internal.h"
 
 @implementation HOPAccountSubscription
 
-- (HOPAccount*) getAccount
+- (HOPProvisioningAccount*) getAccount
 {
-    HOPAccount* account = nil;
+    HOPProvisioningAccount* account = nil;
     if (accountSubscription)
     {
-        IAccountPtr accountPtr = accountSubscription->getAccount();
-        HOPAccount* tempAccount = [[HOPProvisioningAccount sharedInstance] getOpenPeerAccount];
-        if (tempAccount && (accountPtr == [tempAccount getAccountPtr]))
-            account = tempAccount;
+        account = [HOPProvisioningAccount sharedInstance];
     }
     else
     {
-        [NSException raise:NSInternalInconsistencyException format:@"Invalid OpenPeer account subscription pointer!"];
+        [NSException raise:NSInternalInconsistencyException format:@"Invalid Provisioning account subscription pointer!"];
     }
     return account;
 }

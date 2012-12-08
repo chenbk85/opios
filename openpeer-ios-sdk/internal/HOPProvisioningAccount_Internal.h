@@ -33,26 +33,30 @@
 #import <hookflash/provisioning/hookflashTypes.h>
 
 #import "OpenPeerProvisioningAccountDelegate.h"
-#import "OpenPeerAccountDelegate.h"
 #import "HOPProvisioningAccount.h"
 
 using namespace hookflash;
 using namespace hookflash::provisioning;
 
-@class HOPAccount;
+@class HOPContact;
 
 @interface HOPProvisioningAccount ()
 {
-    provisioning::IAccountPtr accountPtr;
+    provisioning::IAccountPtr provisioningAccountPtr;
+    //hookflash::IAccountPtr openpeerAccountPtr;
     
     boost::shared_ptr<OpenPeerProvisioningAccountDelegate> openpeerProvisioningAccountDelegatePtr;
-    boost::shared_ptr<OpenPeerAccountDelegate> openpeerAccountDelegatePtr;
+    //boost::shared_ptr<OpenPeerAccountDelegate> openpeerAccountDelegatePtr;
+    std::list<boost::shared_ptr<OpenPeerProvisioningAccountDelegate> > listOfOpenPeerAccountDelegates;
     
-    HOPAccount* hopAccount;
+    HOPContact* selfContact;
 }
 
-- (BOOL) createLocalDelegates:(id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate:(id<HOPAccountDelegate>) openpeerAccountDelegate;
+//- (id) initWithAccountPtr:(provisioning::IAccountPtr) inAccountPtr provisioningAccountDelegate:(boost::shared_ptr<OpenPeerProvisioningAccountDelegate>) inProvisioningAccountDelegate accountDelegate:(boost::shared_ptr<OpenPeerAccountDelegate>) inAccountDelegate;
+- (BOOL) createLocalDelegates:(id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate;
 - (void) deleteLocalDelegates;
 
 - (provisioning::IAccountPtr)  getAccountPtr;
+
+- (hookflash::IAccountPtr)  getOpenpeerAccountPtr;
 @end

@@ -29,24 +29,17 @@
  
  */
 
+#import <Foundation/Foundation.h>
 
-#import "OpenPeerAccountDelegate.h"
-#import "OpenPeerStorageManager.h"
 
-OpenPeerAccountDelegate::OpenPeerAccountDelegate(id<HOPAccountDelegate> inAccountDelegate)
-{
-    accountDelegate = inAccountDelegate;
-}
 
-boost::shared_ptr<OpenPeerAccountDelegate> OpenPeerAccountDelegate::create(id<HOPAccountDelegate> inAccountDelegate)
-{
-    return boost::shared_ptr<OpenPeerAccountDelegate> (new OpenPeerAccountDelegate(inAccountDelegate));
-}
+@interface ContactsManager : NSObject<UIWebViewDelegate>
 
-void OpenPeerAccountDelegate::onAccountStateChanged(IAccountPtr account,AccountStates state)
-{
-    HOPAccount* hopAccount = [[OpenPeerStorageManager sharedInstance] getAccount:account];
-    
-    if (hopAccount)
-        [accountDelegate onAccountStateChanged:hopAccount accountState:(HOPAccountStates)state];
-}
+@property (retain, nonatomic) NSMutableArray *contactArray;
+@property (retain, nonatomic) UIWebView *linkedinContactsWebView;
+
++ (id) sharedContactsManager;
+
+- (void) loadContacts;
+
+@end

@@ -33,15 +33,17 @@
 #import <Foundation/Foundation.h>
 #include <hookflash/hookflashTypes.h>
 #include <hookflash/IStack.h>
+#include <hookflash/IClient.h>
 #import "HOPProtocols.h"
 
 using namespace hookflash;
+using hookflash::IClient;
 
 /**
  Wrapper Class that creates stack object used in core.
  @author Sergej Jovanovic sergej@hookflash.com
  */
-class OpenPeerStackDelegate : public IStackDelegate
+class OpenPeerStackDelegate : public IStackDelegate, public IClientDelegate, public IClientLogDelegate
 {
 protected:
     id<HOPStackDelegate> stackDelegate;
@@ -54,5 +56,22 @@ public:
      */
     static boost::shared_ptr<OpenPeerStackDelegate>  create(id<HOPStackDelegate> inStackDelegate); 
     
-    virtual void onShutdownReady(); 
+    virtual void onShutdownReady();
+    
+    //IClientDelegate methods
+    virtual void onMessagePutInGUIQueue();
+    
+    //IClientLogDelegate methods
+    virtual void onNewSubsystem(zsLib::PTRNUMBER subsystemID,const char *subsystemName);
+    
+    virtual void onLog(
+                       zsLib::PTRNUMBER subsystemID,
+                       const char *subsystemName,
+                       IClient::Log::Severity inSeverity,
+                       IClient::Log::Level inLevel,
+                       const char *inMessage,
+                       const char *inFunction,
+                       const char *inFilePath,
+                       zsLib::ULONG inLineNumber
+                       );
 };

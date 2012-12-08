@@ -46,5 +46,9 @@
 @property (assign) unsigned short priority;
 @property (assign) unsigned short weight;
 
+/**
+ Check if identity info class has data.
+ @return YES if class has data, NO if not
+ */
 - (BOOL) hasData;
 @end

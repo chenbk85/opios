@@ -33,7 +33,7 @@
 #import "HOPTypes.h"
 
 @class HOPContact;
-@class HOPAccount;
+@class HOPMessage;
 
 //HOP_NOTICE: We don't need this to expose till we have group conversation
 @interface ContactInfo
@@ -64,9 +64,10 @@
  Creation of new conversation thread.
  @param account HOPAccount Account which owns the conversation thread
  @param profileBundleEl NSString Profile bundle
- @returns YES if success, no if failure
+ @returns HOPConversationThread object if core conversation thread object is created
  */
-- (BOOL) createConversationThread: (HOPAccount*) account profileBundleEl:(NSString*) profileBundleEl;
++ (id) conversationThreadWithProfileBundle:(NSString*) profileBundle;
+//- (id) initWithProfileBundle:(NSString*) profileBundle;
 
 /**
  Retrieves conversation thread ID.
@@ -118,7 +119,13 @@
  @param messageType NSString Message type
  @param message NSString Message
  */
-- (void) sendMessage: (NSString*) messageID messageType:(NSString*) messageType message:(NSString*) message;
+- (void) sendMessage: (NSString*) messageID messageType:(NSString*) messageType message:(NSString*) message DEPRECATED_ATTRIBUTE;
+
+/**
+ Send message to all contacts in conversation thread.
+ @param message HOPMessage message object
+ */
+- (void) sendMessage: (HOPMessage*) message;
 
 /**
  Receive message to from conversation thread.
@@ -128,7 +135,14 @@
  @param outMessage NSString Received message
  @param outTime NSDate Received message timestamp
  */
-- (BOOL) getMessage: (NSString*) messageID outFrom:(HOPContact**) outFrom outMessageType:(NSString**) outMessageType outMessage:(NSString**) outMessage outTime:(NSDate**) outTime;
+- (BOOL) getMessage: (NSString*) messageID outFrom:(HOPContact**) outFrom outMessageType:(NSString**) outMessageType outMessage:(NSString**) outMessage outTime:(NSDate**) outTime DEPRECATED_ATTRIBUTE;
+
+/**
+ Receive message to from conversation thread.
+ @param messageID NSString Received message ID
+ @return message object
+ */
+- (HOPMessage*) getMessageForID: (NSString*) messageID;
 
 /**
  Retrieves delivery state of the message.

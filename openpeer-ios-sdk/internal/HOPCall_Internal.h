@@ -40,5 +40,7 @@ using namespace hookflash;
     ICallPtr callPtr;
 }
 
+- (id) initWithCallPtr:(ICallPtr) inCallPtr;
 - (ICallPtr) getCallPtr;
+
 @end

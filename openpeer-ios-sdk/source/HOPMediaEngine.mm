@@ -57,9 +57,7 @@
     return _sharedObject;
 }
 
-
-//HOP_TODO: Check is it necessary to use UIRenderView
-- (void) setCaptureRenderView: (UIView*) renderView
+- (void) setCaptureRenderView: (UIImageView*) renderView
 {
     if(mediaEnginePtr)
     {
@@ -71,7 +69,7 @@
     }
 }
 
-- (void) setChannelRenderView: (UIView*) renderView
+- (void) setChannelRenderView: (UIImageView*) renderView
 {
     if(mediaEnginePtr)
     {

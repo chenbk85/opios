@@ -47,6 +47,10 @@
 
 @property (retain) NSString* avatarURL;
 
+/**
+ Check if lookup profile info class has data.
+ @return YES if class has data, NO if not
+ */
 - (BOOL) hasData;
 
 @end

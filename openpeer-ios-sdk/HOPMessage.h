@@ -29,17 +29,17 @@
  
  */
 
+#import <Foundation/Foundation.h>
 
-#import <hookflash/hookflashTypes.h>
+@class HOPContact;
 
-#import "HOPClient.h"
+@interface HOPMessage : NSObject
 
-using namespace hookflash;
+@property (nonatomic, copy) NSString* messageID;
+@property (nonatomic, retain) HOPContact* contact;
+@property (nonatomic, copy) NSString* type;
+@property (nonatomic, copy) NSString* text;
+@property (nonatomic, retain) NSDate* date;
 
-@interface HOPClient ()
-{
-    IClientPtr clientPtr;
-}
-
-- (IClientPtr) getClientPtr;
+- (id) initWithMessageId:(NSString*) inMessageId andMessage:(NSString*) messageText andContact:(HOPContact*) inContact andMessageType:(NSString*) inMessageType andMessageDate:(NSDate*) inMessageDate;
 @end

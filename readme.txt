@@ -41,6 +41,14 @@ OPiOS/openpeer-ios-sdk (project/workspace)
 The framework will be built inside:
 OPiOS/build/Debug-iphoneos/OpenpeerSDK.framework
 
+Required frameworks:
+CoreAudio
+CoreVideo
+CoreMedia
+AudioToolbox
+AVFoundation
+libresolve.dylib
+
 
 Exploring the dependency libraries:
 Core Projects/zsLib      - asynchronous communication library for C++
@@ -55,6 +63,7 @@ Exploring the SDK:
 openpeer-ios-sdk/         - header files used to build Open Peer iOS applications
 openpeer-ios-sdk/Source   - implementation of header files
 openpeer-ios-sdk/Internal – internal implementation of iOS to C++ wrapper for SDK
+Samples/OpenPeerSampleApp - basic example of how to use the SDK
 
 
 Exploring the header files:
@@ -62,17 +71,11 @@ Exploring the header files:
 HOPTypes.h
 - basic HOP types
 
-HOPClient.h
-- Object to be constructed to start the application ("setup" must be called)
-
 HOPStack.h
 - Object to be constructed after HOPClient object, pass in all the listener event protocol objects
 
 HOPProtocols.h
 - Object-C protocols to implement callback event routines
-
-HOPAccount.h
-- Open Peer account obtained after provisioning
 
 HOPAccountSubscription.h
 - Object returned when subscribing to Open Peer account status
@@ -119,8 +122,8 @@ HOPProvisioningAccountPeerFileLookupQuery.h
 HOPProvisioningAccount_ForFutureUse.h
 - Not currently used, this will be the set of APIs that will replace the current provisioning mechanism
 
+
 Notes on the future API changes:
-Hookflash will replace the stack/client object with a simpler startup and shutdown of the stack mechanism. That will make setting up and using the SDK easier.
 
 The provisioning API will change to allow for 3rd party identities with any website and federation between websites. The new provisioning API is put inside the _ForFutureUse.h header file and has no implementation at this time. This API is of high priority.
 

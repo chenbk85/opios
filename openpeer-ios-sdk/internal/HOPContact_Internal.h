@@ -40,5 +40,6 @@ using namespace hookflash;
     IContactPtr coreContactPtr;
 }
 
+- (id) initWithCoreContact:(IContactPtr) inContactPtr;
 - (IContactPtr) getContactPtr;
 @end

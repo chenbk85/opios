@@ -38,9 +38,10 @@
 #import "HOPConversationThread.h"
 #import "HOPContact_Internal.h"
 #import "HOPContact.h"
-#import "HOPAccount_Internal.h"
-#import "HOPAccount.h"
 #import "OpenPeerUtility.h"
+#import "HOPProvisioningAccount.h"
+#import "HOPProvisioningAccount_Internal.h"
+#import "HOPMessage.h"
 
 #import "OpenPeerStorageManager.h"
 
@@ -58,23 +59,63 @@ using namespace hookflash;
     return [NSString stringWithUTF8String: IConversationThread::toString((hookflash::IConversationThread::ContactStates) state)];
 }
 
-- (BOOL) createConversationThread: (HOPAccount*) account profileBundleEl:(NSString*) profileBundleEl
+- (id)init
 {
-    BOOL created = NO;
-    if (account != nil)
+    [self release];
+    [NSException raise:NSInvalidArgumentException format:@"Don't use init for object creation. Use class method conversationThreadWithProfileBundle."];
+    return nil;
+}
+
+- (id) initWithConversationThread:(IConversationThreadPtr) inConversationThreadPtr
+{
+    self = [super init];
+    if (self)
+    {
+        conversationThreadPtr = inConversationThreadPtr;
+    }
+    return self;
+}
+
++  (id) conversationThreadWithProfileBundle:(NSString*) profileBundle
+{
+    HOPConversationThread* ret = nil;
+    
+    zsLib::XML::ElementPtr elementPtr;
+    
+    if ([profileBundle length] > 0)
+        elementPtr = IXML::createFromString([profileBundle UTF8String]);
+    else
+        elementPtr = zsLib::XML::ElementPtr();
+    
+    IConversationThreadPtr tempConversationThreadPtr = IConversationThread::create([[HOPProvisioningAccount sharedInstance] getOpenpeerAccountPtr], elementPtr);
+    
+    if (tempConversationThreadPtr)
+    {
+        ret = [[self alloc] initWithConversationThread:tempConversationThreadPtr];
+    }
+    return [ret autorelease];
+}
+
+/*- (id) initWithProfileBundle:(NSString*) profileBundle
+{
+    self = [super init];
+    if (self)
     {
         zsLib::XML::ElementPtr elementPtr;
-        if ([profileBundleEl length] > 0)
-            elementPtr = IXML::createFromString([profileBundleEl UTF8String]);
+        if ([profileBundle length] > 0)
+            elementPtr = IXML::createFromString([profileBundle UTF8String]);
         else
             elementPtr = zsLib::XML::ElementPtr();
         
-        conversationThreadPtr = IConversationThread::create([account getAccountPtr], elementPtr);
-        if (conversationThreadPtr)
-            created = YES;
+        conversationThreadPtr = IConversationThread::create([[[HOPProvisioningAccount sharedInstance] getOpenPeerAccount] getAccountPtr], elementPtr);
+        if (!conversationThreadPtr)
+        {
+            [self release];
+            return nil;
+        }
     }
-    return YES;
-}
+    return self;
+}*/
 
 - (NSString*) getThreadId
 {
@@ -216,7 +257,48 @@ using namespace hookflash;
     }
 }
 
+- (void) sendMessage: (HOPMessage*) message
+{
+    if(conversationThreadPtr)
+    {
+        conversationThreadPtr->sendMessage([message.messageID UTF8String], [message.type UTF8String], [message.text UTF8String]);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer conversation thread pointer!"];
+    }
+}
 
+- (HOPMessage*) getMessageForID: (NSString*) messageID
+{
+    HOPMessage* hopMessage = nil;
+    if(conversationThreadPtr)
+    {
+        IContactPtr fromContact;
+        zsLib::String messageType;
+        zsLib::String message;
+        zsLib::Time messageTime;
+        
+        conversationThreadPtr->getMessage([messageID UTF8String], fromContact, messageType, message, messageTime);
+        
+        if (fromContact && messageType && message)
+        {
+            hopMessage = [[HOPMessage alloc] init];
+            
+            hopMessage.contact = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:fromContact->getContactID()]];
+            hopMessage.type = [NSString stringWithUTF8String:messageType];
+            hopMessage.text = [NSString stringWithUTF8String:message];
+            hopMessage.date = [OpenPeerUtility convertPosixTimeToDate:messageTime];
+        }
+        
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer conversation thread pointer!"];
+    }
+
+    return [hopMessage autorelease];
+}
 - (BOOL) getMessage: (NSString*) messageID outFrom:(HOPContact**) outFrom outMessageType:(NSString**) outMessageType outMessage:(NSString**) outMessage outTime:(NSDate**) outTime
 {
     BOOL ret = NO;

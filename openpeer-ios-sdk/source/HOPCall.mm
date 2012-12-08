@@ -48,7 +48,7 @@ using namespace hookflash;
 
 @implementation HOPCall
 
-- (id) initCall:(HOPConversationThread*) conversationThread toContact:(HOPContact*) toContact includeAudio:(BOOL) includeAudio includeVideo:(BOOL) includeVideo
+/*- (id) initCall:(HOPConversationThread*) conversationThread toContact:(HOPContact*) toContact includeAudio:(BOOL) includeAudio includeVideo:(BOOL) includeVideo
 {
     self = [super init];
     if (self)
@@ -64,6 +64,38 @@ using namespace hookflash;
     }
     
     return self;
+}*/
+
+- (id)init
+{
+    [self release];
+    [NSException raise:NSInvalidArgumentException format:@"Don't use init for object creation. Use class method placeCall."];
+    return nil;
+}
+
+- (id) initWithCallPtr:(ICallPtr) inCallPtr
+{
+    self = [super init];
+    if (self)
+    {
+        callPtr = inCallPtr;
+    }
+    return self;
+}
+
++ (id) placeCall:(HOPConversationThread*) conversationThread toContact:(HOPContact*) toContact includeAudio:(BOOL) includeAudio includeVideo:(BOOL) includeVideo
+{
+    HOPCall* ret = nil;
+    if (conversationThread != nil && toContact != nil)
+    {
+        ICallPtr tempCallPtr = ICall::placeCall([conversationThread getConversationThreadPtr], [toContact getContactPtr], includeAudio, includeVideo);
+        
+        if (tempCallPtr)
+        {
+            ret = [[self alloc] initWithCallPtr:tempCallPtr];
+        }
+    }
+    return [ret autorelease];
 }
 
 + (NSString*) stateToString: (HOPCallStates) state

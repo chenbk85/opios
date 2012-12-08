@@ -32,30 +32,61 @@
 
 #import "HOPContact.h"
 #import <hookflash/IContact.h>
-#import "HOPAccount_Internal.h"
 #import "HOPContact_Internal.h"
 #import "HOPProvisioningAccount.h"
+#import "HOPProvisioningAccount_Internal.h"
 
 @implementation HOPContact
 
-- (id) initWithPeerFile:(HOPAccount*) account publicPeerFile:(NSString*) publicPeerFile
+- (id)init
+{
+    [self release];
+    [NSException raise:NSInvalidArgumentException format:@"Don't use init for object creation. Use class method contactWithPeerFile."];
+    return nil;
+}
+
+- (id) initWithCoreContact:(IContactPtr) inContactPtr
 {
     self = [super init];
     if (self)
     {
-        if (account && [publicPeerFile length] > 0)
+        coreContactPtr = inContactPtr;
+    }
+    return self;
+}
+
++ (id) contactWithPeerFile:(NSString*) publicPeerFile
+{
+    HOPContact* ret = nil;
+    
+    if ([publicPeerFile length] > 0)
+    {
+        IContactPtr tempCoreContactPtr = IContact::createFromPeerFilePublic([[HOPProvisioningAccount sharedInstance] getOpenpeerAccountPtr], [publicPeerFile UTF8String]);
+        
+        if (tempCoreContactPtr)
         {
-            IContact::createFromPeerFilePublic([account getAccountPtr], [publicPeerFile UTF8String]);
+            ret = [[self alloc] initWithCoreContact:tempCoreContactPtr];
+        }
+    }
+    return [ret autorelease];
+}
+
+/*- (id) initWithPeerFile:(NSString*) publicPeerFile
+{
+    self = [super init];
+    if (self)
+    {
+        if ([publicPeerFile length] > 0)
+        {
+            coreContactPtr = IContact::createFromPeerFilePublic([[[HOPProvisioningAccount sharedInstance] getOpenPeerAccount] getAccountPtr], [publicPeerFile UTF8String]);
+        }
+        if (!coreContactPtr)
+        {
+            [self release];
         }
     }
     return  self;
-}
-
-
-- (HOPAccount*) getAccount
-{
-    return[[HOPProvisioningAccount sharedInstance] getOpenPeerAccount];
-}
+}*/
 
 - (NSString*) getContactID
 {

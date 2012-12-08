@@ -43,9 +43,13 @@
  @param toContact HOPContact Remote contact
  @param includeAudio BOOL YES if call should include audio
  @param includeVideo BOOL YES if call should include video
- @returns YES if call is created, NO if it failed
+ @returns HOPCall object if conversation thread is created sucessfully, otherwise nil
  */
-- (id) initCall:(HOPConversationThread*) conversationThread toContact:(HOPContact*) toContact includeAudio:(BOOL) includeAudio includeVideo:(BOOL) includeVideo;
++ (id) placeCall:(HOPConversationThread*) conversationThread toContact:(HOPContact*) toContact includeAudio:(BOOL) includeAudio includeVideo:(BOOL) includeVideo;
+
+//- (id) initCall:(HOPConversationThread*) conversationThread toContact:(HOPContact*) toContact includeAudio:(BOOL) includeAudio includeVideo:(BOOL) includeVideo;
+
+
 
 /**
  Converts call state enum to string

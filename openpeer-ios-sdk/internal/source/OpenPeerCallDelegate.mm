@@ -52,5 +52,3 @@ void OpenPeerCallDelegate::onCallStateChanged(ICallPtr call,CallStates state)
         [callDelegate onCallStateChanged:hopCall callState:(HOPCallStates) state];
     }
 }
-
-//ASK_ROBIN - handle error when HOPCall cannot bi found

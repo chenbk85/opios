@@ -39,17 +39,12 @@
 
 /**
  Contact initialization method
- @param account HOPAccount Pointer to the self account related to the contact
  @param publicPeerFile NSString Public peer file of the contact that will be created (self or remote)
  @returns Ponter to the created contact object
  */
-- (id) initWithPeerFile:(HOPAccount*) account publicPeerFile:(NSString*) publicPeerFile;
++ (id) contactWithPeerFile:(NSString*) publicPeerFile;
+//- (id) initWithPeerFile:(NSString*) publicPeerFile;
 
-/**
- Retrieves the reference to the self account
- @returns Reference to the self account
- */
-- (HOPAccount*) getAccount;
 
 /**
  Retrieves contact ID from the contact object

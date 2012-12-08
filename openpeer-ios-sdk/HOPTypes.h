@@ -83,7 +83,7 @@ typedef enum
     HOPConversationThreadContactStateDisconnected
 } HOPConversationThreadContactStates;
 
-#pragma mark - HOPAccount enums
+#pragma mark - Provisioning account for future use enum
 /**
  Enumerator to represent the openpeer account states.
  */
@@ -98,16 +98,16 @@ typedef enum
 /**
  Enumerator to represent the openpeer account errors.
  */
-typedef enum 
-{
-    HOPAccountErrorNone,
-    
-    HOPAccountErrorInternalError,
-    
-    HOPAccountErrorBootstrappedNetworkFailed,
-    HOPAccountErrorStackFailed,
-    HOPAccountErrorCallTransportFailed,
-} HOPAccountErrors;
+//typedef enum 
+//{
+//    HOPAccountErrorNone,
+//    
+//    HOPAccountErrorInternalError,
+//    
+//    HOPAccountErrorBootstrappedNetworkFailed,
+//    HOPAccountErrorStackFailed,
+//    HOPAccountErrorCallTransportFailed,
+//} HOPAccountErrors;
 
 #pragma mark - HOPProvisioningAccount enums
 typedef enum 
@@ -132,7 +132,11 @@ typedef enum
     HOPProvisioningAccountErrorCodeAuthorizationPINTooManyAttempts,
     HOPProvisioningAccountErrorCodeAuthorizationPINTooManyAttemptsTryAgainLater,
     HOPProvisioningAccountErrorCodeOpenPeerAccountFailure,
-    HOPProvisioningAccountErrorCodeInternalFailure
+    HOPProvisioningAccountErrorCodeInternalFailure,
+    //openpeer account enums
+    HOPProvisioningAccountErrorCodeBootstrappedNetworkFailed,
+    HOPProvisioningAccountErrorCodeStackFailed,
+    HOPProvisioningAccountErrorCodeCallTransportFailed,
 } HOPProvisioningAccountErrorCodes;
 
 typedef enum 
@@ -188,24 +192,24 @@ typedef enum
 } HOPClientLogLevels;
 
 #pragma mark - Client enums
-enum HOPContactTypes
+typedef enum 
 {
     HOPContactTypeOpenPeer,
     HOPContactTypeExternal
-};
+} HOPContactTypes;
 
 #pragma mark - HOPMediaEngine enums
-enum HOPMediaEngineCameraTypes
+typedef enum 
 {
     HOPMediaEngineCameraTypeNone,
     HOPMediaEngineCameraTypeFront,
     HOPMediaEngineCameraTypeBack
-};
+} HOPMediaEngineCameraTypes;
 
-enum HOPMediaEngineOutputAudioRoutes
+typedef enum 
 {
     HOPMediaEngineOutputAudioRouteHeadphone,
     HOPMediaEngineOutputAudioRouteBuiltInReceiver,
     HOPMediaEngineOutputAudioRouteBuiltInSpeaker
-};
+} HOPMediaEngineOutputAudioRoutes;
 #endif

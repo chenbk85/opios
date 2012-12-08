@@ -40,7 +40,7 @@
 
 @implementation HOPStack
 
-+ (id)sharedInstance
++ (id)sharedStack
 {
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
@@ -67,19 +67,24 @@
     
     if (delegatesCreated)
     {
+        //Create client
+        IClient::setup();
+        clientPtr = IClient::singleton();
+        
         //Create stack
         stackPtr = IStack::create(openPeerStackDelegatePtr,openPeerMediaEngineDelegatePtr,openPeerConversationThreadDelegatePtr,openPeerCallDelegatePtr, [@"ID" UTF8String], [userAgent UTF8String], [deviceOs UTF8String], [platform UTF8String]);
-    
-        if (stackPtr)
+        
+        if (stackPtr && clientPtr)
             initiated = YES;
     }
     
     return initiated;
 }
 
-- (void) startShutdown
+- (void) shutdown
 {
     stackPtr->startShutdown();
+    clientPtr->finalizeShutdown();
     [self deleteLocalDelegates];
 }
 
@@ -101,10 +106,107 @@
     openPeerCallDelegatePtr.reset();
 }
 
+#pragma mark - IClient methods wrapper
+
++ (void) setup
+{
+    IClient::setup();
+}
+
+- (void) processMessagePutInGUIQueue
+{
+    if(clientPtr)
+    {
+        clientPtr->processMessagePutInGUIQueue();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer client pointer!"];
+    }
+}
+
+- (void) finalizeShutdown
+{
+    if(clientPtr)
+    {
+        clientPtr->finalizeShutdown();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer client pointer!"];
+    }
+}
+
++ (void) installStdOutLogger: (BOOL) colorizeOutput
+{
+    IClient::installStdOutLogger(colorizeOutput);
+}
+
++ (void) installFileLogger: (NSString*) filename colorizeOutput: (BOOL) colorizeOutput
+{
+    IClient::installFileLogger([filename UTF8String], colorizeOutput);
+}
+
++ (void) installTelnetLogger: (unsigned short) listenPort maxSecondsWaitForSocketToBeAvailable:(unsigned long) maxSecondsWaitForSocketToBeAvailable colorizeOutput: (BOOL) colorizeOutput
+{
+    IClient::installTelnetLogger(listenPort, maxSecondsWaitForSocketToBeAvailable, colorizeOutput);
+}
+
++ (void) installOutgoingTelnetLogger: (NSString*) serverToConnect colorizeOutput: (BOOL) colorizeOutput stringToSendUponConnection: (NSString*) stringToSendUponConnection
+{
+    IClient::installOutgoingTelnetLogger([serverToConnect UTF8String], colorizeOutput);
+}
+
++ (void) installWindowsDebuggerLogger
+{
+    IClient::installWindowsDebuggerLogger();
+}
+
++ (void) installCustomLogger: (id<HOPStackDelegate>) delegate
+{
+    IClient::installCustomLogger();
+}
+
++ (unsigned int) getGUISubsystemUniqueID
+{
+    return IClient::getGUISubsystemUniqueID();
+}
+
++ (HOPClientLogLevels) getLogLevel: (unsigned int) subsystemUniqueID
+{
+    return (HOPClientLogLevels) IClient::getLogLevel(subsystemUniqueID);
+}
+
++ (void) setLogLevel: (HOPClientLogLevels) level
+{
+    IClient::setLogLevel((IClient::Log::Level) level);
+}
+
++ (void) setLogLevelByID: (unsigned long) subsystemUniqueID level: (HOPClientLogLevels) level
+{
+    IClient::setLogLevel((zsLib::PTRNUMBER)subsystemUniqueID, (IClient::Log::Level) level);
+}
+
++ (void) setLogLevelbyName: (NSString*) subsystemName level: (HOPClientLogLevels) level
+{
+    IClient::setLogLevel([subsystemName UTF8String], (IClient::Log::Level) level);
+}
+
++ (void) log: (unsigned int) subsystemUniqueID severity: (HOPClientLogSeverities) severity level: (HOPClientLogLevels) level message: (NSString*) message function: (NSString*) function filePath: (NSString*) filePath lineNumber: (unsigned long) lineNumber
+{
+    IClient::log((zsLib::PTRNUMBER) subsystemUniqueID, (IClient::Log::Severity) severity, (IClient::Log::Level) level, [message UTF8String], [function UTF8String], [filePath UTF8String], lineNumber);
+}
+
+
 #pragma mark - Internal methods
 - (IStackPtr) getStackPtr
 {
     return stackPtr;
+}
+
+- (IClientPtr) getClientPtr
+{
+    return clientPtr;
 }
 @end
 

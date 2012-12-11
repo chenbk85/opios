@@ -35,6 +35,7 @@
 #import "HOPIdentity.h"
 #import "HOPLookupProfileInfo.h"
 #import "OpenPeerUtility.h"
+#include <zsLib/zsHelpers.h>
 
 @implementation HOPProvisioningAccountIdentityLookupQuery
 
@@ -90,58 +91,73 @@
   }
 }
 
-- (void) getIdentities: (NSArray*) outIdentities {
-  
-  if (accountIdentityLookupQueryPtr)
-  {
-    if ([outIdentities count] > 0)
+- (NSArray*) getIdentities
+{
+    NSMutableArray* outIdentities = nil;
+    if (accountIdentityLookupQueryPtr)
     {
-      provisioning::IAccount::IdentityIDList identityList;
-      for (HOPIdentity* identity in outIdentities)
-      {
-        provisioning::IAccount::IdentityID identityID;
-        identityID.first = (provisioning::IAccount::IdentityTypes)identity.identityType;
-        identityID.second = [identity.identityId UTF8String];
-        identityList.push_back(identityID);
-      }
-      accountIdentityLookupQueryPtr->getIdentities(identityList);
+        outIdentities = [[NSMutableArray alloc] init];
+        
+        provisioning::IAccount::IdentityIDList identityList;
+        accountIdentityLookupQueryPtr->getIdentities(identityList);
+        if (identityList.size() > 0)
+        {
+            std::list<hookflash::provisioning::IAccountIdentityLookupQuery::IdentityID>::iterator it;
+            for(it = identityList.begin(); it != identityList.end(); it++)
+            {
+                HOPIdentity* identity = [[HOPIdentity alloc] init];
+                identity.identityType = (HOPProvisioningAccountIdentityTypes)it->first;
+                identity.identityId = [NSString stringWithUTF8String:it->second];
+                
+                hookflash::provisioning::IAccountIdentityLookupQuery::IdentityID i = *it;
+                hookflash::provisioning::IAccount::LookupProfileInfo lookupInfo;
+
+                [outIdentities addObject:identity];
+                [identity release];
+            }
+        }
     }
-  }
-  else
-  {
-    [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning identity lookup pointer!"];
-  }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning identity lookup pointer!"];
+    }
+
+    return [outIdentities autorelease];
 }
 
-- (BOOL) getLookupProfile: (HOPIdentity*) inIdentity outInfo: (HOPLookupProfileInfo*) outInfo {
+- (HOPLookupProfileInfo*) getLookupProfile: (HOPIdentity*) inIdentity
+{
+    HOPLookupProfileInfo* lookupProfileInfo = nil;
   
-  BOOL ret = NO;
-  
-  if (accountIdentityLookupQueryPtr)
-  {
-    provisioning::IAccount::IdentityID identityID;
-    identityID.first = (provisioning::IAccount::IdentityTypes)inIdentity.identityType;
-    identityID.second = [inIdentity.identityId UTF8String];
+    if (accountIdentityLookupQueryPtr)
+    {
+        provisioning::IAccount::IdentityID identityID;
+        identityID.first = (provisioning::IAccount::IdentityTypes)inIdentity.identityType;
+        identityID.second = [inIdentity.identityId UTF8String];
 
-    provisioning::IAccount::LookupProfileInfo profileInfo;
+        provisioning::IAccount::LookupProfileInfo profileInfo;
 
-    ret = accountIdentityLookupQueryPtr->getLookupProfile(identityID, profileInfo);
-    
-    outInfo.type = (HOPProvisioningAccountIdentityTypes) profileInfo.mIdentityType;
-    outInfo.identityUniqueId = [NSString stringWithUTF8String: profileInfo.mIdentityUniqueID];
-    outInfo.userId = [NSString stringWithUTF8String: profileInfo.mUserID];
-    outInfo.contactId = [NSString stringWithUTF8String: profileInfo.mContactID];
-    outInfo.lastProfileUpdateTimestamp = [OpenPeerUtility convertPosixTimeToDate: profileInfo.mLastProfileUpdateTimestamp];
-    outInfo.priority = profileInfo.mPriority;
-    outInfo.weight = profileInfo.mWeight;
-    outInfo.avatarURL = [NSString stringWithUTF8String: profileInfo.mAvatarURL];
-  }
-  else
-  {
-    [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning identity lookup pointer!"];
-  }
+        BOOL passed = accountIdentityLookupQueryPtr->getLookupProfile(identityID, profileInfo);
+        if (passed)
+        {
+            lookupProfileInfo = [[HOPLookupProfileInfo alloc] init];
+            
+            lookupProfileInfo.type = (HOPProvisioningAccountIdentityTypes) profileInfo.mIdentityType;
+            lookupProfileInfo.identityUniqueId = [NSString stringWithUTF8String: profileInfo.mIdentityUniqueID];
+            lookupProfileInfo.userId = [NSString stringWithUTF8String: profileInfo.mUserID];
+            lookupProfileInfo.contactId = [NSString stringWithUTF8String: profileInfo.mContactID];
+            lookupProfileInfo.lastProfileUpdateTimestamp = [[OpenPeerUtility convertPosixTimeToDate: profileInfo.mLastProfileUpdateTimestamp] timeIntervalSince1970];
+            lookupProfileInfo.priority = profileInfo.mPriority;
+            lookupProfileInfo.weight = profileInfo.mWeight;
+            lookupProfileInfo.avatarURL = [NSString stringWithUTF8String: profileInfo.mAvatarURL];
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning identity lookup pointer!"];
+    }
   
-  return ret;
+    return [lookupProfileInfo autorelease];
 }
 
 @end

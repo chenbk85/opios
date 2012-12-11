@@ -33,13 +33,25 @@
 #import "MainViewController.h"
 #import "ContactsTableViewController.h"
 #import "OpenPeer.h"
+#import "Contact.h"
+#import "SBJsonParser.h"
+#import <OpenpeerSDK/HOPProvisioningAccount.h>
+#import <OpenpeerSDK/HOPProvisioningAccountIdentityLookupQuery.h>
+#import <OpenpeerSDK/HOPIdentity.h>
+#import <OpenpeerSDK/HOPLookupProfileInfo.h>
+#import <OpenpeerSDK/HOPProvisioningAccountPeerFileLookupQuery.h>
 
 @interface ContactsManager ()
 
 - (id) initSingleton;
+
 @end
 @implementation ContactsManager
 
+/**
+ Retrieves singleton object of the Contacts Manager.
+ @return Singleton object of the Contacts Manager.
+ */
 + (id) sharedContactsManager
 {
     static dispatch_once_t pred = 0;
@@ -50,6 +62,10 @@
     return _sharedObject;
 }
 
+/**
+ Initialize singleton object of the Contacts Manager.
+ @return Singleton object of the Contacts Manager.
+ */
 - (id) initSingleton
 {
     self = [super init];
@@ -63,6 +79,9 @@
     return self;
 }
 
+/**
+ Initiates contacts loading procedure.
+ */
 - (void) loadContacts
 {
     [[[OpenPeer sharedOpenPeer] mainViewController] showContactsTable];
@@ -79,6 +98,9 @@
     [self.linkedinContactsWebView loadRequest:requestObj];
 }
 
+/**
+ Web view which will perform contacts loading procedure.
+ */
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     NSString *requestString = [[request URL] absoluteString];
@@ -101,10 +123,12 @@
     return YES;
 }
 
+/**
+ Parse JSON to get the profile for logged user.
+ @param input NSString JSON input for processing.
+ */
 - (void)proccessMyProfile:(NSString*)input
 {
-    //Parse JSON to get the profile for logged user
-
     NSString *jsMethodName = @"getAllConnections()";
     NSNumber *lastUpdateTimestamp = 0;//[[StorageManager storageManager] getLastUpdateTimestamp];
     if ([lastUpdateTimestamp intValue] != 0)
@@ -115,10 +139,139 @@
     [self.linkedinContactsWebView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsMethodName waitUntilDone:NO];
 }
 
-//process LinkedIn connections
+/**
+ Process connections.
+ @param input NSString JSON input for processing.
+ */
 - (void)proccessConnections:(NSString*)input
 {
+    NSString* const keyJSONContactId          = @"id";
+    NSString* const keyJSONContactFirstName   = @"firstName";
+    NSString* const keyJSONContacLastName     = @"lastName";
+    NSString* const keyJSONContactProfession  = @"headline";
+    NSString* const keyJSONContactPictureURL  = @"pictureUrl";
+    NSString* const keyJSONContactFullName    = @"fullName";
+    
     //Parse JSON to get the contacts
+    SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
+    NSError *error = nil;
+    NSArray *result = [jsonParser objectWithString:input error:&error];
+    [jsonParser release], jsonParser = nil;
+    
+    if (!error)
+    {
+       for (NSDictionary* dict in result)
+       {
+           NSString* providerContactId = [dict objectForKey:keyJSONContactId];
+           
+           if (providerContactId)
+           {
+               NSString *fullName = [[NSString stringWithFormat:@"%@ %@", [dict objectForKey:keyJSONContactFirstName], [dict objectForKey:keyJSONContacLastName]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+               if (fullName)
+               {
+                   NSString* profession = [dict objectForKey:keyJSONContactProfession];
+                   NSString *avatarUrl = [dict objectForKey:keyJSONContactPictureURL];
+                   
+                   Contact* contact = [[Contact alloc] initWithFullName:fullName profession:profession avatarUrl:avatarUrl identityProvider:HOPProvisioningAccountIdentityTypeLinkedInID identityContactId:providerContactId];
+                   [self.contactArray addObject:contact];
+               }
+           }
+       }
+    }
+    
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
+    
+    [self contactsLookupQuery:self.contactArray];
+}
+
+- (void)contactsLookupQuery:(NSArray *)contacts
+{
+    NSMutableArray* identities = [[NSMutableArray alloc] init];
+    
+    for (Contact* contact in self.contactArray)
+    {
+        for (HOPIdentity* identity in contact.identities)
+        {
+            [identities addObject:identity];
+        }
+        
+    }
+    
+    HOPProvisioningAccountIdentityLookupQuery* lookupQuery = [[HOPProvisioningAccount sharedProvisioningAccount] identityLookup:self identities:identities];
+    
+    [identities release];
+}
+
+- (void) onAccountIdentityLookupQueryComplete:(HOPProvisioningAccountIdentityLookupQuery*) query
+{
+    if([query isComplete] && [query didSucceed])
+    {
+        for(HOPIdentity* identity in [query getIdentities])
+        {
+            HOPLookupProfileInfo* lookupProfileInfo = [query getLookupProfile:identity];
+            
+            for (Contact* contact in self.contactArray)
+            {
+                HOPIdentity* contactIdentity = [contact.identities objectAtIndex:0];
+                if ([contactIdentity.identityId isEqualToString:identity.identityId])
+                {
+                    contact.contactId = lookupProfileInfo.contactId;
+                    contact.userId = lookupProfileInfo.userId;
+                    contact.lastProfileUpdateTimestamp = lookupProfileInfo.lastProfileUpdateTimestamp;
+                }
+
+            }
+            
+        }
+        [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
+        
+        [self peerFileLookupQuery:self.contactArray];
+    }
+
+}
+
+- (void)peerFileLookupQuery:(NSArray *)contacts
+{
+    NSMutableArray* userIds = [[NSMutableArray alloc] init];
+    NSMutableArray* contactIds = [[NSMutableArray alloc] init];
+    
+    for (Contact* contact in self.contactArray)
+    {
+        if ([[contact contactId] length] > 0 && [[contact userId] length] > 0)
+        {
+            [userIds addObject:contact.userId];
+            [contactIds addObject:contact.contactId];
+        }
+        
+    }
+    
+    HOPProvisioningAccountPeerFileLookupQuery* lookupQuery = [[HOPProvisioningAccount sharedProvisioningAccount] peerFileLookup:self userIDs:userIds associatedContactIDs:contactIds];
+    
+    [userIds release];
+    [contactIds release];
+}
+
+- (void) onAccountPeerFileLookupQueryComplete:(HOPProvisioningAccountPeerFileLookupQuery*) query
+{
+    NSArray* userIDs = [query getUserIDs];
+    
+    for (NSString* userId in userIDs)
+    {
+        NSString* peerFile = [query getPublicPeerFileString:userId];
+        Contact* contact = [self getContactForUserId:userId];
+        contact.peerFile = peerFile;
+    }
+}
+
+- (Contact*) getContactForUserId:(NSString*) userId
+{
+    for (Contact* contact in self.contactArray)
+    {
+        if ([contact.userId isEqualToString:userId])
+        {
+            return contact;
+        }
+    }
+    return nil;
 }
 @end

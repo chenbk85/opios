@@ -47,6 +47,10 @@
 @end
 @implementation LoginManager
 
+/**
+ Retrieves singleton object of the Login Manager.
+ @return Singleton object of the Login Manager.
+ */
 + (id) sharedLoginManager
 {
     static dispatch_once_t pred = 0;
@@ -57,6 +61,10 @@
     return _sharedObject;
 }
 
+/**
+ Initialize singleton object of the Login Manager.
+ @return Singleton object of the Login Manager.
+ */
 - (id) initSingleton
 {
     self = [super init];
@@ -66,6 +74,10 @@
     return self;
 }
 
+/**
+ This method will show login window in case user data does not exists on device, or start relogin automatically if information are available.
+ @return Singleton object of the Contacts Manager.
+ */
 - (void) login
 {
     //If peer file doesn't exists, show login view, otherwise start relogin
@@ -79,6 +91,9 @@
     }
 }
 
+/**
+ Logout from the current account.
+ */
 - (void) logout
 {
     //Delete all cookies from linkedin login page.
@@ -87,33 +102,55 @@
 //        [cookieStorage deleteCookie:each];
 //    }
     
+    //Delete all cookies from linkedin login page.
     [Utility removeCookiesAndClearCredentialsForUrl:@"https://www.linkedin.com/secure/login?session_full_logout=&trk=hb_signout"];
     
+    //Delete user data stored on device.
     [[OpenPeerUser sharedOpenPeerUser] deleteUserData];
-    [[HOPProvisioningAccount sharedInstance] shutdown];
+    
+    //Call to the SDK in order to shutdown Open Peer engine.
+    [[HOPProvisioningAccount sharedProvisioningAccount] shutdown];
+    
+    //Return to the login page.
     [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
 }
 
-
+/**
+ Initiates login procedure.
+ */
 - (void) startLogin
 {
-    [[HOPProvisioningAccount sharedInstance] firstTimeOAuthLoginWithProvisioningAccountDelegate:[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:@"provisioning-stable-dev.hookflash.me" deviceToken:@"" oauthIdentityType:HOPProvisioningAccountIdentityTypeLinkedInID];
+    //Call to the SDK in order to setup delegate for the OAuth Login process, and to initiate first time OAuth login.
+    [[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:@"provisioning-stable-dev.hookflash.me" deviceToken:@"" oauthIdentityType:HOPProvisioningAccountIdentityTypeLinkedInID];
 }
 
+/**
+ Initiates relogin procedure.
+ */
 - (void) startRelogin
 {
+    //Information about login identity.
     HOPIdentityInfo* identityInfo = [[HOPIdentityInfo alloc] init];
     identityInfo.type = HOPProvisioningAccountIdentityTypeLinkedInID;
     
-    [[HOPProvisioningAccount sharedInstance] reloginWithProvisioningAccountDelegate:[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:@"provisioning-stable-dev.hookflash.me" deviceToken:@"" userID:[[OpenPeerUser sharedOpenPeerUser] userId] accountSalt:[[OpenPeerUser sharedOpenPeerUser] accountSalt] passwordNonce:[[OpenPeerUser sharedOpenPeerUser] passwordNonce] password:[[OpenPeerUser sharedOpenPeerUser] peerFilePassword] privatePeerFile:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] lastProfileUpdatedTimestamp:[[OpenPeerUser sharedOpenPeerUser] lastProfileUpdateTimestamp]  previousIdentities:[NSArray arrayWithObject:identityInfo ]];
+    //Call to the SDK in order to setup delegate for the OAuth relogin process, and to initiate OAuth relogin. This method call also requires that user will provide information which is saved after the last successful login process. This information is required in order to successfuly access existing account and fetch private peer password.
+    [[HOPProvisioningAccount sharedProvisioningAccount] reloginWithProvisioningAccountDelegate:[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:@"provisioning-stable-dev.hookflash.me" deviceToken:@"" userID:[[OpenPeerUser sharedOpenPeerUser] userId] accountSalt:[[OpenPeerUser sharedOpenPeerUser] accountSalt] passwordNonce:[[OpenPeerUser sharedOpenPeerUser] passwordNonce] password:[[OpenPeerUser sharedOpenPeerUser] peerFilePassword] privatePeerFile:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] lastProfileUpdatedTimestamp:[[OpenPeerUser sharedOpenPeerUser] lastProfileUpdateTimestamp]  previousIdentities:[NSArray arrayWithObject:identityInfo ]];
     [identityInfo release];
 }
 
+/**
+ Handles core event that login URL is available.
+ @param url NSString Login URL.
+ */
 - (void) onLoginSocialUrlReceived:(NSString*) url
 {    
     [[[OpenPeer sharedOpenPeer] mainViewController] showWebLoginView:url];
 }
 
+/**
+ Handles web view event when OAuth procedure is completed within web view.
+ @param url NSString Login URL.
+ */
 - (void) onCredentialProviderResponseReceived:(NSString*) url
 {
     XMLWriter *xmlWriter = [[XMLWriter alloc] init];
@@ -205,14 +242,20 @@
     }
     [xmlWriter writeEndElement];
 
-    [[HOPProvisioningAccount sharedInstance] completeOAuthLoginProcess:[xmlWriter toString]];
+    //SDK call to finalize OAuth login process. After returning from webview, XML is formed and information is sent to the SDK to complete login process.
+    [[HOPProvisioningAccount sharedProvisioningAccount] completeOAuthLoginProcess:[xmlWriter toString]];
     [xmlWriter release];
 }
 
+/**
+ Handles SDK event after login is successful.
+ */
 - (void) onUserLoggedIn
 {
+    //Save user data on successful login.
     [[OpenPeerUser sharedOpenPeerUser] saveUserData];
 
+    //Start loading contacts.
     [[ContactsManager sharedContactsManager] loadContacts];
 }
 @end

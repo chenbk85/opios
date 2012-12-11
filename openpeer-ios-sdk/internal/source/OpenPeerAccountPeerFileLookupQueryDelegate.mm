@@ -31,6 +31,7 @@
 
 
 #import "OpenPeerAccountPeerFileLookupQueryDelegate.h"
+#import "HOPProvisioningAccount_Internal.h"
 
 OpenPeerAccountPeerFileLookupQueryDelegate::OpenPeerAccountPeerFileLookupQueryDelegate(id<HOPProvisioningAccountPeerFileLookupQueryDelegate> inProvisioningAccountPeerFileLookupQueryDelegate)
 {
@@ -44,5 +45,8 @@ boost::shared_ptr<OpenPeerAccountPeerFileLookupQueryDelegate> OpenPeerAccountPee
 
 void OpenPeerAccountPeerFileLookupQueryDelegate::onAccountPeerFileLookupQueryComplete(IAccountPeerFileLookupQueryPtr query)
 {
-    //[accountIdentityLookupQueryDelegate onAccountIdentityLookupQueryComplete:];
+    HOPProvisioningAccountPeerFileLookupQuery* hopQuery = [[HOPProvisioningAccount sharedProvisioningAccount] getProvisioningAccountPeerFileLookupQueryForUniqueId:[NSNumber numberWithUnsignedLong:query->getID()]];
+    
+    if (hopQuery)
+        [provisioningAccountPeerFileLookupQueryDelegate onAccountPeerFileLookupQueryComplete:hopQuery];
 }

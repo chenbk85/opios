@@ -30,20 +30,21 @@
  */
 
 
-#import "HOPProvisioningAccountIdentityLookupQuery.h"
-#import <hookflash/provisioning/IAccount.h>
+#import <Foundation/Foundation.h>
+#import <OpenpeerSDK/HOPTypes.h>
 
-using namespace hookflash;
-using namespace hookflash::provisioning;
+@interface Contact : NSObject
 
-@interface HOPProvisioningAccountIdentityLookupQuery ()
-{
-    IAccountIdentityLookupQueryPtr accountIdentityLookupQueryPtr;
-    
-}
+@property (copy) NSString* fullName;
+@property (copy) NSString* profession;
+@property (copy) NSString* avatarUrl;
+@property (copy) NSString* peerFile;
 
-@property (copy) NSNumber* uniqueId;
+@property (nonatomic, copy) NSString *userId;
+@property (nonatomic, copy) NSString *contactId;
+@property (nonatomic, assign) long lastProfileUpdateTimestamp;
 
-- (void) setAccountIdentityLookupQueryPtr:(IAccountIdentityLookupQueryPtr) inAccountIdentityLookupQueryPtr;
-- (IAccountIdentityLookupQueryPtr) getAccountIdentityLookupQueryPtr;
+@property (retain) NSMutableArray* identities;
+
+- (id) initWithFullName:(NSString*) inFullName profession:(NSString*) inProfession avatarUrl:(NSString*) inAvatarUrl identityProvider:(HOPProvisioningAccountIdentityTypes) identityProvider identityContactId:(NSString*) identityContactId;
 @end

@@ -87,27 +87,37 @@
   }
 }
 
-- (void) getUserIDs: (NSArray*) outUserIDs {
+- (NSArray*) getUserIDs
+{
+    NSMutableArray* ret = nil;
   
-  if (accountPeerFileLookupQueryPtr)
-  {
-    provisioning::IAccount::UserIDList userIDList;
-    for (NSString* userId in outUserIDs)
+    if (accountPeerFileLookupQueryPtr)
     {
-      zsLib::String userID = [userId UTF8String];
-      userIDList.push_back(userID);
-    }
+        provisioning::IAccount::UserIDList userIDList;
+        accountPeerFileLookupQueryPtr->getUserIDs(userIDList);
+        
+        if (userIDList.size() > 0)
+        {
+            ret = [[NSMutableArray alloc] init];
     
-    accountPeerFileLookupQueryPtr->getUserIDs(userIDList);
-  }
-  else
-  {
-    [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer peer file lookup pointer!"];
-  }
-  
+            std::list<provisioning::IAccountPeerFileLookupQuery::UserID>::iterator it;
+        
+            for ( it=userIDList.begin() ; it != userIDList.end(); it++ )
+            {
+                NSString* userId = [NSString stringWithUTF8String:*it];
+                [ret addObject:userId];
+            }
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer peer file lookup pointer!"];
+    }
+    return [ret autorelease];
 }
 
-- (NSString*) getPublicPeerFileString: (NSString*) userID {
+- (NSString*) getPublicPeerFileString: (NSString*) userID
+{
   
   NSString* publicPeerFileString = nil;
   

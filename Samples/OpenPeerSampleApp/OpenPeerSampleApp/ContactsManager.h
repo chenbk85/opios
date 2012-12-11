@@ -30,10 +30,11 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <OpenpeerSDK/HOPProtocols.h>
 
+@class Contact;
 
-
-@interface ContactsManager : NSObject<UIWebViewDelegate>
+@interface ContactsManager : NSObject<UIWebViewDelegate,HOPProvisioningAccountIdentityLookupQueryDelegate,HOPProvisioningAccountPeerFileLookupQueryDelegate>
 
 @property (retain, nonatomic) NSMutableArray *contactArray;
 @property (retain, nonatomic) UIWebView *linkedinContactsWebView;
@@ -42,4 +43,8 @@
 
 - (void) loadContacts;
 
+- (void)contactsLookupQuery:(NSArray *)contacts;
+- (void)peerFileLookupQuery:(NSArray *)contacts;
+
+- (Contact*) getContactForUserId:(NSString*) userId;
 @end

@@ -50,7 +50,7 @@
 /**
  Returns singleton object of this class.
  */
-+ (id)sharedInstance;
++ (id)sharedProvisioningAccount;
 
 
 #pragma mark Conversions to string

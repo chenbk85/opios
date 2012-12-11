@@ -40,7 +40,7 @@
 @property (retain) NSString* userId;
 @property (retain) NSString* contactId;
 
-@property (retain) NSDate* lastProfileUpdateTimestamp;
+@property (assign) long lastProfileUpdateTimestamp;
 
 @property (assign) unsigned short priority;
 @property (assign) unsigned short weight;

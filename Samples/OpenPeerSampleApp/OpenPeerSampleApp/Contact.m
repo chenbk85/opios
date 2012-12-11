@@ -29,21 +29,40 @@
  
  */
 
+#import "Contact.h"
+#import <OpenpeerSDK/HOPTypes.h>
+#import <OpenpeerSDK/HOPIdentity.h>
 
-#import "HOPProvisioningAccountIdentityLookupQuery.h"
-#import <hookflash/provisioning/IAccount.h>
+@implementation Contact
 
-using namespace hookflash;
-using namespace hookflash::provisioning;
-
-@interface HOPProvisioningAccountIdentityLookupQuery ()
+- (id) initWithFullName:(NSString*) inFullName profession:(NSString*) inProfession avatarUrl:(NSString*) inAvatarUrl identityProvider:(HOPProvisioningAccountIdentityTypes) identityProvider identityContactId:(NSString*) identityContactId
 {
-    IAccountIdentityLookupQueryPtr accountIdentityLookupQueryPtr;
-    
+    self = [super init];
+    if (self)
+    {
+        self.fullName = inFullName;
+        self.profession = inProfession;
+        self.avatarUrl = inAvatarUrl;
+        self.identities = [[NSMutableArray alloc] init];
+        
+        if ([identityContactId length] > 0)
+        {
+            HOPIdentity* identity = [[HOPIdentity alloc] init];
+            identity.identityType = HOPProvisioningAccountIdentityTypeLinkedInID;
+            identity.identityId = identityContactId;
+            [self.identities addObject:identity];
+            [identity release];
+        }
+    }
+    return self;
 }
 
-@property (copy) NSNumber* uniqueId;
-
-- (void) setAccountIdentityLookupQueryPtr:(IAccountIdentityLookupQueryPtr) inAccountIdentityLookupQueryPtr;
-- (IAccountIdentityLookupQueryPtr) getAccountIdentityLookupQueryPtr;
+- (void)dealloc
+{
+    [_fullName release];
+    [_profession release];
+    [_avatarUrl release];
+    [_identities release];
+    [super dealloc];
+}
 @end

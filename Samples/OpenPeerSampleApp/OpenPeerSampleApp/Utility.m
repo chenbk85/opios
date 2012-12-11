@@ -228,9 +228,12 @@ static const short _base64DecodingTable[256] = {
 
 + (NSString*) getUserAgentName
 {
+    NSString* developerId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"Hookflash Developer ID"];
+    
     NSString* appName = [[[NSBundle mainBundle] infoDictionary]   objectForKey:@"CFBundleName"];
     NSString* appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     NSString* appOs = [[UIDevice currentDevice] systemName];
+    NSString* appVersionOs = [[UIDevice currentDevice] systemVersion];
     NSString* deviceModel = [[UIDevice currentDevice] model];
     
     NSString* model = nil;
@@ -240,7 +243,7 @@ static const short _base64DecodingTable[256] = {
     else if ([deviceModel hasPrefix:@"iPad"])
         model = @"iPad";
     
-    NSString* userAgent = [NSString stringWithFormat:@"%@/%@ (%@/%@)",appName,appVersion,appOs,model];
+    NSString* userAgent = [NSString stringWithFormat:@"%@/%@ (%@ %@;%@) HOPID/1.0 (%@)",appName,appVersion,appOs,appVersionOs,model,developerId];
     
     return userAgent;
 }

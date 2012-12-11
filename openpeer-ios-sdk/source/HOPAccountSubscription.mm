@@ -43,7 +43,7 @@
     HOPProvisioningAccount* account = nil;
     if (accountSubscription)
     {
-        account = [HOPProvisioningAccount sharedInstance];
+        account = [HOPProvisioningAccount sharedProvisioningAccount];
     }
     else
     {

@@ -60,16 +60,26 @@
 @implementation HOPProvisioningAccount
 
 
-+ (id)sharedInstance
++ (id)sharedProvisioningAccount
 {
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
     dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] init]; // or some other init method
+        _sharedObject = [[self alloc] initSingleton]; // or some other init method
     });
     return _sharedObject;
 }
 
+- (id) initSingleton
+{
+    self = [super init];
+    if (self)
+    {
+        self.dictionaryOfIdentityLookupQueries = [[NSMutableDictionary alloc] init];
+        self.dictionaryOfPeerFilesLookupQueries = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
 #pragma mark - Conversions
 
 + (NSString*) accountStatesToString:(HOPProvisioningAccountStates) state
@@ -850,6 +860,8 @@
                 {
                     ret = [[HOPProvisioningAccountIdentityLookupQuery alloc] init];
                     [ret setAccountIdentityLookupQueryPtr:accountIdentityLookupQueryPtr];
+                    ret.uniqueId = [NSNumber numberWithUnsignedLong:accountIdentityLookupQueryPtr->getID()];
+                    [self.dictionaryOfIdentityLookupQueries setObject:ret forKey:ret.uniqueId];
                 }
             }
         }
@@ -894,6 +906,8 @@
                 {
                     ret = [[HOPProvisioningAccountPeerFileLookupQuery alloc] init];
                     [ret setAccountPeerFileLookupQueryPtr:accountPeerFileLookupQueryPtr];
+                    ret.uniqueId = [NSNumber numberWithUnsignedLong:accountPeerFileLookupQueryPtr->getID()];
+                    [self.dictionaryOfPeerFilesLookupQueries setObject:ret forKey:ret.uniqueId];
                 }
             }
             
@@ -1183,6 +1197,24 @@
 - (NSArray*) getConversationThreads
 {
     return [[OpenPeerStorageManager sharedInstance] getConversationThreads];
+}
+
+- (HOPProvisioningAccountIdentityLookupQuery*) getProvisioningAccountIdentityLookupQueryForUniqueId:(NSNumber*) uniqueId
+{
+    HOPProvisioningAccountIdentityLookupQuery* ret = nil;
+    if (uniqueId)
+        ret = [self.dictionaryOfIdentityLookupQueries objectForKey:uniqueId];//[[self.dictionaryOfIdentityLookupQueries allValues] objectAtIndex:0];
+    
+    return ret;
+}
+
+- (HOPProvisioningAccountPeerFileLookupQuery*) getProvisioningAccountPeerFileLookupQueryForUniqueId:(NSNumber*) uniqueId
+{
+    HOPProvisioningAccountPeerFileLookupQuery* ret = nil;
+    if (uniqueId)
+        ret = [self.dictionaryOfPeerFilesLookupQueries objectForKey:uniqueId];//[[self.dictionaryOfPeerFilesLookupQueries allValues] objectAtIndex:0];
+    
+    return ret;
 }
 @end
 

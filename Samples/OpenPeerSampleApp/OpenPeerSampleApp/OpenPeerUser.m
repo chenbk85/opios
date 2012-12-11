@@ -105,13 +105,13 @@
  */
 - (void) saveUserData
 {
-    self.userId = [[HOPProvisioningAccount sharedInstance] getUserID];
-    self.contactId = [[HOPProvisioningAccount sharedInstance] getContactID];
-    self.accountSalt = [[HOPProvisioningAccount sharedInstance] getAccountSalt];
-    self.passwordNonce = [[HOPProvisioningAccount sharedInstance] getPasswordNonce];
-    self.privatePeerFile = [[HOPProvisioningAccount sharedInstance] getPrivatePeerFile];
-    self.peerFilePassword = [[HOPProvisioningAccount sharedInstance] getPassword];
-    self.lastProfileUpdateTimestamp = [[HOPProvisioningAccount sharedInstance] getLastProfileUpdatedTime];
+    self.userId = [[HOPProvisioningAccount sharedProvisioningAccount] getUserID];
+    self.contactId = [[HOPProvisioningAccount sharedProvisioningAccount] getContactID];
+    self.accountSalt = [[HOPProvisioningAccount sharedProvisioningAccount] getAccountSalt];
+    self.passwordNonce = [[HOPProvisioningAccount sharedProvisioningAccount] getPasswordNonce];
+    self.privatePeerFile = [[HOPProvisioningAccount sharedProvisioningAccount] getPrivatePeerFile];
+    self.peerFilePassword = [[HOPProvisioningAccount sharedProvisioningAccount] getPassword];
+    self.lastProfileUpdateTimestamp = [[HOPProvisioningAccount sharedProvisioningAccount] getLastProfileUpdatedTime];
     
     NSMutableData *data = [NSMutableData data];
     NSKeyedArchiver *aCoder = [[[NSKeyedArchiver alloc] initForWritingWithMutableData:data] autorelease];

@@ -61,7 +61,7 @@
     
     if ([publicPeerFile length] > 0)
     {
-        IContactPtr tempCoreContactPtr = IContact::createFromPeerFilePublic([[HOPProvisioningAccount sharedInstance] getOpenpeerAccountPtr], [publicPeerFile UTF8String]);
+        IContactPtr tempCoreContactPtr = IContact::createFromPeerFilePublic([[HOPProvisioningAccount sharedProvisioningAccount] getOpenpeerAccountPtr], [publicPeerFile UTF8String]);
         
         if (tempCoreContactPtr)
         {
@@ -78,7 +78,7 @@
     {
         if ([publicPeerFile length] > 0)
         {
-            coreContactPtr = IContact::createFromPeerFilePublic([[[HOPProvisioningAccount sharedInstance] getOpenPeerAccount] getAccountPtr], [publicPeerFile UTF8String]);
+            coreContactPtr = IContact::createFromPeerFilePublic([[[HOPProvisioningAccount sharedProvisioningAccount] getOpenPeerAccount] getAccountPtr], [publicPeerFile UTF8String]);
         }
         if (!coreContactPtr)
         {
@@ -90,16 +90,21 @@
 
 - (NSString*) getContactID
 {
-    NSString* ret = nil;
     if(coreContactPtr)
     {
-        ret = [NSString stringWithUTF8String: coreContactPtr->getContactID()];
+        if (!self.contactId)
+            self.contactId = [NSString stringWithUTF8String: coreContactPtr->getContactID()];
     }
     else
     {
         [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
     }
-    return ret;
+    return self.contactId;
+}
+
+- (NSString*) getUserID
+{
+    return self.userId;
 }
 
 - (BOOL) isSelf

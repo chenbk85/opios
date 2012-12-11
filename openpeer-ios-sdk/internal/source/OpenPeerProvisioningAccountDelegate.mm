@@ -59,21 +59,21 @@ HOPProvisioningAccount* OpenPeerProvisioningAccountDelegate::getOpenPeerProvisio
 
 void OpenPeerProvisioningAccountDelegate::onProvisioningAccountStateChanged(hookflash::provisioning::IAccountPtr account,provisioning::IAccount::AccountStates state)
 {
-    [provisioningAccountDelegate onProvisioningAccountStateChanged:[HOPProvisioningAccount sharedInstance] accountStates:(HOPProvisioningAccountStates) state];
+    [provisioningAccountDelegate onProvisioningAccountStateChanged:[HOPProvisioningAccount sharedProvisioningAccount] accountStates:(HOPProvisioningAccountStates) state];
     
     if (state == provisioning::IAccount::AccountState_Shutdown) {
-        [[HOPProvisioningAccount sharedInstance] deleteLocalDelegates];
+        [[HOPProvisioningAccount sharedProvisioningAccount] deleteLocalDelegates];
     }
 }
 
 void OpenPeerProvisioningAccountDelegate::onProvisioningAccountError(provisioning::IAccountPtr account,AccountErrorCodes error)
 {
-    [provisioningAccountDelegate onProvisioningAccountError:[HOPProvisioningAccount sharedInstance] errorCodes:(HOPProvisioningAccountErrorCodes) error];
+    [provisioningAccountDelegate onProvisioningAccountError:[HOPProvisioningAccount sharedProvisioningAccount] errorCodes:(HOPProvisioningAccountErrorCodes) error];
 }
 
 void OpenPeerProvisioningAccountDelegate::onProvisioningAccountProfileChanged(provisioning::IAccountPtr account)
 {
-    [provisioningAccountDelegate onProvisioningAccountProfileChanged:[HOPProvisioningAccount sharedInstance]];
+    [provisioningAccountDelegate onProvisioningAccountProfileChanged:[HOPProvisioningAccount sharedProvisioningAccount]];
 }
 
 void OpenPeerProvisioningAccountDelegate::onProvisioningAccountIdentityValidationResult(provisioning::IAccountPtr account,IdentityID identity,IdentityValidationResultCode result)
@@ -87,7 +87,7 @@ void OpenPeerProvisioningAccountDelegate::onAccountStateChanged(hookflash::IAcco
     if (account) {
         //in case openpeer account is shutting down, error code will be filled so we can throw error event. later on, provisioning account will throw state change
         if ((account->getState() == hookflash::IAccount::AccountState_ShuttingDown) || (account->getState() == hookflash::IAccount::AccountState_Shutdown)) {
-            [provisioningAccountDelegate onProvisioningAccountError:[HOPProvisioningAccount sharedInstance] errorCodes:(HOPProvisioningAccountErrorCodes)account->getLastError()];
+            [provisioningAccountDelegate onProvisioningAccountError:[HOPProvisioningAccount sharedProvisioningAccount] errorCodes:(HOPProvisioningAccountErrorCodes)account->getLastError()];
         }
     }
 }

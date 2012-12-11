@@ -37,6 +37,9 @@
 
 @interface HOPContact : NSObject
 
+@property (copy) NSString* contactId;
+@property (nonatomic, copy, getter = getUserID) NSString* userId;
+
 /**
  Contact initialization method
  @param publicPeerFile NSString Public peer file of the contact that will be created (self or remote)
@@ -51,6 +54,12 @@
  @returns NSString representation of contact ID
  */
 - (NSString*) getContactID;
+
+/**
+ Return user ID 
+ @returns NSString representation of user ID
+ */
+- (NSString*) getUserID;
 
 /**
  Check if contact object is self contact

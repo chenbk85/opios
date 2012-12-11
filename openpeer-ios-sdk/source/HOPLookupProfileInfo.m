@@ -39,7 +39,7 @@
 @synthesize identityUniqueId = _identityUniqueId;
 @synthesize userId = _userId;
 @synthesize contactId = _contactId;
-@synthesize lastProfileUpdateTimestamp = _lastProfileUpdateTimestamp;
+@synthesize lastProfileUpdateTimestamp;
 @synthesize avatarURL = _avatarURL;
 
 //HOP_TODO: Check is it in the use, and its function

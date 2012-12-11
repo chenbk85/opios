@@ -52,6 +52,11 @@ using namespace hookflash::provisioning;
     HOPContact* selfContact;
 }
 
+@property (retain) NSMutableDictionary* dictionaryOfIdentityLookupQueries;
+@property (retain) NSMutableDictionary* dictionaryOfPeerFilesLookupQueries;
+
+- (id) initSingleton;
+
 //- (id) initWithAccountPtr:(provisioning::IAccountPtr) inAccountPtr provisioningAccountDelegate:(boost::shared_ptr<OpenPeerProvisioningAccountDelegate>) inProvisioningAccountDelegate accountDelegate:(boost::shared_ptr<OpenPeerAccountDelegate>) inAccountDelegate;
 - (BOOL) createLocalDelegates:(id<HOPProvisioningAccountDelegate>) provisioningAccountDelegate;
 - (void) deleteLocalDelegates;
@@ -59,4 +64,7 @@ using namespace hookflash::provisioning;
 - (provisioning::IAccountPtr)  getAccountPtr;
 
 - (hookflash::IAccountPtr)  getOpenpeerAccountPtr;
+
+- (HOPProvisioningAccountIdentityLookupQuery*) getProvisioningAccountIdentityLookupQueryForUniqueId:(NSNumber*) uniqueId;
+- (HOPProvisioningAccountPeerFileLookupQuery*) getProvisioningAccountPeerFileLookupQueryForUniqueId:(NSNumber*) uniqueId;
 @end

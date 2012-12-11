@@ -87,7 +87,7 @@ using namespace hookflash;
     else
         elementPtr = zsLib::XML::ElementPtr();
     
-    IConversationThreadPtr tempConversationThreadPtr = IConversationThread::create([[HOPProvisioningAccount sharedInstance] getOpenpeerAccountPtr], elementPtr);
+    IConversationThreadPtr tempConversationThreadPtr = IConversationThread::create([[HOPProvisioningAccount sharedProvisioningAccount] getOpenpeerAccountPtr], elementPtr);
     
     if (tempConversationThreadPtr)
     {
@@ -107,7 +107,7 @@ using namespace hookflash;
         else
             elementPtr = zsLib::XML::ElementPtr();
         
-        conversationThreadPtr = IConversationThread::create([[[HOPProvisioningAccount sharedInstance] getOpenPeerAccount] getAccountPtr], elementPtr);
+        conversationThreadPtr = IConversationThread::create([[[HOPProvisioningAccount sharedProvisioningAccount] getOpenPeerAccount] getAccountPtr], elementPtr);
         if (!conversationThreadPtr)
         {
             [self release];

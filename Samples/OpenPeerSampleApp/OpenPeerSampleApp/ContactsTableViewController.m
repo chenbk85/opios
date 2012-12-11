@@ -31,6 +31,7 @@
 
 #import "ContactsTableViewController.h"
 #import "ContactsManager.h"
+#import "Contact.h"
 
 @interface ContactsTableViewController ()
 
@@ -66,6 +67,7 @@
 }
 - (void) onContactsLoaded
 {
+    [self.contactsTableView reloadData];
     [self.activitiIndicator stopAnimating];
 }
 
@@ -106,7 +108,12 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier] autorelease];
     }
     
-    //[cell.textLabel setText:@"Veselko"];
+    Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
+    [cell.textLabel setText:contact.fullName];
+    
+    if ([contact.userId length] > 0)
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    //[cell.detailTextLabel setText:contact.profession];
     return cell;
 }
 
@@ -115,5 +122,9 @@
     return 50.0;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
 
 @end

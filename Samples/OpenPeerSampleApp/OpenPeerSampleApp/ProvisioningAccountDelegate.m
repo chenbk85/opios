@@ -36,6 +36,9 @@
 
 @implementation ProvisioningAccountDelegate
 
+//Provisioning account delegate implementation.
+
+//This method handles account state changes from SDK.
 - (void) onProvisioningAccountStateChanged:(HOPProvisioningAccount*) account accountStates:(HOPProvisioningAccountStates) state
 {
     //[LoginManager sharedLoginManager];
@@ -84,16 +87,19 @@
     }
 }
 
+//This event is fired once account encounter error. After error, shutdown should be called.
 - (void) onProvisioningAccountError:(HOPProvisioningAccount*) account errorCodes:(HOPProvisioningAccountErrorCodes) error
 {
     
 }
 
+//This event notifies that user profile information have changed, and that update is required.
 - (void) onProvisioningAccountProfileChanged:(HOPProvisioningAccount*) account
 {
     
 }
 
+//Result of the identity validation.
 - (void) onProvisioningAccountIdentityValidationResult:(HOPProvisioningAccount*) account identity:(id) identity result:(HOPProvisioningAccountIdentityValidationResultCode) result
 {
     

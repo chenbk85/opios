@@ -41,6 +41,8 @@ using namespace hookflash::provisioning;
     IAccountPeerFileLookupQueryPtr accountPeerFileLookupQueryPtr;
 }
 
+@property (copy) NSNumber* uniqueId;
+
 - (void) setAccountPeerFileLookupQueryPtr:(IAccountPeerFileLookupQueryPtr) inAccountPeerFileLookupQueryPtr;
 - (IAccountPeerFileLookupQueryPtr) getAccountPeerFileLookupQueryPtr;
 @end

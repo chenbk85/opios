@@ -53,9 +53,9 @@
 
 /**
  Retrieve user IDs from peer file.
- @param outUserIDs NSArray List of retrieved user IDs
+ @return outUserIDs NSArray List of retrieved user IDs
  */
-- (void) getUserIDs: (NSArray*) outUserIDs;
+- (NSArray*) getUserIDs;
 
 /**
  Retrieves public peer file.

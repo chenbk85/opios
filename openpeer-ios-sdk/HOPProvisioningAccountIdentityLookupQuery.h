@@ -56,9 +56,9 @@
 
 /**
  Retrieve lookup identities.
- @param outIdentites NSArray List of identities
+ @return outIdentites NSArray List of identities
  */
-- (void) getIdentities: (NSArray*) outIdentities;
+- (NSArray*) getIdentities;
 
 /**
  Perform lookup for provided identity.
@@ -66,6 +66,6 @@
  @param outInfo HOPLookupProfileInfo Lookup result
  @return YES for lookup success, NO for failure
  */
-- (BOOL) getLookupProfile: (HOPIdentity*) inIdentity outInfo: (HOPLookupProfileInfo*) outInfo;
+- (HOPLookupProfileInfo*) getLookupProfile: (HOPIdentity*) inIdentity;
 
 @end

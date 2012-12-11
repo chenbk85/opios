@@ -131,6 +131,11 @@ enum OpenpeerProvisioning_AccountErrorCodes
 @interface HOPProvisioningAccount_ForFutureUse : NSObject
 
 /**
+ Returns singleton object of this class.
+ */
++ (id)sharedInstance;
+
+/**
  Converts account state enum to string.
  @param state HOPProvisioningAccountStates Account state enum
  @returns String representation of account state
@@ -154,7 +159,7 @@ enum OpenpeerProvisioning_AccountErrorCodes
  @param privatePeerFileEl NSString Private peer file.
  @returns YES if success, NO for failure
  */
-+ (BOOL) create: (HOPStack*) stack provisioningAccountDelegate: (id<HOPOpenpeerProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate peerContactServiceBootstrappedDomain: (NSString*) peerContactServiceBootstrappedDomain privatePeerFileSecret: (NSString*) privatePeerFileSecret privatePeerFileEl: (NSString*) privatePeerFileEl;
+- (BOOL) create: (HOPStack*) stack provisioningAccountDelegate: (id<HOPOpenpeerProvisioningAccountDelegate>) provisioningAccountDelegate openpeerAccountDelegate: (id<HOPAccountDelegate>) openpeerAccountDelegate peerContactServiceBootstrappedDomain: (NSString*) peerContactServiceBootstrappedDomain privatePeerFileSecret: (NSString*) privatePeerFileSecret privatePeerFileEl: (NSString*) privatePeerFileEl;
 
 /**
  Login to an existing identity or add a new identity to the identity list associated to the peer contact.
@@ -305,6 +310,28 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 @end
 
+#pragma mark - OpenpeerProvisioning_IdentityLoginSession_internal.h
+
+#import <hookflash/provisioning2/hookflashTypes.h>
+
+@interface OpenpeerProvisioning_IdentityLoginSession ()
+{
+    hookflash::provisioning2::IIdentityLoginSessionPtr identityLoginSessionPtr;
+    //hookflash::IAccountPtr openpeerAccountPtr;
+    
+    //boost::shared_ptr<OpenPeerProvisioningAccountDelegate_ForFutureUse> openpeerProvisioningAccountDelegatePtr;
+    //boost::shared_ptr<OpenPeerAccountDelegate> openpeerAccountDelegatePtr;
+    //std::list<boost::shared_ptr<OpenPeerProvisioningAccountDelegate> > listOfOpenPeerAccountDelegates;
+}
+//
+//- (BOOL) createLocalDelegates:(id<HOPOpenpeerProvisioningAccountDelegate>) provisioningAccountDelegate;
+//- (void) deleteLocalDelegates;
+- (id) initWithIdentityLoginSession:(hookflash::provisioning2::IIdentityLoginSessionPtr) inIdentityLoginSessionPtr;
+- (hookflash::provisioning2::IIdentityLoginSessionPtr) getIdentityLoginSessionPtr;
+
+@end
+
+
 @interface OpenpeerProvisioning_AccountIdentityLookupQuery : NSObject
 
 /**
@@ -373,6 +400,61 @@ enum OpenpeerProvisioning_AccountErrorCodes
 - (NSString*) getPublicPeerFileAsString: (NSString*) userID;
 
 @end
+
+#pragma mark - HOPProvisioningAccount_ForFutureUse_internal.h
+
+#import <hookflash/provisioning2/hookflashTypes.h>
+#import "OpenPeerProvisioningAccountDelegate.h"
+
+class OpenPeerProvisioningAccountDelegate_ForFutureUse;
+
+//Internal class - should be moved to separate file
+@interface HOPProvisioningAccount_ForFutureUse ()
+{
+    hookflash::provisioning2::IAccountPtr provisioningAccountPtr;
+    //hookflash::IAccountPtr openpeerAccountPtr;
+    
+    boost::shared_ptr<OpenPeerProvisioningAccountDelegate_ForFutureUse> openpeerProvisioningAccountDelegatePtr;
+    //boost::shared_ptr<OpenPeerAccountDelegate> openpeerAccountDelegatePtr;
+    //std::list<boost::shared_ptr<OpenPeerProvisioningAccountDelegate> > listOfOpenPeerAccountDelegates;
+}
+
+- (BOOL) createLocalDelegates:(id<HOPOpenpeerProvisioningAccountDelegate>) provisioningAccountDelegate;
+- (void) deleteLocalDelegates;
+
+@end
+
+#pragma mark - OpenPeerProvisioningAccountDelegate_ForFutureUse.h
+
+#import <hookflash/provisioning2/IAccount.h>
+
+class OpenPeerProvisioningAccountDelegate_ForFutureUse : public provisioning2::IAccountDelegate, public hookflash::IAccountDelegate
+{
+protected:
+    id<HOPOpenpeerProvisioningAccountDelegate> provisioningAccountDelegate;
+    //id<HOPAccountDelegate> openpeerAccountDelegate;
+    
+    OpenPeerProvisioningAccountDelegate_ForFutureUse(id<HOPOpenpeerProvisioningAccountDelegate> inProvisioningAccountDelegate);
+    
+    HOPProvisioningAccount_ForFutureUse* getOpenPeerProvisioningAccount(provisioning2::IAccountPtr account);
+public:
+    static boost::shared_ptr<OpenPeerProvisioningAccountDelegate_ForFutureUse> create(id<HOPOpenpeerProvisioningAccountDelegate> inProvisioningAccountDelegate);
+    
+#pragma mark - provisioning2::IAccount delegate methods
+    
+    virtual void onProvisioningAccountStateChanged(provisioning2::IAccountPtr account,provisioning2::IAccount::AccountStates state);
+    
+    virtual void onProvisioningAccountError(provisioning2::IAccountPtr account,provisioning2::IAccount::AccountErrorCodes error);
+    
+    virtual void onProvisioningAccountPrivatePeerFileChanged(provisioning2::IAccountPtr account);
+    
+    virtual void onProvisioningAccountIdentitiesChanged(provisioning2::IAccountPtr account);
+    
+#pragma mark - hookflash::IAccount delegate methods
+    
+    virtual void onAccountStateChanged(hookflash::IAccountPtr account, hookflash::IAccount::AccountStates state);
+
+};
 
 /*
 

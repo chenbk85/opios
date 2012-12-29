@@ -28,17 +28,15 @@
  either expressed or implied, of the FreeBSD Project.
  
  */
-
-#import "WebLoginViewController.h"
-#import "LoginManager.h"
-#import "OpenPeer.h"
+ 
 #import "ActivityIndicatorViewController.h"
 
-@interface WebLoginViewController ()
+@interface ActivityIndicatorViewController ()
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 @end
 
-@implementation WebLoginViewController
+@implementation ActivityIndicatorViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -49,9 +47,20 @@
     return self;
 }
 
++ (id) sharedActivityIndicator
+{
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedObject = nil;
+    dispatch_once(&pred, ^{
+        _sharedObject = [[self alloc] initWithNibName:@"ActivityIndicatorViewController" bundle:nil];
+    });
+    return _sharedObject;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
 }
 
 - (void)didReceiveMemoryWarning
@@ -60,41 +69,37 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc {
-    [_loginWebView release];
+- (void)dealloc
+{
+    [_activityIndicator release];
+    [_activityLabel release];
     [super dealloc];
 }
 
-- (void) openLoginUrl:(NSString*) url
+- (void) showActivityIndicator:(BOOL) show withText:(NSString*) text inView:(UIView*) inView
 {
-    [self.loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
-    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Opening login page ..." inView:self.view];
-}
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
-    NSString* urlString = [[request URL] relativeString];
-    if ([urlString rangeOfString:@"created"].length > 0)
+    [self.activityIndicator stopAnimating];
+    [self.view removeFromSuperview];
+    
+    if (show)
     {
-        [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Login ..." inView:self.view];
-        urlString = [urlString substringFromIndex:[urlString rangeOfString:@"created"].location];
+        //[self.view removeFromSuperview];
         
-        [[LoginManager sharedLoginManager] onCredentialProviderResponseReceived:urlString];
+        [inView addSubview:self.view];
         
-        return NO;
+        CGRect activityFrame = self.view.frame;
+        activityFrame.origin.x = (inView.frame.size.width - activityFrame.size.width)/2;
+        activityFrame.origin.y = (inView.frame.size.height - activityFrame.size.height)/2;
+        [self.view setFrame:activityFrame];
+        
+        
+        [self.activityIndicator startAnimating];
+        [self.activityLabel setText:text];
     }
-    return YES;
+//    else
+//    {
+//        [self.activityIndicator stopAnimating];
+//        [self.view removeFromSuperview];
+//    }
 }
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    //Login page is opened, so remove the activity indicator
-    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
-}
-
 @end

@@ -39,6 +39,7 @@ using namespace hookflash;
 using namespace hookflash::provisioning;
 
 @class HOPContact;
+@class HOPAccountSubscription;
 
 @interface HOPProvisioningAccount ()
 {
@@ -54,6 +55,7 @@ using namespace hookflash::provisioning;
 
 @property (retain) NSMutableDictionary* dictionaryOfIdentityLookupQueries;
 @property (retain) NSMutableDictionary* dictionaryOfPeerFilesLookupQueries;
+@property (retain) NSMutableArray* listOfProvisioningAccountDelegates;
 
 - (id) initSingleton;
 
@@ -67,4 +69,6 @@ using namespace hookflash::provisioning;
 
 - (HOPProvisioningAccountIdentityLookupQuery*) getProvisioningAccountIdentityLookupQueryForUniqueId:(NSNumber*) uniqueId;
 - (HOPProvisioningAccountPeerFileLookupQuery*) getProvisioningAccountPeerFileLookupQueryForUniqueId:(NSNumber*) uniqueId;
+
+- (void) removeDelegate:(HOPAccountSubscription*) subscribedDelegate;
 @end

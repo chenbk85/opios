@@ -105,7 +105,7 @@
 @protocol HOPProvisioningAccountIdentityLookupQueryDelegate <NSObject>
 @required
 - (void) onAccountIdentityLookupQueryComplete:(HOPProvisioningAccountIdentityLookupQuery*) query;
-
+//- (void) onAccountIdentityLookupQueryComplete:(NSArray*) listOfCoreContacts;
 @end
 
 @class HOPProvisioningAccountPeerFileLookupQuery;

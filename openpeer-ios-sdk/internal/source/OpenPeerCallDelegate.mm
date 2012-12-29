@@ -32,6 +32,7 @@
 
 #import "OpenPeerCallDelegate.h"
 #import "OpenPeerStorageManager.h"
+#import "HOPCall_Internal.h"
 
 OpenPeerCallDelegate::OpenPeerCallDelegate(id<HOPCallDelegate> inCallDelegate)
 {
@@ -48,7 +49,13 @@ void OpenPeerCallDelegate::onCallStateChanged(ICallPtr call,CallStates state)
     NSString* callId = [NSString stringWithUTF8String:call->getCallID()];
     if (callId)
     {
-        HOPCall* hopCall = [[OpenPeerStorageManager sharedInstance] getCallForId:callId];
+        HOPCall* hopCall = [[OpenPeerStorageManager sharedStorageManager] getCallForId:callId];
+        if (!hopCall)
+        {
+            hopCall = [[HOPCall alloc] initWithCallPtr:call];
+            [[OpenPeerStorageManager sharedStorageManager] setCall:hopCall forId:[NSString stringWithUTF8String:call->getCallID()]];
+            [hopCall release];
+        }
         [callDelegate onCallStateChanged:hopCall callState:(HOPCallStates) state];
     }
 }

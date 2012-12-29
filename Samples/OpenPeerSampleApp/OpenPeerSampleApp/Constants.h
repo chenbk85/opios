@@ -31,24 +31,30 @@
 
 #import <Foundation/Foundation.h>
 
-@class HOPContact;
+//Provisioning URI
+extern NSString* const provisioningURI;
 
-@interface HOPMessage : NSObject
+extern NSString * const keyOpenPeerUser;
 
-@property (nonatomic, copy) NSString* messageID;
-@property (nonatomic, retain) HOPContact* contact;
-@property (nonatomic, copy) NSString* type;
-@property (nonatomic, copy) NSString* text;
-@property (nonatomic, retain) NSDate* date;
+//User defaults keys
+extern NSString * const archiveUserId;
+extern NSString * const archiveContactId;
+extern NSString * const archiveAccountSalt;
+extern NSString * const archivePasswordNonce;
+extern NSString * const archivePrivatePeerFile;
+extern NSString * const archivePeerFilePassword;
+extern NSString * const archiveLastProfileUpdateTimestamp;
 
-/**
- Message init method
- @param inMessageId NSString Message uique identifier.
- @param messageText NSString Message text.
- @param inContact HOPContact Message recipient.
- @param inMessageType NSString Message mime type. It is on user to create mime types. Currently there are no specified mime types.
- @param inMessageDate NSDate Message date.
- @returns Ponter to the created contact object
- */
-- (id) initWithMessageId:(NSString*) inMessageId andMessage:(NSString*) messageText andContact:(HOPContact*) inContact andMessageType:(NSString*) inMessageType andMessageDate:(NSDate*) inMessageDate;
-@end
+//Contact Profile xml tags
+extern NSString* const profileXmlTagProfile;
+extern NSString* const profileXmlTagName;
+extern NSString* const profileXmlTagIdentities;
+extern NSString* const profileXmlTagIdentityBundle;
+extern NSString* const profileXmlTagIdentity;
+extern NSString* const profileXmlTagSignature;
+extern NSString* const profileXmlTagAvatar;
+extern NSString* const profileXmlTagContactID;
+extern NSString* const profileXmlTagPublicPeerFile;
+extern NSString* const profileXmlTagSocialId;
+extern NSString* const profileXmlAttributeId;
+extern NSString* const profileXmlTagUserID;

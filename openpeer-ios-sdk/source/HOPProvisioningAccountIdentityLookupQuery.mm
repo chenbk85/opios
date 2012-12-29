@@ -39,6 +39,13 @@
 
 @implementation HOPProvisioningAccountIdentityLookupQuery
 
+- (void)dealloc
+{
+    [_identities release];
+    [_contacts release];
+    [_uniqueId release];
+    [super dealloc];
+}
 - (void) setAccountIdentityLookupQueryPtr:(IAccountIdentityLookupQueryPtr) inAccountIdentityLookupQueryPtr
 {
   accountIdentityLookupQueryPtr = inAccountIdentityLookupQueryPtr;
@@ -93,27 +100,29 @@
 
 - (NSArray*) getIdentities
 {
-    NSMutableArray* outIdentities = nil;
     if (accountIdentityLookupQueryPtr)
     {
-        outIdentities = [[NSMutableArray alloc] init];
-        
-        provisioning::IAccount::IdentityIDList identityList;
-        accountIdentityLookupQueryPtr->getIdentities(identityList);
-        if (identityList.size() > 0)
+        if (!self.identities)
         {
-            std::list<hookflash::provisioning::IAccountIdentityLookupQuery::IdentityID>::iterator it;
-            for(it = identityList.begin(); it != identityList.end(); it++)
+            self.identities = [[[NSMutableArray alloc] init] autorelease];
+        
+            provisioning::IAccount::IdentityIDList identityList;
+            accountIdentityLookupQueryPtr->getIdentities(identityList);
+            if (identityList.size() > 0)
             {
-                HOPIdentity* identity = [[HOPIdentity alloc] init];
-                identity.identityType = (HOPProvisioningAccountIdentityTypes)it->first;
-                identity.identityId = [NSString stringWithUTF8String:it->second];
-                
-                hookflash::provisioning::IAccountIdentityLookupQuery::IdentityID i = *it;
-                hookflash::provisioning::IAccount::LookupProfileInfo lookupInfo;
+                std::list<hookflash::provisioning::IAccountIdentityLookupQuery::IdentityID>::iterator it;
+                for(it = identityList.begin(); it != identityList.end(); it++)
+                {
+                    HOPIdentity* identity = [[HOPIdentity alloc] init];
+                    identity.identityType = (HOPProvisioningAccountIdentityTypes)it->first;
+                    identity.identityId = [NSString stringWithUTF8String:it->second];
+                    
+                    hookflash::provisioning::IAccountIdentityLookupQuery::IdentityID i = *it;
+                    hookflash::provisioning::IAccount::LookupProfileInfo lookupInfo;
 
-                [outIdentities addObject:identity];
-                [identity release];
+                    [self.identities addObject:identity];
+                    [identity release];
+                }
             }
         }
     }
@@ -122,7 +131,12 @@
         [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning identity lookup pointer!"];
     }
 
-    return [outIdentities autorelease];
+    return self.identities;
+}
+
+- (NSArray*) getContacts
+{
+    return self.contacts;
 }
 
 - (HOPLookupProfileInfo*) getLookupProfile: (HOPIdentity*) inIdentity

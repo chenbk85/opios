@@ -30,12 +30,22 @@
  */
 
 #import "MainViewController.h"
+//SDK
+#import <OpenpeerSDK/HOPConversationThread.h>
+//Managers
+#import "SessionManager.h"
+#import "LoginManager.h"
+//Model
+#import "Session.h"
+#import "Contact.h"
+//View controllers
 #import "LoginViewController.h"
 #import "WebLoginViewController.h"
 #import "ContactsTableViewController.h"
+#import "ActiveSessionViewController.h"
+#import "MainViewController.h"
 
-#import "LoginManager.h"
-
+//Private methods
 @interface MainViewController ()
 
 - (void) removeAllSubViews;
@@ -49,7 +59,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        // Custom initialization
+        self.sessionViewControllersDictionary = [[[NSMutableDictionary alloc] init] autorelease];
     }
     return self;
 }
@@ -57,6 +67,14 @@
 - (void)dealloc
 {
     [_loginViewController release];
+    [_webLoginViewController release];
+    [_contactsTableViewController release];
+    [_contactsNavigationController release];
+    [_sessionViewControllersDictionary release];
+    
+    [_activityIndicator release];
+    [_activityLabel release];
+    [_activityView release];
     [super dealloc];
 }
 
@@ -78,21 +96,28 @@
 }
 
 #pragma mark - Login views
+/**
+ Show view with login button
+*/
 - (void) showLoginView
 {
     if (!self.loginViewController)
     {
-        self.loginViewController = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
+        self.loginViewController = [[[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil] autorelease];
     }
     
     [self removeAllSubViews];
     [self.view addSubview:self.loginViewController.view];
 }
 
+/**
+ Show web view with opened login page.
+ @param url NSString Login page url.
+*/
 - (void) showWebLoginView:(NSString*) url
 {
     if (!self.webLoginViewController)
-        self.webLoginViewController = [[WebLoginViewController alloc] initWithNibName:@"WebLoginViewController" bundle:nil];
+        self.webLoginViewController = [[[WebLoginViewController alloc] initWithNibName:@"WebLoginViewController" bundle:nil] autorelease];
     
     if (url)
     {
@@ -103,18 +128,21 @@
 }
 
 #pragma mark - Contacts views
-
+/**
+ Show table with list of contacts.
+ */
 - (void)showContactsTable
 {
     [self removeAllSubViews];
     
     if (!self.contactsTableViewController)
-        self.contactsTableViewController = [[ContactsTableViewController alloc] initWithNibName:@"ContactsTableViewController" bundle:nil];
+        self.contactsTableViewController = [[[ContactsTableViewController alloc] initWithNibName:@"ContactsTableViewController" bundle:nil] autorelease];
     
     if (!self.contactsNavigationController)
     {
-        self.contactsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.contactsTableViewController];
+        self.contactsNavigationController = [[[UINavigationController alloc] initWithRootViewController:self.contactsTableViewController] autorelease];
         [self.contactsNavigationController.navigationBar.topItem setTitle:@"Contacts"];
+        // Add logout button in navigation bar
         UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"LogOut"
                                                                       style:UIBarButtonItemStyleBordered
                                                                      target:[LoginManager sharedLoginManager]
@@ -124,5 +152,39 @@
     }
     
     [self presentViewController:self.contactsNavigationController animated:NO completion:nil];
+}
+
+#pragma mark - Session view
+- (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall
+{
+    NSString* sessionId = [[session conversationThread] getThreadId];
+    
+    ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:sessionId];
+    
+    if (!sessionViewContorller)
+    {
+        sessionViewContorller = [[[ActiveSessionViewController alloc] initWithSession:session] autorelease];
+        [self.sessionViewControllersDictionary setObject:sessionViewContorller forKey:sessionId];
+    }
+    
+    sessionViewContorller.isIncomingCall = incomingCall;
+    
+    if (sessionViewContorller.parentViewController == nil)
+    {
+        NSString* title = [[[session participantsArray] objectAtIndex:0] fullName];
+        [self.contactsNavigationController pushViewController:sessionViewContorller animated:NO];
+        [self.contactsNavigationController.navigationBar.topItem setTitle:title];
+    }
+}
+
+- (void) removeSessionViewControllerForSession:(NSString*) sessionId
+{
+    [self.sessionViewControllersDictionary removeObjectForKey:sessionId];
+}
+
+- (void) showIncominCallForSession:(Session*) session
+{
+    ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:[[session conversationThread] getThreadId]];
+    [sessionViewContorller prepareForIncomingCall];
 }
 @end

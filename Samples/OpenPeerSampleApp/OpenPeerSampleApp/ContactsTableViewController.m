@@ -31,7 +31,12 @@
 
 #import "ContactsTableViewController.h"
 #import "ContactsManager.h"
+#import "SessionManager.h"
 #import "Contact.h"
+#import <OpenpeerSDK/HOPContact.h>
+#import "OpenPeer.h"
+#import "ActivityIndicatorViewController.h"
+#import "MainViewController.h"
 
 @interface ContactsTableViewController ()
 
@@ -52,7 +57,7 @@
     [super viewDidLoad];
     
     self.navigationController.navigationBar.hidden = NO;
-    [self.activitiIndicator setHidesWhenStopped:YES];
+    //[self.activityIndicator setHidesWhenStopped:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -63,12 +68,23 @@
 
 - (void) onContactsLoadingStarted
 {    
-    [self.activitiIndicator startAnimating];
+    //[self.activityIndicator startAnimating];
+    //[self showActivityIndicator:YES withText:@"Getting contacts from the LinkedIn ..."];
+    //[[[OpenPeer sharedOpenPeer] mainViewController] showActivityIndicator:YES withText:@"Getting contacts from social provider ..."];
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting contacts from social provider ..." inView:self.view];
+}
+
+- (void) onContactsPeerFilesLoadingStarted
+{
+    //[self.activityIndicator startAnimating];
+    //[self showActivityIndicator:YES withText:@"Getting peer files for contacts ..."];
+    //[[[OpenPeer sharedOpenPeer] mainViewController] showActivityIndicator:YES withText:@"Getting peer files for contacts ..."];
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting peer files for contacts ..." inView:self.view];
 }
 - (void) onContactsLoaded
 {
     [self.contactsTableView reloadData];
-    [self.activitiIndicator stopAnimating];
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
 }
 
 #pragma  mark - UINavigationControllerDelegate
@@ -111,8 +127,11 @@
     Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
     [cell.textLabel setText:contact.fullName];
     
-    if ([contact.userId length] > 0)
+    if ([[contact.hopContact getPeerFile] length] > 0)
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    else
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    
     //[cell.detailTextLabel setText:contact.profession];
     return cell;
 }
@@ -122,9 +141,36 @@
     return 50.0;
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    //if ([tableView cellForRowAtIndexPath:indexPath].accessoryType == UITableViewCellAccessoryDisclosureIndicator)
+    {
+        Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
+        if (contact)
+        {
     
+            Session* session = [[SessionManager sharedSessionManager] getSessionForContact:contact];
+            if (!session)
+                session = [[SessionManager sharedSessionManager] createSessionForContact:contact];
+            
+            [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:NO];
+            //[[[OpenPeer sharedOpenPeer] mainViewController] showIncominCallForSession:session];
+//            if (session)
+//            {
+//                SessionViewController* sessionViewController = [[SessionViewController alloc] initWithSession:session];
+//                [self.navigationController pushViewController:sessionViewController animated:NO];
+//                [sessionViewController release];
+//            }
+        }
+        
+    }
 }
+
+- (void)dealloc {
+
+    [super dealloc];
+}
+
 
 @end

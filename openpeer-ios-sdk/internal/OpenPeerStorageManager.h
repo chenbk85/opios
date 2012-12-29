@@ -47,6 +47,7 @@
     NSMutableDictionary* _dictionaryCalls;
     NSMutableDictionary* _dictionaryConversationThreads;
     NSMutableDictionary* _dictionaryContacts;
+    NSMutableDictionary* _dictionaryContactsWithUserId;
     NSMutableDictionary* _dictionaryProvisioningAccount;
     
 //    IStackPtr stackPtr;
@@ -56,7 +57,7 @@
 //    boost::shared_ptr<OpenPeerMediaEngineDelegate> openPeerMediaEngineDelegatePtr;
 //    boost::shared_ptr<OpenPeerConversationThreadDelegate> openPeerConversationThreadDelegatePtr;
 }
-+ (id)sharedInstance;
++ (id)sharedStorageManager;
 
 - (HOPCall*) getCallForId:(NSString*) callId;
 - (void) setCall:(HOPCall*) call forId:(NSString*) callId;
@@ -66,6 +67,9 @@
 
 - (HOPContact*) getContactForId:(NSString*) contactId;
 - (void) setContact:(HOPContact*) contact forId:(NSString*) contactId;
+//This will be in use till we move to new provisioning
+- (HOPContact*) getContactForUserId:(NSString*) userId;
+- (void) setContact:(HOPContact*) contact withContactId:(NSString*) contactId andUserId:(NSString*) userId;
 
 - (HOPProvisioningAccount*) getProvisioningAccountForUserId:(NSString*) userId;
 - (void) setCProvisioningAccount:(HOPProvisioningAccount*) account forUserId:(NSString*) userId;

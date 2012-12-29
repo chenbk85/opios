@@ -30,8 +30,9 @@
  */
 
 #import "AppDelegate.h"
-#import "MainViewController.h"
 #import "OpenPeer.h"
+#import "MainViewController.h"
+
 
 @implementation AppDelegate
 
@@ -45,16 +46,17 @@
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
+    //Create root view controller. This view controller will manage displaying all other view controllers.
     MainViewController* mainViewController = [[[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil] autorelease];
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window setRootViewController:mainViewController];
     
-    //Show Login View
-    [[OpenPeer sharedOpenPeer] prepareWithMainViewController:mainViewController];
-    [mainViewController release];
-    
     [self.window makeKeyAndVisible];
+    
+    //Init open peer delegates. Start login procedure. Display Login view controller.
+    [[OpenPeer sharedOpenPeer] prepareWithMainViewController:mainViewController];
+    
     return YES;
 }
 

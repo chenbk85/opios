@@ -55,21 +55,51 @@
     return self;
 }
 
-+ (id) contactWithPeerFile:(NSString*) publicPeerFile
+- (id) initWithPeerFile:(NSString*) publicPeerFile userId:(NSString*) inUserId contactId:(NSString*) inContactId
 {
-    HOPContact* ret = nil;
-    
-    if ([publicPeerFile length] > 0)
+    self = [super init];
+    if (self)
     {
-        IContactPtr tempCoreContactPtr = IContact::createFromPeerFilePublic([[HOPProvisioningAccount sharedProvisioningAccount] getOpenpeerAccountPtr], [publicPeerFile UTF8String]);
-        
-        if (tempCoreContactPtr)
+        if ([inUserId length] > 0 && [inContactId length] > 0)
         {
-            ret = [[self alloc] initWithCoreContact:tempCoreContactPtr];
+            self.userId = inUserId;
+            self.contactId = inContactId;
+            if ([publicPeerFile length] > 0)
+            {
+                IContactPtr tempCoreContactPtr = IContact::createFromPeerFilePublic([[HOPProvisioningAccount sharedProvisioningAccount] getOpenpeerAccountPtr], [publicPeerFile UTF8String]);
+                
+                if (tempCoreContactPtr)
+                {
+                    self.peerFile = publicPeerFile;
+                    coreContactPtr = tempCoreContactPtr;
+                }
+            }
+            self.identitiesDictionary = [[[NSMutableDictionary alloc] init] autorelease];
+        }
+        else
+        {
+            [self release];
+            self = nil;
         }
     }
-    return [ret autorelease];
+    return self;
 }
+
+//+ (id) contactWithPeerFile:(NSString*) publicPeerFile
+//{
+//    HOPContact* ret = nil;
+//    
+//    if ([publicPeerFile length] > 0)
+//    {
+//        IContactPtr tempCoreContactPtr = IContact::createFromPeerFilePublic([[HOPProvisioningAccount sharedProvisioningAccount] getOpenpeerAccountPtr], [publicPeerFile UTF8String]);
+//        
+//        if (tempCoreContactPtr)
+//        {
+//            ret = [[self alloc] initWithCoreContact:tempCoreContactPtr];
+//        }
+//    }
+//    return [ret autorelease];
+//}
 
 /*- (id) initWithPeerFile:(NSString*) publicPeerFile
 {
@@ -95,10 +125,10 @@
         if (!self.contactId)
             self.contactId = [NSString stringWithUTF8String: coreContactPtr->getContactID()];
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return self.contactId;
 }
 
@@ -115,10 +145,10 @@
     {
         ret = coreContactPtr->isSelf();
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
@@ -130,10 +160,10 @@
     {
         ret = (HOPContactTypes) coreContactPtr->getContactType();
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
@@ -145,10 +175,10 @@
     {
         ret = coreContactPtr->isEditable();
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
@@ -160,10 +190,10 @@
     {
         ret = coreContactPtr->isPublicXMLEditable();
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
@@ -175,10 +205,10 @@
     {
         ret = [NSString stringWithUTF8String: coreContactPtr->getPublicXML()];
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
@@ -191,10 +221,10 @@
     {
         ret = [NSString stringWithUTF8String: coreContactPtr->getPrivateXML()];
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
@@ -207,10 +237,10 @@
     {
         ret = coreContactPtr->updateProfile([publicXML UTF8String], [privateXML UTF8String]);
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
@@ -223,13 +253,36 @@
     {
         ret = coreContactPtr->getProfileVersion();
     }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
-    }
+//    else
+//    {
+//        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer contact pointer!"];
+//    }
     return ret;
 }
 
+- (NSArray*) getIdentities
+{
+    return [self.identitiesDictionary allValues];
+}
+
+- (NSString*) getPeerFile
+{
+    return self.peerFile;
+}
+
+- (void) createCoreContactWithPeerFile:(NSString*) inPeerFile
+{
+    if ([inPeerFile length] > 0)
+    {
+        self.peerFile = inPeerFile;
+        IContactPtr tempCoreContactPtr = IContact::createFromPeerFilePublic([[HOPProvisioningAccount sharedProvisioningAccount] getOpenpeerAccountPtr], [inPeerFile UTF8String]);
+        
+        if (tempCoreContactPtr)
+        {
+            coreContactPtr = tempCoreContactPtr;
+        }
+    }
+}
 #pragma mark - Internal methods
 - (IContactPtr) getContactPtr
 {

@@ -72,6 +72,7 @@ using namespace hookflash;
     if (self)
     {
         conversationThreadPtr = inConversationThreadPtr;
+        [[OpenPeerStorageManager sharedStorageManager] setConversationThread:self forId:[NSString stringWithUTF8String:inConversationThreadPtr->getThreadID()]];
     }
     return self;
 }
@@ -158,8 +159,11 @@ using namespace hookflash;
         for (IConversationThread::ContactList::iterator contact = contactList.begin(); contact != contactList.end(); ++contact)
         {
             IContactPtr contactPtr = *contact;
-            HOPContact* tempContact = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:contactPtr->getContactID()]];
-            [contactArray addObject:tempContact];
+            if (!contactPtr->isSelf())
+            {
+                HOPContact* tempContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:contactPtr->getContactID()]];
+                [contactArray addObject:tempContact];
+            }
         }
         
     }
@@ -285,7 +289,7 @@ using namespace hookflash;
         {
             hopMessage = [[HOPMessage alloc] init];
             
-            hopMessage.contact = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:fromContact->getContactID()]];
+            hopMessage.contact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:fromContact->getContactID()]];
             hopMessage.type = [NSString stringWithUTF8String:messageType];
             hopMessage.text = [NSString stringWithUTF8String:message];
             hopMessage.date = [OpenPeerUtility convertPosixTimeToDate:messageTime];
@@ -313,7 +317,7 @@ using namespace hookflash;
         
         if (fromContact && messageType && message)
         {
-            *outFrom = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:fromContact->getContactID()]];
+            *outFrom = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:fromContact->getContactID()]];
             *outMessageType = [NSString stringWithUTF8String:messageType];
             *outMessage = [NSString stringWithUTF8String:message];
             *outTime = [OpenPeerUtility convertPosixTimeToDate:messageTime];

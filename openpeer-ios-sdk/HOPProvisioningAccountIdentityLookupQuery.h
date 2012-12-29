@@ -61,6 +61,11 @@
 - (NSArray*) getIdentities;
 
 /**
+ Retrieve lookup contacts.
+ @return  NSArray of HOPContact objects
+ */
+- (NSArray*) getContacts;
+/**
  Perform lookup for provided identity.
  @param inIdentity HOPIdentity Identity for lookup
  @param outInfo HOPLookupProfileInfo Lookup result

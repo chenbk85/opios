@@ -29,26 +29,33 @@
  
  */
 
-#import <Foundation/Foundation.h>
+#import "Constants.h"
 
-@class HOPContact;
+//Provisioning URI
+NSString* const provisioningURI = @"provisioning-stable-dev.hookflash.me";
 
-@interface HOPMessage : NSObject
+NSString * const keyOpenPeerUser = @"keyOpenPeerUser";
 
-@property (nonatomic, copy) NSString* messageID;
-@property (nonatomic, retain) HOPContact* contact;
-@property (nonatomic, copy) NSString* type;
-@property (nonatomic, copy) NSString* text;
-@property (nonatomic, retain) NSDate* date;
+//User defaults keys
 
-/**
- Message init method
- @param inMessageId NSString Message uique identifier.
- @param messageText NSString Message text.
- @param inContact HOPContact Message recipient.
- @param inMessageType NSString Message mime type. It is on user to create mime types. Currently there are no specified mime types.
- @param inMessageDate NSDate Message date.
- @returns Ponter to the created contact object
- */
-- (id) initWithMessageId:(NSString*) inMessageId andMessage:(NSString*) messageText andContact:(HOPContact*) inContact andMessageType:(NSString*) inMessageType andMessageDate:(NSDate*) inMessageDate;
-@end
+NSString * const archiveUserId = @"archiveUserId";
+NSString * const archiveContactId = @"archiveContactId";
+NSString * const archiveAccountSalt = @"archiveAccountSalt";
+NSString * const archivePasswordNonce = @"archivePasswordNonce";
+NSString * const archivePrivatePeerFile = @"archivePrivatePeerFile";
+NSString * const archivePeerFilePassword = @"archivePeerFilePassword";
+NSString * const archiveLastProfileUpdateTimestamp = @"archiveLastProfileUpdateTimestamp";
+
+//Contact Profile xml tags
+NSString* const profileXmlTagProfile = @"profile";
+NSString* const profileXmlTagName = @"name";
+NSString* const profileXmlTagIdentities = @"identities";
+NSString* const profileXmlTagIdentityBundle = @"identityBundle";
+NSString* const profileXmlTagIdentity = @"identity";
+NSString* const profileXmlTagSignature = @"signature";
+NSString* const profileXmlTagAvatar = @"avatar";
+NSString* const profileXmlTagContactID = @"contactID";
+NSString* const profileXmlTagPublicPeerFile = @"publicPeerFile";
+NSString* const profileXmlTagSocialId = @"socialId";
+NSString* const profileXmlAttributeId = @"id";
+NSString* const profileXmlTagUserID = @"userID";

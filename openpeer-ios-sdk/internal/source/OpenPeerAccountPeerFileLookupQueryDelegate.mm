@@ -32,6 +32,10 @@
 
 #import "OpenPeerAccountPeerFileLookupQueryDelegate.h"
 #import "HOPProvisioningAccount_Internal.h"
+#import "HOPProvisioningAccountPeerFileLookupQuery.h"
+#import "HOPContact_Internal.h"
+#import "OpenPeerStorageManager.h"
+
 
 OpenPeerAccountPeerFileLookupQueryDelegate::OpenPeerAccountPeerFileLookupQueryDelegate(id<HOPProvisioningAccountPeerFileLookupQueryDelegate> inProvisioningAccountPeerFileLookupQueryDelegate)
 {
@@ -47,6 +51,18 @@ void OpenPeerAccountPeerFileLookupQueryDelegate::onAccountPeerFileLookupQueryCom
 {
     HOPProvisioningAccountPeerFileLookupQuery* hopQuery = [[HOPProvisioningAccount sharedProvisioningAccount] getProvisioningAccountPeerFileLookupQueryForUniqueId:[NSNumber numberWithUnsignedLong:query->getID()]];
     
-    if (hopQuery)
-        [provisioningAccountPeerFileLookupQueryDelegate onAccountPeerFileLookupQueryComplete:hopQuery];
+    if([hopQuery isComplete] && [hopQuery didSucceed])
+    {
+        for (NSString* userId in [hopQuery getUserIDs])
+        {
+            HOPContact* contact = [[OpenPeerStorageManager sharedStorageManager] getContactForUserId:userId];
+            if (contact)
+            {
+                NSString* peerFile = [hopQuery getPublicPeerFileString:userId];
+                [contact createCoreContactWithPeerFile:peerFile];
+            }
+        }
+    }
+    
+    [provisioningAccountPeerFileLookupQueryDelegate onAccountPeerFileLookupQueryComplete:hopQuery];
 }

@@ -30,6 +30,7 @@
  */
 
 #import "LoginViewController.h"
+#import "MainViewController.h"
 #import "LoginManager.h"
 
 @interface LoginViewController ()
@@ -47,10 +48,15 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [super dealloc];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -59,8 +65,15 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)actionLoginWithFacebook:(id)sender
+{
+    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeFacebookID];
+}
+
 - (IBAction)actionLoginWithLinkedIn:(id)sender
 {
-    [[LoginManager sharedLoginManager] startLogin];
+    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeLinkedInID];
 }
+
+
 @end

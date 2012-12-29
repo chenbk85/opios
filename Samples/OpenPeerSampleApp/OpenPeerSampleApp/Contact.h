@@ -28,17 +28,19 @@
  either expressed or implied, of the FreeBSD Project.
  
  */
-
-
+ 
 #import <Foundation/Foundation.h>
 #import <OpenpeerSDK/HOPTypes.h>
+
+@class HOPContact;
 
 @interface Contact : NSObject
 
 @property (copy) NSString* fullName;
 @property (copy) NSString* profession;
 @property (copy) NSString* avatarUrl;
-@property (copy) NSString* peerFile;
+//@property (copy) NSString* peerFile;
+@property (retain) HOPContact* hopContact;
 
 @property (nonatomic, copy) NSString *userId;
 @property (nonatomic, copy) NSString *contactId;

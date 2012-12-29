@@ -334,7 +334,7 @@
  @param associatedContactIDs NSArray List of associated contact IDs.
  @return Peer file lookup subclass pointer.
  */
-- (HOPProvisioningAccountPeerFileLookupQuery*) peerFileLookup: (id<HOPProvisioningAccountPeerFileLookupQueryDelegate>) delegate userIDs: (NSArray*) userIDs associatedContactIDs: (NSArray*) associatedContactIDs;
+- (HOPProvisioningAccountPeerFileLookupQuery*) peerFileLookup: (id<HOPProvisioningAccountPeerFileLookupQueryDelegate>) delegate contacts:(NSArray*) contacts;
 
 #pragma mark - HOPAccount methods
 /**
@@ -414,4 +414,5 @@
  @param outConversationThreads std::list<HOPConversationThread> list of conversation threads
  */
 - (NSArray*) getConversationThreads;
+
 @end

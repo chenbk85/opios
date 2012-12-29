@@ -39,6 +39,7 @@
 #import "HOPConversationThread_Internal.h"
 #import "HOPContact_Internal.h"
 #import "OpenPeerStorageManager.h"
+#import "HOPProvisioningAccount_Internal.h"
 
 #import "HOPCall.h"
 
@@ -93,6 +94,7 @@ using namespace hookflash;
         if (tempCallPtr)
         {
             ret = [[self alloc] initWithCallPtr:tempCallPtr];
+            [[OpenPeerStorageManager sharedStorageManager] setCall:ret forId:[NSString stringWithUTF8String:tempCallPtr->getCallID()]];
         }
     }
     return [ret autorelease];
@@ -130,7 +132,7 @@ using namespace hookflash;
         IConversationThreadPtr conversationThreaPtr = callPtr->getConversationThread();
         if (conversationThreaPtr)
         {
-            hopConversationThread = [[OpenPeerStorageManager sharedInstance] getConversationThreadForId:[NSString stringWithUTF8String:conversationThreaPtr->getThreadID()]];
+            hopConversationThread = [[OpenPeerStorageManager sharedStorageManager] getConversationThreadForId:[NSString stringWithUTF8String:conversationThreaPtr->getThreadID()]];
         }
     }
     else
@@ -149,7 +151,12 @@ using namespace hookflash;
         IContactPtr contactPtr = callPtr->getCaller();
         if (contactPtr)
         {
-            hopContact = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:contactPtr->getContactID()]];
+            NSString* contactID = [NSString stringWithUTF8String:contactPtr->getContactID()];
+            hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactID];
+            if (!hopContact)
+            {
+                hopContact = [[[[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] getContactID] isEqualToString:contactID] ? [[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] : nil;
+            }
         }
     }
     else
@@ -167,7 +174,12 @@ using namespace hookflash;
         IContactPtr contactPtr = callPtr->getCallee();
         if (contactPtr)
         {
-            hopContact = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:contactPtr->getContactID()]];
+            NSString* contactID = [NSString stringWithUTF8String:contactPtr->getContactID()];
+            hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactID];
+            if (!hopContact)
+            {
+                hopContact = [[[[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] getContactID] isEqualToString:contactID] ? [[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] : nil;
+            }
         }
     }
     else

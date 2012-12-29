@@ -206,7 +206,15 @@ typedef enum
     HOPMediaEngineCameraTypeBack
 } HOPMediaEngineCameraTypes;
 
-typedef enum 
+typedef enum
+{
+    HOPMediaEngineVideoOrientationLandscapeLeft,
+    HOPMediaEngineVideoOrientationPortraitUpsideDown,
+    HOPMediaEngineVideoOrientationLandscapeRight,
+    HOPMediaEngineVideoOrientationPortrait
+} HOPMediaEngineVideoOrientations;
+
+typedef enum
 {
     HOPMediaEngineOutputAudioRouteHeadphone,
     HOPMediaEngineOutputAudioRouteBuiltInReceiver,

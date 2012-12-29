@@ -30,12 +30,13 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <OpenpeerSDK/HOPTypes.h>
 
 @interface LoginManager : NSObject
 
 + (id) sharedLoginManager;
 
-- (void) startLogin;
+- (void) startLoginWithSocialProvider:(HOPProvisioningAccountIdentityTypes) socialProvider;
 - (void) login;
 - (void) logout;
 

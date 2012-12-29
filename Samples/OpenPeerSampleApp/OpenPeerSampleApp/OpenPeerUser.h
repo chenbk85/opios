@@ -33,16 +33,21 @@
 
 @interface OpenPeerUser : NSObject
 
+@property (nonatomic, copy) NSString* fullName;
 @property (nonatomic, copy) NSString* userId;
 @property (nonatomic, copy) NSString* contactId;
 @property (nonatomic, copy) NSString *accountSalt;
 @property (nonatomic, copy) NSString *passwordNonce;
 @property (nonatomic, copy) NSString *peerFilePassword;
 @property (nonatomic, copy) NSString *privatePeerFile;
+@property (nonatomic, copy) NSNumber *providerKey;
+@property (nonatomic, copy) NSString *contactProviderId;
 @property (nonatomic, assign) NSTimeInterval lastProfileUpdateTimestamp;
 
 + (id) sharedOpenPeerUser;
 
 - (void) saveUserData;
 - (void) deleteUserData;
+- (NSString*) createProfileBundle;
+
 @end

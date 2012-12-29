@@ -43,12 +43,12 @@
         self.fullName = inFullName;
         self.profession = inProfession;
         self.avatarUrl = inAvatarUrl;
-        self.identities = [[NSMutableArray alloc] init];
+        self.identities = [[[NSMutableArray alloc] init] autorelease];
         
         if ([identityContactId length] > 0)
         {
             HOPIdentity* identity = [[HOPIdentity alloc] init];
-            identity.identityType = HOPProvisioningAccountIdentityTypeLinkedInID;
+            identity.identityType = identityProvider;
             identity.identityId = identityContactId;
             [self.identities addObject:identity];
             [identity release];
@@ -63,6 +63,7 @@
     [_profession release];
     [_avatarUrl release];
     [_identities release];
+    [_hopContact release];
     [super dealloc];
 }
 @end

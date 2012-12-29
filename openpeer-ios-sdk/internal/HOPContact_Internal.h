@@ -40,6 +40,13 @@ using namespace hookflash;
     IContactPtr coreContactPtr;
 }
 
+@property (copy) NSString* contactId;
+@property (copy) NSString* userId;
+@property (copy) NSString* peerFile;
+@property (assign) long lastProfileUpdateTimestamp;
+@property (retain) NSMutableDictionary* identitiesDictionary;
+
 - (id) initWithCoreContact:(IContactPtr) inContactPtr;
 - (IContactPtr) getContactPtr;
+- (void) createCoreContactWithPeerFile:(NSString*) peerFile;
 @end

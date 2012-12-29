@@ -35,6 +35,7 @@
 
 - (void) onMediaEngineAudioRouteChanged:(HOPMediaEngineOutputAudioRoutes) audioRoute
 {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+    });
 }
 @end

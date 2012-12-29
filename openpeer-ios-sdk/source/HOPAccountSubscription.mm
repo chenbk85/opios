@@ -34,7 +34,7 @@
 
 #import "HOPAccountSubscription.h"
 #import "HOPAccountSubscription_Internal.h"
-#import "HOPProvisioningAccount.h"
+#import "HOPProvisioningAccount_Internal.h"
 
 @implementation HOPAccountSubscription
 
@@ -58,6 +58,7 @@
     if (accountSubscription)
     {
         accountSubscription->cancel();
+        [[HOPProvisioningAccount sharedProvisioningAccount] removeDelegate:self];
     }
     else
     {

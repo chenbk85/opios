@@ -30,11 +30,94 @@
  */
 
 #import "CallDelegate.h"
+#import "OpenPeer.h"
+#import <OpenpeerSDK/HOPCall.h>
+#import <OpenpeerSDK/HOPContact.h>
+#import <OpenpeerSDK/HOPTypes.h>
+#import <OpenpeerSDK/HOPConversationThread.h>
+#import "SessionManager.h"
+#import "Session.h"
+#import "MainViewController.h"
+#import "ActiveSessionViewController.h"
+
 
 @implementation CallDelegate
 
 - (void) onCallStateChanged:(HOPCall*) call callState:(HOPCallStates) callState
 {
-    
+    NSString* sessionId = [[call getConversationThread] getThreadId];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Session* session = [[[SessionManager sharedSessionManager] sessionsDictionary] objectForKey:sessionId];
+        
+        ActiveSessionViewController* sessionViewController = [[[[OpenPeer sharedOpenPeer] mainViewController] sessionViewControllersDictionary] objectForKey:sessionId];
+        switch (callState)
+        {
+            case HOPCallStatePreparing:             //Receives both parties, caller and callee.
+                {
+                    if (![[call getCaller] isSelf])
+                    {
+                        [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:YES];
+                        if (!sessionViewController)
+                            sessionViewController = [[[[OpenPeer sharedOpenPeer] mainViewController] sessionViewControllersDictionary] objectForKey:sessionId];
+                        [sessionViewController prepareForIncomingCall];
+                    }
+                    [sessionViewController updateCallState];
+                }
+                break;
+                
+            case HOPCallStateIncoming:              //Receives just callee
+                [[SessionManager sharedSessionManager] handleIncomingCall:call forSession:session];
+                [sessionViewController prepareForIncomingCall];
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStatePlaced:                //Receives just calller
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStateEarly:                 //Currently is not in use
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStateRinging:               //Receives just callee side. Now should play ringing sound
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStateRingback:              //Receives just caller side
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStateOpen:                  //Receives both parties. Call is established
+                [sessionViewController updateCallState];
+                [sessionViewController prepareForCall:YES withVideo:[call hasVideo]];
+                break;
+                
+            case HOPCallStateActive:                //Currently not in use
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStateInactive:              //Currently not in use
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStateHold:                  //Receives both parties
+                [sessionViewController updateCallState];
+                break;
+                
+            case HOPCallStateClosing:               //Receives both parties
+                [call hangup:HOPCallClosedReasonUser];
+                break;
+                
+            case HOPCallStateClosed:                //Receives both parties
+                [sessionViewController updateCallState];
+                [sessionViewController prepareForCall:NO withVideo:NO];
+                break;
+                
+            case HOPCallStateNone:
+            default:
+                break;
+        }
+    });
+
 }
 @end

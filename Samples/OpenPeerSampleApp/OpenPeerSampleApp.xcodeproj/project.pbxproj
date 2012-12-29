@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		870F337F168376450090A97F /* ActivityIndicatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 870F337D168376450090A97F /* ActivityIndicatorViewController.m */; };
+		870F3380168376450090A97F /* ActivityIndicatorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 870F337E168376450090A97F /* ActivityIndicatorViewController.xib */; };
 		8727282D166CBF9B0089CBB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8727282C166CBF9B0089CBB6 /* UIKit.framework */; };
 		8727282F166CBF9B0089CBB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8727282E166CBF9B0089CBB6 /* Foundation.framework */; };
 		87272831166CBF9B0089CBB6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87272830166CBF9B0089CBB6 /* CoreGraphics.framework */; };
@@ -33,12 +35,17 @@
 		87368ADF1675EF6100166F35 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 87368AD61675EF6100166F35 /* SBJsonWriter.m */; };
 		87368AE3167600F200166F35 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 87368AE2167600F200166F35 /* Contact.m */; };
 		8740266F1670AA52008CC0F1 /* OpenPeerUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8740266E1670AA52008CC0F1 /* OpenPeerUser.m */; };
+		87421DA3168274BB00699479 /* ActiveSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87421DA1168274BB00699479 /* ActiveSessionViewController.m */; };
+		87421DA4168274BB00699479 /* ActiveSessionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 87421DA2168274BB00699479 /* ActiveSessionViewController.xib */; };
 		874AD9D1166CE6540095FE33 /* ProvisioningAccountDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9D0166CE6540095FE33 /* ProvisioningAccountDelegate.m */; };
 		874AD9D5166CEAFB0095FE33 /* StackDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9D4166CEAFB0095FE33 /* StackDelegate.m */; };
 		874AD9D8166CEB390095FE33 /* MediaEngineDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9D7166CEB390095FE33 /* MediaEngineDelegate.m */; };
 		874AD9DB166CEB530095FE33 /* ConversationThreadDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9DA166CEB530095FE33 /* ConversationThreadDelegate.m */; };
 		874AD9DE166CEB780095FE33 /* CallDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9DD166CEB780095FE33 /* CallDelegate.m */; };
 		874AD9E5166D4C900095FE33 /* OpenPeer.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9E4166D4C900095FE33 /* OpenPeer.m */; };
+		874FF90116806D0F00B0A7A0 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 874FF90016806D0F00B0A7A0 /* Constants.m */; };
+		875CD7E2167A14810037396B /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 875CD7E1167A14810037396B /* SessionManager.m */; };
+		875CD7E5167A14960037396B /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 875CD7E4167A14960037396B /* Session.m */; };
 		87EE5FE9166E917B002C5FA3 /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 87EE5FE8166E917B002C5FA3 /* libresolv.dylib */; };
 		87EE5FF4166E9615002C5FA3 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 874ADDB4166E138A0095FE33 /* CoreAudio.framework */; };
 		87EE5FF5166E9615002C5FA3 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 874ADDBC166E14440095FE33 /* CoreMedia.framework */; };
@@ -72,6 +79,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		870F337C168376450090A97F /* ActivityIndicatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityIndicatorViewController.h; sourceTree = "<group>"; };
+		870F337D168376450090A97F /* ActivityIndicatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityIndicatorViewController.m; sourceTree = "<group>"; };
+		870F337E168376450090A97F /* ActivityIndicatorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivityIndicatorViewController.xib; sourceTree = "<group>"; };
 		87272828166CBF9B0089CBB6 /* OpenPeerSampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPeerSampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8727282C166CBF9B0089CBB6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8727282E166CBF9B0089CBB6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -118,6 +128,9 @@
 		87368AE2167600F200166F35 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
 		8740266D1670AA52008CC0F1 /* OpenPeerUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenPeerUser.h; sourceTree = "<group>"; };
 		8740266E1670AA52008CC0F1 /* OpenPeerUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenPeerUser.m; sourceTree = "<group>"; };
+		87421DA0168274BB00699479 /* ActiveSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveSessionViewController.h; sourceTree = "<group>"; };
+		87421DA1168274BB00699479 /* ActiveSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveSessionViewController.m; sourceTree = "<group>"; };
+		87421DA2168274BB00699479 /* ActiveSessionViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActiveSessionViewController.xib; sourceTree = "<group>"; };
 		874AD9CF166CE6540095FE33 /* ProvisioningAccountDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProvisioningAccountDelegate.h; sourceTree = "<group>"; };
 		874AD9D0166CE6540095FE33 /* ProvisioningAccountDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProvisioningAccountDelegate.m; sourceTree = "<group>"; };
 		874AD9D3166CEAFB0095FE33 /* StackDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackDelegate.h; sourceTree = "<group>"; };
@@ -139,6 +152,12 @@
 		874ADDCB166E2B7B0095FE33 /* libboost_regex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_regex.a; path = "../../../OP/hookflash-staging/iPhoneOS/lib/libboost_regex.a"; sourceTree = "<group>"; };
 		874ADDCC166E2B7B0095FE33 /* libboost_thread.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_thread.a; path = "../../../OP/hookflash-staging/iPhoneOS/lib/libboost_thread.a"; sourceTree = "<group>"; };
 		874ADDCD166E2B7C0095FE33 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = "../../../OP/hookflash-staging/iPhoneOS/lib/libcurl.a"; sourceTree = "<group>"; };
+		874FF8FF16806D0F00B0A7A0 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		874FF90016806D0F00B0A7A0 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		875CD7E0167A14810037396B /* SessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionManager.h; sourceTree = "<group>"; };
+		875CD7E1167A14810037396B /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
+		875CD7E3167A14960037396B /* Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
+		875CD7E4167A14960037396B /* Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
 		87EE5FE8166E917B002C5FA3 /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		87EE5FF9166F5A7E002C5FA3 /* WebLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebLoginViewController.h; sourceTree = "<group>"; };
 		87EE5FFA166F5A7F002C5FA3 /* WebLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebLoginViewController.m; sourceTree = "<group>"; };
@@ -183,6 +202,11 @@
 				87F24B5E166FF0C900A5389F /* Utility.m */,
 				87F24B5A166FEF4900A5389F /* XMLWriter.h */,
 				87F24B5B166FEF4A00A5389F /* XMLWriter.m */,
+				874FF8FF16806D0F00B0A7A0 /* Constants.h */,
+				874FF90016806D0F00B0A7A0 /* Constants.m */,
+				870F337C168376450090A97F /* ActivityIndicatorViewController.h */,
+				870F337D168376450090A97F /* ActivityIndicatorViewController.m */,
+				870F337E168376450090A97F /* ActivityIndicatorViewController.xib */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -279,6 +303,13 @@
 				870C5E181672345A00A3AA4F /* Utilities */,
 				874AD9D2166CEAC50095FE33 /* Delegates */,
 				87272833166CBF9B0089CBB6 /* Supporting Files */,
+				875CD7E0167A14810037396B /* SessionManager.h */,
+				875CD7E1167A14810037396B /* SessionManager.m */,
+				875CD7E3167A14960037396B /* Session.h */,
+				875CD7E4167A14960037396B /* Session.m */,
+				87421DA0168274BB00699479 /* ActiveSessionViewController.h */,
+				87421DA1168274BB00699479 /* ActiveSessionViewController.m */,
+				87421DA2168274BB00699479 /* ActiveSessionViewController.xib */,
 			);
 			path = OpenPeerSampleApp;
 			sourceTree = "<group>";
@@ -434,6 +465,8 @@
 				87272856166CC2640089CBB6 /* LoginViewController.xib in Resources */,
 				87EE6070166F667C002C5FA3 /* WebLoginViewController.xib in Resources */,
 				87F24B6A1670048000A5389F /* ContactsTableViewController.xib in Resources */,
+				87421DA4168274BB00699479 /* ActiveSessionViewController.xib in Resources */,
+				870F3380168376450090A97F /* ActivityIndicatorViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +504,11 @@
 				87368ADE1675EF6100166F35 /* SBJsonTokeniser.m in Sources */,
 				87368ADF1675EF6100166F35 /* SBJsonWriter.m in Sources */,
 				87368AE3167600F200166F35 /* Contact.m in Sources */,
+				875CD7E2167A14810037396B /* SessionManager.m in Sources */,
+				875CD7E5167A14960037396B /* Session.m in Sources */,
+				874FF90116806D0F00B0A7A0 /* Constants.m in Sources */,
+				87421DA3168274BB00699479 /* ActiveSessionViewController.m in Sources */,
+				870F337F168376450090A97F /* ActivityIndicatorViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,14 +587,16 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sergej Jovanovic (YGZ7PTJK96)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build/Debug-iphoneos\"",
 				);
 				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenPeerSampleApp/OpenPeerSampleApp-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "../../../OP/hookflash-libs/JMCAndHockey/Support/SBJSON";
 				INFOPLIST_FILE = "OpenPeerSampleApp/OpenPeerSampleApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -574,7 +614,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2632AFC7-502B-4AFA-8D29-AF147DD20BF5";
+				PROVISIONING_PROFILE = "";
+				WARNING_CFLAGS = "-Wno-c++11-extensions";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -584,14 +625,16 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sergej Jovanovic (YGZ7PTJK96)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build/Debug-iphoneos\"",
 				);
 				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenPeerSampleApp/OpenPeerSampleApp-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "../../../OP/hookflash-libs/JMCAndHockey/Support/SBJSON";
 				INFOPLIST_FILE = "OpenPeerSampleApp/OpenPeerSampleApp-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -609,7 +652,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2632AFC7-502B-4AFA-8D29-AF147DD20BF5";
+				PROVISIONING_PROFILE = "";
+				WARNING_CFLAGS = "-Wno-c++11-extensions";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

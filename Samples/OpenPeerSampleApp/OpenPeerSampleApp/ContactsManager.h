@@ -37,6 +37,7 @@
 @interface ContactsManager : NSObject<UIWebViewDelegate,HOPProvisioningAccountIdentityLookupQueryDelegate,HOPProvisioningAccountPeerFileLookupQueryDelegate>
 
 @property (retain, nonatomic) NSMutableArray *contactArray;
+@property (retain, nonatomic) NSMutableDictionary *contactsDictionaryByProvider; //This is dictionary of dictionaries. Each provider has its own dictionary with contacts whose keys are contact provider id
 @property (retain, nonatomic) UIWebView *linkedinContactsWebView;
 
 + (id) sharedContactsManager;
@@ -46,5 +47,5 @@
 - (void)contactsLookupQuery:(NSArray *)contacts;
 - (void)peerFileLookupQuery:(NSArray *)contacts;
 
-- (Contact*) getContactForUserId:(NSString*) userId;
+- (Contact*) getContactForIdentities:(NSArray*) identities;
 @end

@@ -29,26 +29,38 @@
  
  */
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@class HOPContact;
+@class Session;
+@interface ActiveSessionViewController : UIViewController
 
-@interface HOPMessage : NSObject
+@property (nonatomic, retain) Session* session;
 
-@property (nonatomic, copy) NSString* messageID;
-@property (nonatomic, retain) HOPContact* contact;
-@property (nonatomic, copy) NSString* type;
-@property (nonatomic, copy) NSString* text;
-@property (nonatomic, retain) NSDate* date;
+@property (retain, nonatomic) IBOutlet UIView *videoView;
+@property (retain, nonatomic) IBOutlet UIView *callStatusView;
+@property (retain, nonatomic) IBOutlet UIView *buttonsView;
+@property (retain, nonatomic) IBOutlet UIView *incomingCallView;
+@property (retain, nonatomic) IBOutlet UIImageView *videoImageView;
+@property (retain, nonatomic) IBOutlet UIImageView *videoPreviewImageView;
 
-/**
- Message init method
- @param inMessageId NSString Message uique identifier.
- @param messageText NSString Message text.
- @param inContact HOPContact Message recipient.
- @param inMessageType NSString Message mime type. It is on user to create mime types. Currently there are no specified mime types.
- @param inMessageDate NSDate Message date.
- @returns Ponter to the created contact object
- */
-- (id) initWithMessageId:(NSString*) inMessageId andMessage:(NSString*) messageText andContact:(HOPContact*) inContact andMessageType:(NSString*) inMessageType andMessageDate:(NSDate*) inMessageDate;
+
+@property (retain, nonatomic) IBOutlet UILabel *statusLabel;
+
+@property (retain, nonatomic) IBOutlet UIButton *voiceCallButton;
+@property (retain, nonatomic) IBOutlet UIButton *videoCallButton;
+@property (retain, nonatomic) IBOutlet UIButton *messageButton;
+
+@property (assign) BOOL isIncomingCall;
+
+- (id) initWithSession:(Session*) inSession;
+
+- (IBAction)actionSendMessage:(id)sender;
+- (IBAction)actionVideoCall:(id)sender;
+- (IBAction)actionVoiceCall:(id)sender;
+- (IBAction)actionDeclineCall:(id)sender;
+- (IBAction)actionAcceptCall:(id)sender;
+
+- (void) prepareForCall:(BOOL) isCallSession withVideo:(BOOL) includeVideo;
+- (void) prepareForIncomingCall;
+- (void) updateCallState;
 @end

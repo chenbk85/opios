@@ -37,16 +37,22 @@
 
 @interface HOPContact : NSObject
 
-@property (copy) NSString* contactId;
-@property (nonatomic, copy, getter = getUserID) NSString* userId;
 
 /**
  Contact initialization method
  @param publicPeerFile NSString Public peer file of the contact that will be created (self or remote)
  @returns Ponter to the created contact object
  */
-+ (id) contactWithPeerFile:(NSString*) publicPeerFile;
-//- (id) initWithPeerFile:(NSString*) publicPeerFile;
+//+ (id) contactWithPeerFile:(NSString*) publicPeerFile userId:(NSString*) inUserId contactId:(NSString*) inContactId;
+
+/**
+ Contact init method used for creating HOPContact object when contact data (userId, contactId and peerFile) are stored locally
+ @param publicPeerFile NSString Public peer file of the contact that will be created (self or remote). This is passed if peer file is sored locally. Otherwise it is nil
+ @param inUserId user Id string stored locally (initialy is received for identity lookup). This argument is mandatory.
+ @param inContactId contact Id string stored locally (initialy is received for identity lookup). This argument is mandatory.
+ @returns Ponter to the created contact object
+ */
+- (id) initWithPeerFile:(NSString*) publicPeerFile userId:(NSString*) inUserId contactId:(NSString*) inContactId;
 
 
 /**
@@ -111,4 +117,16 @@
  */
 - (unsigned long) getProfileVersion;
 
+
+/**
+ Retrieves contact peer file
+ @returns Contact peer file
+ */
+- (NSString*) getPeerFile;
+
+/**
+ Retrieves associated identities for contact
+ @returns List of contact associated identities
+ */
+- (NSArray*) getIdentities;
 @end

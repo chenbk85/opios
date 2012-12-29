@@ -33,7 +33,9 @@
 
 @interface WebLoginViewController : UIViewController
 @property (retain, nonatomic) IBOutlet UIWebView *loginWebView;
-@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activitiIndicator;
+@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (retain, nonatomic) IBOutlet UILabel *activityLabel;
+
 
 - (void) openLoginUrl:(NSString*) url;
 @end

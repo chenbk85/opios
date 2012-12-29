@@ -29,26 +29,34 @@
  
  */
 
-#import <Foundation/Foundation.h>
+#import "Session.h"
+#import "Contact.h"
 
-@class HOPContact;
+@implementation Session
 
-@interface HOPMessage : NSObject
+- (id) initWithContact:(Contact*) inContact conversationThread:(HOPConversationThread*) inConverationThread
+{
+    self = [super init];
+    if (self)
+    {
+        self.participantsArray = [[[NSMutableArray alloc] init] autorelease];
+        [self.participantsArray addObject:inContact];
+    }
+    self.conversationThread = inConverationThread;
+    return self;
+}
 
-@property (nonatomic, copy) NSString* messageID;
-@property (nonatomic, retain) HOPContact* contact;
-@property (nonatomic, copy) NSString* type;
-@property (nonatomic, copy) NSString* text;
-@property (nonatomic, retain) NSDate* date;
+- (id) initWithContacts:(NSArray*) inContacts conversationThread:(HOPConversationThread*) inConverationThread
+{
+    self = [super init];
+    if (self)
+    {
+        self.participantsArray = [[[NSMutableArray alloc] init] autorelease];
+        if (inContacts)
+            [self.participantsArray addObjectsFromArray:inContacts];
+    }
+    self.conversationThread = inConverationThread;
+    return self;
+}
 
-/**
- Message init method
- @param inMessageId NSString Message uique identifier.
- @param messageText NSString Message text.
- @param inContact HOPContact Message recipient.
- @param inMessageType NSString Message mime type. It is on user to create mime types. Currently there are no specified mime types.
- @param inMessageDate NSDate Message date.
- @returns Ponter to the created contact object
- */
-- (id) initWithMessageId:(NSString*) inMessageId andMessage:(NSString*) messageText andContact:(HOPContact*) inContact andMessageType:(NSString*) inMessageType andMessageDate:(NSDate*) inMessageDate;
 @end

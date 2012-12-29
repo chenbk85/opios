@@ -32,19 +32,20 @@
 #import "OpenPeer.h"
 #import "OpenPeerUser.h"
 #import "Utility.h"
-//sdk
+//SDK
 #import "OpenpeerSDK/HOPStack.h"
-//managers
+//Managers
 #import "LoginManager.h"
-//view controllers
-#import "MainViewController.h"
-//delegates
+//Delegates
 #import "StackDelegate.h"
 #import "MediaEngineDelegate.h"
 #import "ConversationThreadDelegate.h"
 #import "CallDelegate.h"
 #import "ProvisioningAccountDelegate.h"
+//View controllers
+#import "MainViewController.h"
 
+//Private methods
 @interface OpenPeer ()
 
 - (void) createDelegates;
@@ -76,10 +77,13 @@
 {
     self.mainViewController = inMainViewController;
     
+    //Created all delegates required for openpeer stack initialization.
     [self createDelegates];
 
+    //Init openpeer stack and set created delegates
     BOOL prepared = [[HOPStack sharedStack] initStackDelegate:self.stackDelegate mediaEngineDelegate:self.mediaEngineDelegate conversationThreadDelegate:self.conversationThreadDelegate callDelegate:self.callDelegate userAgent:[Utility getUserAgentName] deviceOs:[Utility getDeviceOs] platform:[Utility getPlatform]];
     
+    //If openpeer stack is created, start with login procedure and display login view
     if (prepared)
     {
         [[LoginManager sharedLoginManager] login];

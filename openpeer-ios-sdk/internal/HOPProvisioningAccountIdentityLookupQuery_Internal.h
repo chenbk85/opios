@@ -42,7 +42,9 @@ using namespace hookflash::provisioning;
     
 }
 
-@property (copy) NSNumber* uniqueId;
+@property (nonatomic,copy) NSNumber* uniqueId;
+@property (nonatomic,retain) NSMutableArray* identities;
+@property (nonatomic,retain) NSMutableArray* contacts;
 
 - (void) setAccountIdentityLookupQueryPtr:(IAccountIdentityLookupQueryPtr) inAccountIdentityLookupQueryPtr;
 - (IAccountIdentityLookupQueryPtr) getAccountIdentityLookupQueryPtr;

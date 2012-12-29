@@ -42,7 +42,7 @@
 
 @implementation OpenPeerStorageManager
 
-+ (id)sharedInstance
++ (id)sharedStorageManager
 {
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
@@ -56,13 +56,19 @@
 
 - (void) initSingleton
 {
-    _dictionaryCalls = [[NSMutableDictionary alloc] retain];
+    _dictionaryCalls = [[NSMutableDictionary alloc] init];
+    _dictionaryContacts = [[NSMutableDictionary alloc] init];
+    _dictionaryContactsWithUserId = [[NSMutableDictionary alloc] init];
+    _dictionaryConversationThreads = [[NSMutableDictionary alloc] init];
 }
 
 
 - (void)dealloc
 {
     [_dictionaryCalls release];
+    [_dictionaryContacts release];
+    [_dictionaryContactsWithUserId release];
+    
     [super dealloc];
 }
 
@@ -107,6 +113,21 @@
 {
     [_dictionaryContacts setObject:contact forKey:contactId];
 }
+
+- (HOPContact*) getContactForUserId:(NSString*) userId
+{
+    HOPContact* contact = nil;
+    
+    contact = [_dictionaryContactsWithUserId objectForKey:userId];
+    
+    return contact;
+}
+- (void) setContact:(HOPContact*) contact withContactId:(NSString*) contactId andUserId:(NSString*) userId
+{
+    [self setContact:contact forId:contactId];
+    [_dictionaryContactsWithUserId setObject:contact forKey:userId];
+}
+
 
 - (HOPProvisioningAccount*) getProvisioningAccountForUserId:(NSString*) userId
 {

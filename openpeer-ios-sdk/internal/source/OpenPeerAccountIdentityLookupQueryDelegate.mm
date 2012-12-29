@@ -31,7 +31,12 @@
 
 
 #import "OpenPeerAccountIdentityLookupQueryDelegate.h"
+#import "HOPProvisioningAccountIdentityLookupQuery_Internal.h"
 #import "HOPProvisioningAccount_Internal.h"
+#import "OpenPeerStorageManager.h"
+#import "HOPLookupProfileInfo.h"
+#import "HOPContact_Internal.h"
+#import "HOPIdentity.h"
 
 OpenPeerAccountIdentityLookupQueryDelegate::OpenPeerAccountIdentityLookupQueryDelegate(id<HOPProvisioningAccountIdentityLookupQueryDelegate> inAccountIdentityLookupQueryDelegate)
 {
@@ -47,6 +52,35 @@ void OpenPeerAccountIdentityLookupQueryDelegate::onAccountIdentityLookupQueryCom
 {
     HOPProvisioningAccountIdentityLookupQuery* hopQuery = [[HOPProvisioningAccount sharedProvisioningAccount] getProvisioningAccountIdentityLookupQueryForUniqueId:[NSNumber numberWithUnsignedLong:query->getID()]];
     
-    if (hopQuery)
-        [accountIdentityLookupQueryDelegate onAccountIdentityLookupQueryComplete:hopQuery];
+    if([hopQuery isComplete] && [hopQuery didSucceed])
+    {
+        if (!hopQuery.contacts)
+            hopQuery.contacts = [[[NSMutableArray alloc] init] autorelease];
+        else
+            [hopQuery.contacts removeAllObjects];
+        
+        //NSMutableSet* setOfContacts = [[NSMutableSet alloc] init];
+        for(HOPIdentity* identity in [hopQuery getIdentities])
+        {
+            HOPLookupProfileInfo* lookupProfileInfo = [hopQuery getLookupProfile:identity];
+           
+            if (lookupProfileInfo)
+            {
+                //HOP_TODO: HOPContact add dictionary for identities object hopidentiy key providerid
+                HOPContact* contact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:lookupProfileInfo.contactId];
+                if (!contact)
+                {
+                    contact = [[[HOPContact alloc] initWithPeerFile:nil userId:lookupProfileInfo.userId contactId:lookupProfileInfo.contactId] autorelease];
+                    [[OpenPeerStorageManager sharedStorageManager] setContact:contact withContactId:lookupProfileInfo.contactId andUserId:lookupProfileInfo.userId];
+                }
+               
+                [contact.identitiesDictionary setObject:identity forKey:[NSNumber numberWithInt:identity.identityType]];
+                //contact.lastProfileUpdateTimestamp = lookupProfileInfo.lastProfileUpdateTimestamp;
+                
+                [hopQuery.contacts addObject:contact];
+            }
+        }
+    }
+
+    [accountIdentityLookupQueryDelegate onAccountIdentityLookupQueryComplete:hopQuery];
 }

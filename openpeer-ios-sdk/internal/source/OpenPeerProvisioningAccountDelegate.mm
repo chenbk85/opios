@@ -52,7 +52,7 @@ HOPProvisioningAccount* OpenPeerProvisioningAccountDelegate::getOpenPeerProvisio
     NSString* userId = [NSString stringWithUTF8String:account->getUserID()];
     if (userId)
     {
-        hopProvisioningAccount = [[OpenPeerStorageManager sharedInstance] getProvisioningAccountForUserId:userId];
+        hopProvisioningAccount = [[OpenPeerStorageManager sharedStorageManager] getProvisioningAccountForUserId:userId];
     }
     return hopProvisioningAccount;
 }

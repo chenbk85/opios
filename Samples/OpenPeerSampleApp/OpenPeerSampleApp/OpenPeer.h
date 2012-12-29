@@ -31,25 +31,24 @@
 
 #import <Foundation/Foundation.h>
 
-@class MainViewController;
-
+@class CallDelegate;
 @class StackDelegate;
 @class MediaEngineDelegate;
 @class ConversationThreadDelegate;
-@class CallDelegate;
 @class ProvisioningAccountDelegate;
+@class MainViewController;
 
 @interface OpenPeer : NSObject
 
-@property (retain, nonatomic) MainViewController *mainViewController;
+@property (retain, nonatomic) CallDelegate *callDelegate;
 @property (retain, nonatomic) StackDelegate *stackDelegate;
 @property (retain, nonatomic) MediaEngineDelegate *mediaEngineDelegate;
 @property (retain, nonatomic) ConversationThreadDelegate *conversationThreadDelegate;
-@property (retain, nonatomic) CallDelegate *callDelegate;
 @property (retain, nonatomic) ProvisioningAccountDelegate *provisioningAccountDelegate;
-
+@property (retain, nonatomic) MainViewController *mainViewController;
 
 + (id) sharedOpenPeer;
 
 - (void) prepareWithMainViewController:(MainViewController*) inMainViewController;
+
 @end

@@ -33,6 +33,8 @@
 #import "ProvisioningAccountDelegate.h"
 #import "OpenpeerSDK/HOPProvisioningAccount.h"
 #import "LoginManager.h"
+#import "OpenPeer.h"
+#import "MainViewController.h"
 
 @implementation ProvisioningAccountDelegate
 
@@ -41,68 +43,58 @@
 //This method handles account state changes from SDK.
 - (void) onProvisioningAccountStateChanged:(HOPProvisioningAccount*) account accountStates:(HOPProvisioningAccountStates) state
 {
-    //[LoginManager sharedLoginManager];
-    switch (state)
-    {
-        case HOPProvisioningAccountStatePending:
-            
-            break;
-            
-        case HOPProvisioningAccountStatePendingOAuthLogin:
-            [[LoginManager sharedLoginManager] onLoginSocialUrlReceived:[account getOAuthURL]];
-            break;
-            
-        case HOPProvisioningAccountStatePendingAuthorizationPIN:
-            
-            break;
-            
-        case HOPProvisioningAccountStateReady:
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [LoginManager sharedLoginManager];
+        switch (state)
         {
-            [[LoginManager sharedLoginManager] onUserLoggedIn];
+            case HOPProvisioningAccountStatePending:
+                
+                break;
+                
+            case HOPProvisioningAccountStatePendingOAuthLogin:
+                [[LoginManager sharedLoginManager] onLoginSocialUrlReceived:[account getOAuthURL]];
+                break;
+                
+            case HOPProvisioningAccountStatePendingAuthorizationPIN:
+                
+                break;
+                
+            case HOPProvisioningAccountStateReady:
+                [[LoginManager sharedLoginManager] onUserLoggedIn];
+                break;
+                
+            case HOPProvisioningAccountStateShuttingDown:
+                break;
+            case HOPProvisioningAccountStateShutdown:
+                //[[LoginManager sharedLoginManager] login];
+                [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
+                break;
+                
+            default:
+                break;
         }
-            break;
-            
-        case HOPProvisioningAccountStateShutdown:
-            
-            
-            [[LoginManager sharedLoginManager] login];
-            
-            break;
-            
-        case HOPProvisioningAccountStateShuttingDown:
-        {
-//            UIAlertView* alertView = [[[UIAlertView alloc] initWithTitle:@"Shutdown"
-//                                                                message:@""
-//                                                               delegate:self
-//                                                      cancelButtonTitle:@"Ok"
-//                                                      otherButtonTitles:nil] autorelease];
-//            [alertView show];
-            
-            
-        }
-            break;
-            
-        default:
-            break;
-    }
+    });
 }
 
 //This event is fired once account encounter error. After error, shutdown should be called.
 - (void) onProvisioningAccountError:(HOPProvisioningAccount*) account errorCodes:(HOPProvisioningAccountErrorCodes) error
 {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        });
 }
 
 //This event notifies that user profile information have changed, and that update is required.
 - (void) onProvisioningAccountProfileChanged:(HOPProvisioningAccount*) account
 {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        });
 }
 
 //Result of the identity validation.
 - (void) onProvisioningAccountIdentityValidationResult:(HOPProvisioningAccount*) account identity:(id) identity result:(HOPProvisioningAccountIdentityValidationResultCode) result
 {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        });
 }
 
 @end

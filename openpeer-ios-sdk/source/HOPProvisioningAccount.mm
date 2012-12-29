@@ -75,8 +75,9 @@
     self = [super init];
     if (self)
     {
-        self.dictionaryOfIdentityLookupQueries = [[NSMutableDictionary alloc] init];
-        self.dictionaryOfPeerFilesLookupQueries = [[NSMutableDictionary alloc] init];
+        self.dictionaryOfIdentityLookupQueries = [[[NSMutableDictionary alloc] init] autorelease];
+        self.dictionaryOfPeerFilesLookupQueries = [[[NSMutableDictionary alloc] init] autorelease];
+        self.listOfProvisioningAccountDelegates = [[[NSMutableArray alloc] init] autorelease];
     }
     return self;
 }
@@ -571,29 +572,10 @@
 }
 
 
-//- (HOPProvisioningAccount*) getProvisioningAccount
-//{
-////    if (!hopAccount)
-////    {
-////        if(accountPtr)
-////        {
-////            hookflash::IAccountPtr openPeerAccountPtr = accountPtr->getOpenPeerAccount();
-////            if (openPeerAccountPtr)
-////            {
-////                hopAccount = [[HOPAccount alloc] init];
-////                [hopAccount setAccountPtr:openPeerAccountPtr];
-////            }
-////        }
-////        else
-////        {
-////            [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
-////        }
-////    }
-//    
-//    return self;
-//}
-
-// This method will return only provisioning account state, and not openpeer account state. This is done by purpose because provisioning account owns openpeer account, therefore, it always has lesser state than openpeer account.
+/**
+ Retrieves current provisoining account state. It will return only provisioning account state, and not openpeer account state. This is done by purpose because provisioning account owns openpeer account, therefore, it always has lesser state than openpeer account.
+ @returns HOPProvisioningAccountStates Current provisoining account state
+ */
 - (HOPProvisioningAccountStates) getState
 {
     HOPProvisioningAccountStates ret = HOPProvisioningAccountStateNone;
@@ -609,6 +591,10 @@
     return ret;
 }
 
+/**
+ Retrieves last openpeer account error
+ @returns OpenPeer_AccountStates current state of the openpeer account
+ */
 - (HOPProvisioningAccountErrorCodes) getLastError
 {
     HOPProvisioningAccountErrorCodes ret = HOPProvisioningAccountErrorCodeNone;
@@ -822,6 +808,7 @@
                     {
                         ret = [[HOPProvisioningAccountPush alloc] init];
                         [ret setAccountPushPtr:accountPushPtr];
+                        break;
                     }
                 }
             }
@@ -874,7 +861,7 @@
     return [ret autorelease];
 }
 
-- (HOPProvisioningAccountPeerFileLookupQuery*) peerFileLookup: (id<HOPProvisioningAccountPeerFileLookupQueryDelegate>) delegate userIDs: (NSArray*) userIDs associatedContactIDs: (NSArray*) associatedContactIDs
+- (HOPProvisioningAccountPeerFileLookupQuery*) peerFileLookup: (id<HOPProvisioningAccountPeerFileLookupQueryDelegate>) delegate contacts:(NSArray*) contacts
 {
     HOPProvisioningAccountPeerFileLookupQuery* ret = nil;
     
@@ -884,19 +871,15 @@
         
         if (openPeerAccountPeerFileLookupQueryDelegatePtr)
         {
-            if ([userIDs count] > 0)
+            if ([contacts count] > 0)
             {
                 provisioning::IAccount::UserIDList userIDList;
-                for (NSString* userId in userIDs)
-                {
-                    zsLib::String userID = [userId UTF8String];
-                    userIDList.push_back(userID);
-                }
-                
                 provisioning::IAccount::ContactIDList contactIDList;
-                for (NSString* contactId in associatedContactIDs)
+                for (HOPContact* contact in contacts)
                 {
-                    zsLib::String contactID = [contactId UTF8String];
+                    zsLib::String userID = [contact.userId UTF8String];
+                    userIDList.push_back(userID);
+                    zsLib::String contactID = [contact.contactId UTF8String];
                     contactIDList.push_back(contactID);
                 }
                 
@@ -989,46 +972,6 @@
     }
 }
 
-/**
- Retrieves current openpeer account state
- @returns OpenPeer_AccountStates current state of the openpeer account
- */
-/*- (HOPAccountStates) getState
-{
-    HOPAccountStates ret = HOPAccountStateShuttingDown;
-    
-    if (accountPtr)
-    {
-        ret = (HOPAccountStates) accountPtr->getState();
-    }
-    else
-    {
-        [NSException raise:NSInternalInconsistencyException format:@"Invalid OpenPeer account pointer!"];
-    }
-    return ret;
-}*/
-
-
-/**
- Retrieves last openpeer account error
- @returns OpenPeer_AccountStates current state of the openpeer account
- */
-//HOP_TODO: handle error for provisioning and opnepeer account
-/*- (HOPAccountErrors) getLastError
-{
-    HOPAccountErrors ret = HOPAccountErrorInternalError;
-    
-    if (accountPtr)
-    {
-        ret = (HOPAccountErrors) accountPtr->getLastError();
-    }
-    else
-    {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
-    }
-    return ret;
-}*/
-
 
 - (HOPAccountSubscription*) subscribe: (id<HOPProvisioningAccountDelegate>) delegate
 {
@@ -1045,14 +988,14 @@
             
             accountSubscription = [[HOPAccountSubscription alloc] init];
             [accountSubscription setAccountSubscription:accountSubscriptionPtr];
-            return [accountSubscription autorelease];
+            [self.listOfProvisioningAccountDelegates addObject:accountSubscription];
         }
     }
     else
     {
         [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
     }
-    return accountSubscription;
+    return [accountSubscription autorelease];
 }
 
 /**
@@ -1067,7 +1010,14 @@
         IContactPtr contactPtr = provisioningAccountPtr->getOpenPeerAccount()->getSelfContact();
         if (contactPtr)
         {
-            hopContact = [[OpenPeerStorageManager sharedInstance] getContactForId:[NSString stringWithUTF8String:contactPtr->getContactID()]];
+            NSString* contactId = [NSString stringWithUTF8String:contactPtr->getContactID()];
+            hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactId];
+            if (!hopContact)
+            {
+                hopContact = [[HOPContact alloc] initWithCoreContact:contactPtr];
+                [[OpenPeerStorageManager sharedStorageManager] setContact:hopContact forId:contactId];
+                [hopContact release];
+            }
         }
     }
     else
@@ -1184,7 +1134,7 @@
     HOPConversationThread* hopConversationThread = nil;
     if ([threadID length] > 0)
     {
-        hopConversationThread = [[OpenPeerStorageManager sharedInstance] getConversationThreadForId:threadID];
+        hopConversationThread = [[OpenPeerStorageManager sharedStorageManager] getConversationThreadForId:threadID];
     }
     
     return hopConversationThread;
@@ -1196,7 +1146,7 @@
  */
 - (NSArray*) getConversationThreads
 {
-    return [[OpenPeerStorageManager sharedInstance] getConversationThreads];
+    return [[OpenPeerStorageManager sharedStorageManager] getConversationThreads];
 }
 
 - (HOPProvisioningAccountIdentityLookupQuery*) getProvisioningAccountIdentityLookupQueryForUniqueId:(NSNumber*) uniqueId
@@ -1215,6 +1165,11 @@
         ret = [self.dictionaryOfPeerFilesLookupQueries objectForKey:uniqueId];//[[self.dictionaryOfPeerFilesLookupQueries allValues] objectAtIndex:0];
     
     return ret;
+}
+
+- (void) removeDelegate:(HOPAccountSubscription*) subscribedDelegate
+{
+    [self.listOfProvisioningAccountDelegates removeObject:subscribedDelegate];
 }
 @end
 

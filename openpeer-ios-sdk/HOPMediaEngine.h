@@ -34,8 +34,6 @@
 #import "HOPMediaEngineRtpRtcpStatistics.h"
 #import "HOPTypes.h"
 
-using namespace hookflash;
-
 
 @interface HOPMediaEngine : NSObject
 
@@ -57,6 +55,17 @@ using namespace hookflash;
  Returns singleton object of this class.
  */
 + (id)sharedInstance;
+
+/**
+ Sets video parameters for current orientation. Should be called when device orientation changes.
+ */
+- (void) setVideoOrientation;
+
+/**
+ Sets default orientation that is used when defice is in face up / face down position.
+ @param orientation Default video orientation
+ */
+- (void) setDefaultVideoOrientation: (HOPMediaEngineVideoOrientations) orientation;
 
 /**
  Sets window for rendering local capture video.

@@ -31,18 +31,33 @@
 
 #import <UIKit/UIKit.h>
 
+@class Session;
+
 @class LoginViewController;
 @class WebLoginViewController;
 @class ContactsTableViewController;
 
+
 @interface MainViewController : UIViewController
+
+@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (retain, nonatomic) IBOutlet UILabel *activityLabel;
+@property (retain, nonatomic) IBOutlet UIView *activityView;
+
 
 @property (retain, nonatomic) LoginViewController *loginViewController;
 @property (retain, nonatomic) WebLoginViewController *webLoginViewController;
 @property (retain, nonatomic) ContactsTableViewController *contactsTableViewController;
-
 @property (retain, nonatomic) UINavigationController *contactsNavigationController;
+
+@property (retain, nonatomic) NSMutableDictionary *sessionViewControllersDictionary;
+
 - (void) showLoginView;
 - (void) showWebLoginView:(NSString*) url;
 - (void) showContactsTable;
+
+- (void) showSessionViewControllerForSession:(Session*) session;
+- (void) removeSessionViewControllerForSession:(NSString*) sessionId;
+
+- (void) showIncominCallForSession:(Session*) session forIncomingCall:(BOOL) incomingCall;
 @end

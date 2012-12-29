@@ -30,13 +30,16 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <OpenpeerSDK/HOPTypes.h>
 
 @interface Utility : NSObject
 
 + (NSString *) base64StringFromData: (NSData *)data length: (int)length;
-+ (NSString *)decodeBase64:(NSString *)data64based;
++ (NSString *) decodeBase64:(NSString *)data64based;
 + (NSString*) getDeviceOs;
 + (NSString*) getPlatform;
 + (NSString*) getUserAgentName;
-+ (void)removeCookiesAndClearCredentialsForUrl:(NSString*) url;
++ (void) removeCookiesAndClearCredentialsForUrl:(NSString*) url;
++ (NSString *) getGUIDstring;
++ (NSString*) getCallStateAsString:(HOPCallStates) callState;
 @end

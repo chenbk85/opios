@@ -36,6 +36,7 @@
 
 #import "HOPStack_Internal.h"
 #import "OpenPeerUtility.h"
+#import "OpenPeerStorageManager.h"
 
 using namespace hookflash;
 
@@ -46,7 +47,7 @@ using namespace hookflash;
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
     dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] init]; // or some other init method
+        _sharedObject = [[self alloc] initSingleton]; // or some other init method
     });
     return _sharedObject;
 }
@@ -94,7 +95,23 @@ using namespace hookflash;
 
 - (OpenpeerProvisioning_IdentityLoginSession*) identityLogin: (id<OpenpeerProvisioning_IdentityLoginSessionDelegate>) delegate identityBaseURI: (NSString*) identityBaseURI identityProvider: (NSString*) identityProvider
 {
+    OpenpeerProvisioning_IdentityLoginSession* identitySession = nil;
     
+    if (provisioningAccountPtr)
+    {
+        boost::shared_ptr<OpenPeerIdentityLoginSessionDelegate_ForFutureUse> openPeerIdentityLoginSessionDelegatePtr = OpenPeerIdentityLoginSessionDelegate_ForFutureUse::create(delegate);
+        
+        hookflash::provisioning2::IIdentityLoginSessionPtr coreIdentitySessionPtr = provisioningAccountPtr->identityLogin(openPeerIdentityLoginSessionDelegatePtr, [identityBaseURI UTF8String], [identityProvider UTF8String]);
+        
+        if (coreIdentitySessionPtr) {
+            identitySession = [[OpenpeerProvisioning_IdentityLoginSession alloc] initWithIdentityLoginSession:coreIdentitySessionPtr];
+        }
+    }
+    else
+    {
+        [NSException raise:NSInternalInconsistencyException format:@"Invalid provisioning account pointer!"];
+    }
+    return [identitySession autorelease];
 }
 
 - (void) shutdown
@@ -110,8 +127,10 @@ using namespace hookflash;
     }
 }
 
-- (void) getKnownIdentities: (NSArray*) outIdentities
+- (NSArray*) getKnownIdentities
 {
+    NSMutableArray* outIdentities = nil;
+    
     if(provisioningAccountPtr)
     {
         std::list<hookflash::provisioning2::IAccount::Identity> coreIdentities;
@@ -136,12 +155,10 @@ using namespace hookflash;
     {
         [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
     }
+    
+    return [outIdentities autorelease];
 }
 
-/**
- Sets identities of the current user.
- @param identities NSArray Array of identities.
- */
 - (void) setKnownIdentities: (NSArray*) identities
 {
     if(!provisioningAccountPtr)
@@ -206,15 +223,58 @@ using namespace hookflash;
 
 - (OpenpeerProvisioning_AccountIdentityLookupQuery*) identityLookup: (id<OpenpeerProvisioning_AccountIdentityLookupQueryDelegate>) delegate identities: (NSArray*) identities
 {
+    OpenpeerProvisioning_AccountIdentityLookupQuery* ret = nil;
+    if (provisioningAccountPtr)
+    {
+        boost::shared_ptr<OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse> openPeerAccountIdentityLookupQueryDelegatePtr = OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse::create(delegate);
+        
+        if (openPeerAccountIdentityLookupQueryDelegatePtr)
+        {
+            if ([identities count] > 0)
+            {
+                provisioning2::IAccount::IdentityURIList identityList;
+                for (NSString* identity in identities)
+                {
+                    identityList.push_back([identity UTF8String]);
+                }
+                provisioning2::IAccountIdentityLookupQueryPtr accountIdentityLookupQueryPtr = provisioningAccountPtr->lookup(openPeerAccountIdentityLookupQueryDelegatePtr, identityList);
+                
+                if (accountIdentityLookupQueryPtr)
+                {
+                    ret = [[OpenpeerProvisioning_AccountIdentityLookupQuery alloc] init];
+                    [ret setAccountIdentityLookupQueryPtr:accountIdentityLookupQueryPtr];
+                    ret.uniqueId = [NSNumber numberWithUnsignedLong:accountIdentityLookupQueryPtr->getID()];
+                    [self.dictionaryOfIdentityLookupQueries setObject:ret forKey:ret.uniqueId];
+                }
+            }
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
+    }
     
+    return [ret autorelease];
 }
 
 - (OpenpeerProvisioning_AccountPeerFileLookupQuery*) peerFileLookup: (id<OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate>) delegate peerContacts: (NSArray*) peerContacts
 {
-    
+    //TBD once SDK is stabilized
+    return nil;
 }
 
 #pragma mark - Internal methods implementation
+
+- (id) initSingleton
+{
+    self = [super init];
+    if (self)
+    {
+        self.dictionaryOfIdentityLookupQueries = [[[NSMutableDictionary alloc] init] autorelease];
+        self.dictionaryOfPeerFilesLookupQueries = [[[NSMutableDictionary alloc] init] autorelease];
+    }
+    return self;
+}
 
 - (BOOL) createLocalDelegates:(id<HOPOpenpeerProvisioningAccountDelegate>) provisioningAccountDelegate
 {
@@ -230,6 +290,24 @@ using namespace hookflash;
 - (void) deleteLocalDelegates
 {
     openpeerProvisioningAccountDelegatePtr.reset();
+}
+
+- (OpenpeerProvisioning_AccountIdentityLookupQuery*) getProvisioningAccountIdentityLookupQueryForUniqueId:(NSNumber*) uniqueId
+{
+    OpenpeerProvisioning_AccountIdentityLookupQuery* ret = nil;
+    if (uniqueId)
+        ret = [self.dictionaryOfIdentityLookupQueries objectForKey:uniqueId];//[[self.dictionaryOfIdentityLookupQueries allValues] objectAtIndex:0];
+    
+    return ret;
+}
+
+- (OpenpeerProvisioning_AccountPeerFileLookupQuery*) getProvisioningAccountPeerFileLookupQueryForUniqueId:(NSNumber*) uniqueId
+{
+    OpenpeerProvisioning_AccountPeerFileLookupQuery* ret = nil;
+    if (uniqueId)
+        ret = [self.dictionaryOfPeerFilesLookupQueries objectForKey:uniqueId];//[[self.dictionaryOfPeerFilesLookupQueries allValues] objectAtIndex:0];
+    
+    return ret;
 }
 /*
  - (HOPProvisioningAccountIdentityLookupQuery*) identityLookup: (id<HOPProvisioningAccountIdentityLookupQueryDelegate>) delegate identities: (NSArray*) identities
@@ -512,6 +590,252 @@ using namespace hookflash;
 
 @end
 
+#pragma mark - OpenpeerProvisioning_AccountIdentityLookupQuery.mm
+@implementation OpenpeerProvisioning_AccountIdentityLookupQuery
+
+- (void)dealloc
+{
+    [_identities release];
+    [_contacts release];
+    [_uniqueId release];
+    [super dealloc];
+}
+
+- (void) setAccountIdentityLookupQueryPtr:(hookflash::provisioning2::IAccountIdentityLookupQueryPtr) inAccountIdentityLookupQueryPtr
+{
+    accountIdentityLookupQueryPtr = inAccountIdentityLookupQueryPtr;
+    
+}
+
+- (hookflash::provisioning2::IAccountIdentityLookupQueryPtr) getAccountIdentityLookupQueryPtr
+{
+    return accountIdentityLookupQueryPtr;
+}
+
+- (BOOL) isComplete {
+    
+    BOOL ret = NO;
+    
+    if (accountIdentityLookupQueryPtr)
+    {
+        ret = accountIdentityLookupQueryPtr->isComplete();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer identity lookup pointer!"];
+    }
+    return ret;
+}
+
+- (BOOL) didSucceed {
+    
+    BOOL ret = NO;
+    
+    if (accountIdentityLookupQueryPtr)
+    {
+        ret = accountIdentityLookupQueryPtr->didSucceed();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer identity lookup pointer!"];
+    }
+    return ret;
+}
+
+- (void) cancel {
+    
+    if(accountIdentityLookupQueryPtr)
+    {
+        accountIdentityLookupQueryPtr->cancel();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer identity lookup pointer!"];
+    }
+}
+
+- (NSArray*) getIdentities
+{
+    if (accountIdentityLookupQueryPtr)
+    {
+        if (!self.identities)
+        {
+            self.identities = [[[NSMutableArray alloc] init] autorelease];
+        
+            provisioning2::IAccount::IdentityURIList identityList;
+            accountIdentityLookupQueryPtr->getIdentities(identityList);
+            if (identityList.size() > 0)
+            {
+                std::list<hookflash::provisioning2::IAccountIdentityLookupQuery::IdentityURI>::iterator it;
+                for(it = identityList.begin(); it != identityList.end(); it++)
+                {
+                    [self.identities addObject:[NSString stringWithUTF8String:(*it)]];
+                }
+            }
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning identity lookup pointer!"];
+    }
+    return self.identities;
+}
+
+- (NSArray*) getContacts
+{
+    return self.contacts;
+}
+
+- (OpenpeerIdentityLookupInfo*) getLookupInfo: (NSString*) inIdentity;
+{
+    OpenpeerIdentityLookupInfo* outInfo = nil;
+    
+    if (accountIdentityLookupQueryPtr)
+    {        
+        provisioning2::IAccount::IdentityLookupInfo profileInfo;
+        
+        bool passed = accountIdentityLookupQueryPtr->getLookupInfo([inIdentity UTF8String], profileInfo);
+        if (passed)
+        {
+            outInfo.peerContactURI = [NSString stringWithUTF8String:profileInfo.mPeerContactURI];
+            outInfo.publicPeerFileSecret = [NSString stringWithUTF8String:profileInfo.mPublicPeerFileSecret];
+            outInfo.infoTTL = [OpenPeerUtility convertPosixTimeToDate:profileInfo.mInfoTTL];
+            outInfo.profileLastUpdated = [OpenPeerUtility convertPosixTimeToDate:profileInfo.mProfileLastUpdated];
+            outInfo.displayName = [NSString stringWithUTF8String:profileInfo.mDisplayName];
+            outInfo.profileRenderedURL = [NSString stringWithUTF8String:profileInfo.mProfileRenderedURL];
+            outInfo.profileProgrammaticURL = [NSString stringWithUTF8String:profileInfo.mProfileProgrammaticURL];
+            
+            if (profileInfo.mAvatars.size() > 0)
+            {
+                std::list<hookflash::provisioning2::IAccount::IdentityProfileAvatarInfo>::iterator it;
+                for(it = profileInfo.mAvatars.begin(); it != profileInfo.mAvatars.end(); it++)
+                {
+                    OpenpeerIdentityProfileAvatarInfo* tmpAvatarInfo = [[OpenpeerIdentityProfileAvatarInfo alloc] init];
+                    
+                    tmpAvatarInfo.avatarName = [NSString stringWithUTF8String:it->mAvatarName];
+                    tmpAvatarInfo.avatarURL = [NSString stringWithUTF8String:it->mAvatarURL];
+
+                    tmpAvatarInfo.pixelWidth = it->mPixelWidth;
+                    tmpAvatarInfo.pixelHeight = it->mPixelHeight;
+                    
+                    [outInfo.avatars addObject:tmpAvatarInfo];
+                    [tmpAvatarInfo autorelease];
+                }
+            }
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning identity lookup pointer!"];
+    }
+    
+    return [outInfo autorelease];
+}
+
+@end
+
+#pragma mark - OpenpeerProvisioning_AccountPeerFileLookupQuery.mm
+@implementation OpenpeerProvisioning_AccountPeerFileLookupQuery
+
+- (void) setAccountPeerFileLookupQueryPtr:(hookflash::provisioning2::IAccountPeerFileLookupQueryPtr) inAccountPeerFileLookupQueryPtr
+{
+    accountPeerFileLookupQueryPtr = inAccountPeerFileLookupQueryPtr;
+    
+}
+- (hookflash::provisioning2::IAccountPeerFileLookupQueryPtr) getAccountPeerFileLookupQueryPtr
+{
+    return accountPeerFileLookupQueryPtr;
+}
+
+- (BOOL) isComplete {
+    
+    BOOL ret = NO;
+    
+    if (accountPeerFileLookupQueryPtr)
+    {
+        ret = accountPeerFileLookupQueryPtr->isComplete();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer peer file lookup pointer!"];
+    }
+    return ret;
+}
+
+- (BOOL) didSucceed {
+    
+    BOOL ret = NO;
+    
+    if (accountPeerFileLookupQueryPtr)
+    {
+        ret = accountPeerFileLookupQueryPtr->didSucceed();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer peer file lookup pointer!"];
+    }
+    return ret;
+}
+
+- (void) cancel {
+    
+    if(accountPeerFileLookupQueryPtr)
+    {
+        accountPeerFileLookupQueryPtr->cancel();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer peer file lookup pointer!"];
+    }
+}
+
+- (NSArray*) getPeerContactURIs
+{
+    NSMutableArray* ret = nil;
+    
+    if (accountPeerFileLookupQueryPtr)
+    {
+        provisioning2::IAccount::PeerContactURIList peerContactURIs;
+        accountPeerFileLookupQueryPtr->getPeerContactURIs(peerContactURIs);
+        
+        if (peerContactURIs.size() > 0)
+        {
+            ret = [[NSMutableArray alloc] init];
+            
+            std::list<provisioning2::IAccountPeerFileLookupQuery::PeerContactURI>::iterator it;
+            
+            for ( it=peerContactURIs.begin() ; it != peerContactURIs.end(); it++ )
+            {
+                NSString* userId = [NSString stringWithUTF8String:*it];
+                [ret addObject:userId];
+            }
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer peer file lookup pointer!"];
+    }
+    return [ret autorelease];
+}
+
+- (NSString*) getPublicPeerFileAsString: (NSString*) userID
+{
+    
+    NSString* publicPeerFileString = nil;
+    
+    if(accountPeerFileLookupQueryPtr)
+    {
+        publicPeerFileString = [NSString stringWithUTF8String: accountPeerFileLookupQueryPtr->getPublicPeerFileAsString([userID UTF8String])];
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer peer file lookup pointer!"];
+    }
+    return publicPeerFileString;
+}
+
+@end
+
 #pragma mark - OpenPeerProvisioningAccountDelegate_ForFutureUse.mm
 
 OpenPeerProvisioningAccountDelegate_ForFutureUse::OpenPeerProvisioningAccountDelegate_ForFutureUse(id<HOPOpenpeerProvisioningAccountDelegate> inProvisioningAccountDelegate)
@@ -531,7 +855,7 @@ HOPProvisioningAccount_ForFutureUse* OpenPeerProvisioningAccountDelegate_ForFutu
 //    NSString* userId = [NSString stringWithUTF8String:account->getUserID()];
 //    if (userId)
 //    {
-//        hopProvisioningAccount = [[OpenPeerStorageManager sharedInstance] getProvisioningAccountForUserId:userId];
+//        hopProvisioningAccount = [[OpenPeerStorageManager sharedStorageManager] getProvisioningAccountForUserId:userId];
 //    }
     return hopProvisioningAccount;
 }
@@ -569,4 +893,109 @@ void OpenPeerProvisioningAccountDelegate_ForFutureUse::onAccountStateChanged(hoo
             [provisioningAccountDelegate onProvisioningAccountError:[HOPProvisioningAccount_ForFutureUse sharedInstance] errorCodes:(OpenpeerProvisioning_AccountErrorCodes)account->getLastError()];
         }
     }
+}
+
+#pragma mark - OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse.mm
+#import "HOPContact_Internal.h"
+
+OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse::OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse(id<OpenpeerProvisioning_AccountIdentityLookupQueryDelegate> inAccountIdentityLookupQueryDelegate)
+{
+    accountIdentityLookupQueryDelegate = inAccountIdentityLookupQueryDelegate;
+}
+
+boost::shared_ptr<OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse> OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse::create(id<OpenpeerProvisioning_AccountIdentityLookupQueryDelegate> inAccountIdentityLookupQueryDelegate)
+{
+    return boost::shared_ptr<OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse> (new OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse(inAccountIdentityLookupQueryDelegate));
+}
+
+void OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse::onAccountIdentityLookupQueryComplete(provisioning2::IAccountIdentityLookupQueryPtr query)
+{
+    OpenpeerProvisioning_AccountIdentityLookupQuery* hopQuery = [[HOPProvisioningAccount_ForFutureUse sharedInstance] getProvisioningAccountIdentityLookupQueryForUniqueId:[NSNumber numberWithUnsignedLong:query->getID()]];
+    
+    if([hopQuery isComplete] && [hopQuery didSucceed])
+    {
+        if (!hopQuery.contacts)
+            hopQuery.contacts = [[[NSMutableArray alloc] init] autorelease];
+        else
+            [hopQuery.contacts removeAllObjects];
+        
+        //NSMutableSet* setOfContacts = [[NSMutableSet alloc] init];
+        for(NSString* identity in [hopQuery getIdentities])
+        {
+            OpenpeerIdentityLookupInfo* lookupProfileInfo = [hopQuery getLookupInfo:identity];
+            
+            if (lookupProfileInfo)
+            {
+                //HOP_TODO: HOPContact add dictionary for identities object hopidentiy key providerid
+                HOPContact* contact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:lookupProfileInfo.peerContactURI];
+                if (!contact)
+                {
+                    contact = [[[HOPContact alloc] initWithPeerFile:nil userId:lookupProfileInfo.peerContactURI contactId:lookupProfileInfo.peerContactURI] autorelease];
+                    [[OpenPeerStorageManager sharedStorageManager] setContact:contact withContactId:lookupProfileInfo.peerContactURI andUserId:lookupProfileInfo.peerContactURI];
+                }
+                
+                //[contact.identitiesDictionary setObject:identity forKey:[NSNumber numberWithInt:identity.identityType]];
+                //contact.lastProfileUpdateTimestamp = lookupProfileInfo.lastProfileUpdateTimestamp;
+                
+                [hopQuery.contacts addObject:contact];
+            }
+        }
+    }
+    
+    [accountIdentityLookupQueryDelegate onAccountIdentityLookupQueryComplete:hopQuery];
+}
+
+#pragma mark - xxx
+
+OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse::OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse(id<OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate> inAccountPeerFileLookupQueryDelegate)
+{
+    accountPeerFileLookupQueryDelegate = inAccountPeerFileLookupQueryDelegate;
+}
+
+boost::shared_ptr<OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse> OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse::create(id<OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate> inAccountPeerFileLookupQueryDelegate)
+{
+    return boost::shared_ptr<OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse> (new OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse(inAccountPeerFileLookupQueryDelegate));
+}
+
+void OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse::onAccountPeerFileLookupQueryComplete(provisioning2::IAccountPeerFileLookupQueryPtr query)
+{
+    OpenpeerProvisioning_AccountPeerFileLookupQuery* hopQuery = [[HOPProvisioningAccount_ForFutureUse sharedInstance] getProvisioningAccountPeerFileLookupQueryForUniqueId:[NSNumber numberWithUnsignedLong:query->getID()]];
+    
+    if([hopQuery isComplete] && [hopQuery didSucceed])
+    {
+        for (NSString* userId in [hopQuery getPeerContactURIs])
+        {
+            HOPContact* contact = [[OpenPeerStorageManager sharedStorageManager] getContactForUserId:userId];
+            if (contact)
+            {
+                NSString* peerFile = [hopQuery getPublicPeerFileAsString:userId];
+                [contact createCoreContactWithPeerFile:peerFile];
+            }
+        }
+    }
+    
+    [accountPeerFileLookupQueryDelegate onAccountPeerFileLookupQueryComplete:hopQuery];
+}
+
+#pragma mark - OpenPeerIdentityLoginSessionDelegate_ForFutureUse.mm
+
+OpenPeerIdentityLoginSessionDelegate_ForFutureUse::OpenPeerIdentityLoginSessionDelegate_ForFutureUse(id<OpenpeerProvisioning_IdentityLoginSessionDelegate> inIdentityLoginSessionDelegate)
+{
+    identityLoginSessionDelegate = inIdentityLoginSessionDelegate;
+}
+
+boost::shared_ptr<OpenPeerIdentityLoginSessionDelegate_ForFutureUse> OpenPeerIdentityLoginSessionDelegate_ForFutureUse::create(id<OpenpeerProvisioning_IdentityLoginSessionDelegate> inIdentityLoginSessionDelegate)
+{
+    return boost::shared_ptr<OpenPeerIdentityLoginSessionDelegate_ForFutureUse> (new OpenPeerIdentityLoginSessionDelegate_ForFutureUse(inIdentityLoginSessionDelegate));
+
+}
+
+void OpenPeerIdentityLoginSessionDelegate_ForFutureUse::onIdentityLoginSessionBrowserWindowRequired(provisioning2::IIdentityLoginSessionPtr session)
+{
+    //[identityLoginSessionDelegate onIdentityLoginSessionBrowserWindowRequired:[OpenpeerProvisioning_IdentityLoginSession sharedInstance]];
+}
+
+void OpenPeerIdentityLoginSessionDelegate_ForFutureUse::onIdentityLoginSessionCompleted(provisioning2::IIdentityLoginSessionPtr session)
+{
+    
 }

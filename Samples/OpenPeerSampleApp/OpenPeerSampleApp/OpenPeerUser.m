@@ -29,24 +29,22 @@
  
  */
 
-#import "OpenPeerUser.h"
 #import <Foundation/NSKeyedArchiver.h>
-#import <OpenpeerSDK/HOPProvisioningAccount.h>
 #import <Foundation/Foundation.h>
 
+#import "OpenPeerUser.h"
+//SDK
+#import <OpenpeerSDK/HOPProvisioningAccount.h>
+//Utility
+#import "XMLWriter.h"
+#import "Constants.h"
+
+
+//Private methods
 @interface OpenPeerUser()
 
-@property (nonatomic, copy) NSString * const keyOpenPeerUser;
-
-@property (nonatomic, copy) NSString * const archiveUserId;
-@property (nonatomic, copy) NSString * const archiveContactId;
-@property (nonatomic, copy) NSString * const archiveAccountSalt;
-@property (nonatomic, copy) NSString * const archivePasswordNonce;
-@property (nonatomic, copy) NSString * const archivePrivatePeerFile;
-@property (nonatomic, copy) NSString * const archivePeerFilePassword;
-@property (nonatomic, copy) NSString * const archiveLastProfileUpdateTimestamp;
-
 - (id) initSingleton;
+
 @end
 
 @implementation OpenPeerUser
@@ -75,27 +73,21 @@
     
     if (self)
     {
-        self.archiveUserId = @"archiveUserId";
-        self.archiveContactId = @"archiveContactId";
-        self.archiveAccountSalt = @"archiveAccountSalt";
-        self.archivePasswordNonce = @"archivePasswordNonce";
-        self.archivePrivatePeerFile = @"archivePrivatePeerFile";
-        self.archivePeerFilePassword = @"archivePeerFilePassword";
-        self.archiveLastProfileUpdateTimestamp = @"archiveLastProfileUpdateTimestamp";
-        
-        self.keyOpenPeerUser = @"keyOpenPeerUser";
-        
-        NSData* data = [[NSUserDefaults standardUserDefaults] objectForKey:self.keyOpenPeerUser];
-        NSKeyedUnarchiver *aDecoder = [[[NSKeyedUnarchiver alloc] initForReadingWithData:data] autorelease];
-        
-        self.userId = [aDecoder decodeObjectForKey:self.archiveUserId];
-        self.contactId = [aDecoder decodeObjectForKey:self.archiveContactId];
-        self.accountSalt = [aDecoder decodeObjectForKey:self.archiveAccountSalt];
-        self.passwordNonce = [aDecoder decodeObjectForKey:self.archivePasswordNonce];
-        self.privatePeerFile = [aDecoder decodeObjectForKey:self.archivePrivatePeerFile];
-        self.peerFilePassword = [aDecoder decodeObjectForKey:self.archivePeerFilePassword];
-        self.lastProfileUpdateTimestamp = [aDecoder decodeDoubleForKey:self.archiveLastProfileUpdateTimestamp];
-        [aDecoder finishDecoding];
+        NSData* data = [[NSUserDefaults standardUserDefaults] objectForKey:keyOpenPeerUser];
+        if (data)
+        {
+            NSKeyedUnarchiver *aDecoder = [[[NSKeyedUnarchiver alloc] initForReadingWithData:data] autorelease];
+            
+            self.userId = [aDecoder decodeObjectForKey:archiveUserId];
+            self.contactId = [aDecoder decodeObjectForKey:archiveContactId];
+            self.accountSalt = [aDecoder decodeObjectForKey:archiveAccountSalt];
+            self.passwordNonce = [aDecoder decodeObjectForKey:archivePasswordNonce];
+            self.privatePeerFile = [aDecoder decodeObjectForKey:archivePrivatePeerFile];
+            self.peerFilePassword = [aDecoder decodeObjectForKey:archivePeerFilePassword];
+            self.lastProfileUpdateTimestamp = [aDecoder decodeDoubleForKey:archiveLastProfileUpdateTimestamp];
+            
+            [aDecoder finishDecoding];
+        }
     }
     return self;
 }
@@ -115,16 +107,17 @@
     
     NSMutableData *data = [NSMutableData data];
     NSKeyedArchiver *aCoder = [[[NSKeyedArchiver alloc] initForWritingWithMutableData:data] autorelease];
-    [aCoder encodeObject:self.userId forKey:self.archiveUserId];
-    [aCoder encodeObject:self.contactId forKey:self.archiveContactId];
-    [aCoder encodeObject:self.accountSalt forKey:self.archiveAccountSalt];
-    [aCoder encodeObject:self.passwordNonce forKey:self.archivePasswordNonce];
-    [aCoder encodeObject:self.privatePeerFile forKey:self.archivePrivatePeerFile];
-    [aCoder encodeObject:self.peerFilePassword forKey:self.archivePeerFilePassword];
-    [aCoder encodeDouble:self.lastProfileUpdateTimestamp forKey:self.archiveLastProfileUpdateTimestamp];
+    [aCoder encodeObject:self.userId forKey:archiveUserId];
+    [aCoder encodeObject:self.contactId forKey:archiveContactId];
+    [aCoder encodeObject:self.accountSalt forKey:archiveAccountSalt];
+    [aCoder encodeObject:self.passwordNonce forKey:archivePasswordNonce];
+    [aCoder encodeObject:self.privatePeerFile forKey:archivePrivatePeerFile];
+    [aCoder encodeObject:self.peerFilePassword forKey:archivePeerFilePassword];
+    [aCoder encodeDouble:self.lastProfileUpdateTimestamp forKey:archiveLastProfileUpdateTimestamp];
+    
     [aCoder finishEncoding];
     
-    [[NSUserDefaults standardUserDefaults] setObject:data forKey:self.keyOpenPeerUser];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:keyOpenPeerUser];
 }
 
 /**
@@ -140,8 +133,48 @@
     self.peerFilePassword = nil;
     self.lastProfileUpdateTimestamp = 0;
     
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:self.keyOpenPeerUser];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:keyOpenPeerUser];
 }
 
+- (NSString*) createProfileBundle
+{
+    NSString* ret = nil;
+    
+    XMLWriter *xmlWriter = [[XMLWriter alloc] init];
+    [xmlWriter writeStartElement:profileXmlTagProfile];
+    
+    [xmlWriter writeStartElement:profileXmlTagName];
+    [xmlWriter writeCharacters:self.fullName];
+    [xmlWriter writeEndElement];
+    
+    [xmlWriter writeStartElement:profileXmlTagContactID];
+    [xmlWriter writeCharacters:self.contactId];
+    [xmlWriter writeEndElement];
+    
+    [xmlWriter writeStartElement:profileXmlTagUserID];
+    [xmlWriter writeCharacters:self.userId];
+    [xmlWriter writeEndElement];
+    
+    [xmlWriter writeStartElement:profileXmlTagIdentities];
+        
+        [xmlWriter writeStartElement:profileXmlTagIdentityBundle];
+        
+        [xmlWriter writeStartElement:profileXmlTagIdentity];
+        [xmlWriter writeCharacters:[self.providerKey stringValue]];
+        [xmlWriter writeEndElement];
+        
+        [xmlWriter writeStartElement:profileXmlTagSocialId];
+        [xmlWriter writeCharacters:self.contactProviderId];
+        [xmlWriter writeEndElement];
+        
+        [xmlWriter writeEndElement];
 
+    [xmlWriter writeEndElement];
+    
+    [xmlWriter writeEndElement];
+    
+    ret = [NSString stringWithString: [xmlWriter toString]];
+    [xmlWriter release];
+    return ret;
+}
 @end

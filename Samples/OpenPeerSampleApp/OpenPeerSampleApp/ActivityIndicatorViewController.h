@@ -29,26 +29,14 @@
  
  */
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@class HOPContact;
+@interface ActivityIndicatorViewController : UIViewController
 
-@interface HOPMessage : NSObject
+@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (retain, nonatomic) IBOutlet UILabel *activityLabel;
 
-@property (nonatomic, copy) NSString* messageID;
-@property (nonatomic, retain) HOPContact* contact;
-@property (nonatomic, copy) NSString* type;
-@property (nonatomic, copy) NSString* text;
-@property (nonatomic, retain) NSDate* date;
++ (id) sharedActivityIndicator;
 
-/**
- Message init method
- @param inMessageId NSString Message uique identifier.
- @param messageText NSString Message text.
- @param inContact HOPContact Message recipient.
- @param inMessageType NSString Message mime type. It is on user to create mime types. Currently there are no specified mime types.
- @param inMessageDate NSDate Message date.
- @returns Ponter to the created contact object
- */
-- (id) initWithMessageId:(NSString*) inMessageId andMessage:(NSString*) messageText andContact:(HOPContact*) inContact andMessageType:(NSString*) inMessageType andMessageDate:(NSDate*) inMessageDate;
+- (void) showActivityIndicator:(BOOL) show withText:(NSString*) text inView:(UIView*) inView;
 @end

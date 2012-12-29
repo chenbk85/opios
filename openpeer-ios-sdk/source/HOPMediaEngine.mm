@@ -34,6 +34,10 @@
 #import "HOPMediaEngine.h"
 #import <hookflash/IMediaEngine.h>
 
+@interface HOPMediaEngine()
+
+- (id) initSingleton;
+@end
 @implementation HOPMediaEngine
 
 + (NSString*) cameraTypeToString: (HOPMediaEngineCameraTypes) type
@@ -52,11 +56,42 @@
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
     dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] init]; // or some other init method
+        _sharedObject = [[self alloc] initSingleton]; // or some other init method
     });
     return _sharedObject;
 }
 
+- (id) initSingleton
+{
+    self = [super init];
+    if (self)
+    {
+        mediaEnginePtr = IMediaEngine::singleton();
+    }
+    return self;
+}
+- (void) setVideoOrientation
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setVideoOrientation();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+- (void) setDefaultVideoOrientation: (HOPMediaEngineVideoOrientations) orientation
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setDefaultVideoOrientation((IMediaEngine::VideoOrientations)orientation);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
 - (void) setCaptureRenderView: (UIImageView*) renderView
 {
     if(mediaEnginePtr)

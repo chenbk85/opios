@@ -81,7 +81,7 @@ enum OpenpeerProvisioning_AccountErrorCodes
   @property (copy) NSString* profileRenderedURL;     // the profile as renderable in a browser window
   @property (copy) NSString* profileProgrammaticURL; // the profile as readable by a computer
   
-  @property (retain) NSArray* avatars; // List of OpenpeerIdentityProfileAvatarInfo*
+  @property (retain) NSMutableArray* avatars; // List of OpenpeerIdentityProfileAvatarInfo*
 
 @end
 
@@ -177,9 +177,9 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 /**
  Retrieves identities of the current user.
- @param outIdentities NSArray Array of identities.
+ @retun Array of identities.
  */
-- (void) getKnownIdentities: (NSArray*) outIdentities; //List of OpenpeerIdentity objects
+- (NSArray*) getKnownIdentities; //List of OpenpeerIdentity objects
 
 /**
  Sets identities of the current user.
@@ -331,7 +331,7 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 @end
 
-
+#pragma mark - OpenpeerProvisioning_AccountPeerFileLookupQuery declaration
 @interface OpenpeerProvisioning_AccountIdentityLookupQuery : NSObject
 
 /**
@@ -353,20 +353,41 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 /**
  Retrieve lookup identities.
- @param outIdentites NSArray List of identities
+ @return List of identities
  */
-- (void) getIdentities: (NSArray*) outIdentities;
+- (NSArray*) getIdentities;
+
+/**
+ Retrieve lookup contacts.
+ @return  NSArray of HOPContact objects
+ */
+- (NSArray*) getContacts;
 
 /**
  Perform lookup for provided identity.
  @param inIdentity HOPIdentity Identity for lookup
- @param outInfo HOPLookupProfileInfo Lookup result
- @return YES for lookup success, NO for failure
+ @param outInfo HOPLookupProfileInfo 
+ @return Lookup result.
  */
-- (BOOL) getLookupInfo: (NSString*) inIdentity outInfo: (OpenpeerIdentityLookupInfo*) outInfo;
+- (OpenpeerIdentityLookupInfo*) getLookupInfo: (NSString*) inIdentity;
 
 @end
 
+#pragma mark - OpenpeerProvisioning_AccountIdentityLookupQuery_internal.h
+@interface OpenpeerProvisioning_AccountIdentityLookupQuery ()
+{
+    hookflash::provisioning2::IAccountIdentityLookupQueryPtr accountIdentityLookupQueryPtr;
+}
+@property (nonatomic,copy) NSNumber* uniqueId;
+@property (nonatomic,retain) NSMutableArray* identities;
+@property (nonatomic,retain) NSMutableArray* contacts;
+
+- (void) setAccountIdentityLookupQueryPtr:(hookflash::provisioning2::IAccountIdentityLookupQueryPtr) inAccountIdentityLookupQueryPtr;
+- (hookflash::provisioning2::IAccountIdentityLookupQueryPtr) getAccountIdentityLookupQueryPtr;
+
+@end
+
+#pragma mark - OpenpeerProvisioning_AccountPeerFileLookupQuery declaration
 @interface OpenpeerProvisioning_AccountPeerFileLookupQuery : NSObject
 
 /**
@@ -388,9 +409,9 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 /**
  Retrieve contact URIs from peer file.
- @param outUserIDs NSArray List of retrieved user IDs
+ @return List of retrieved user IDs
  */
-- (void) getPeerContactURIs: (NSArray*) outPeerContactURIs; // List of NSString
+- (NSArray*) getPeerContactURIs; // return ist of NSString
 
 /**
  Retrieves public peer file.
@@ -399,6 +420,18 @@ enum OpenpeerProvisioning_AccountErrorCodes
  */
 - (NSString*) getPublicPeerFileAsString: (NSString*) userID;
 
+@end
+
+#pragma mark - OpenpeerProvisioning_AccountPeerFileLookupQuery_internal.h
+@interface OpenpeerProvisioning_AccountPeerFileLookupQuery ()
+{
+    hookflash::provisioning2::IAccountPeerFileLookupQueryPtr accountPeerFileLookupQueryPtr;
+}
+
+@property (copy) NSNumber* uniqueId;
+
+- (void) setAccountPeerFileLookupQueryPtr:(hookflash::provisioning2::IAccountPeerFileLookupQueryPtr) inAccountPeerFileLookupQueryPtr;
+- (hookflash::provisioning2::IAccountPeerFileLookupQueryPtr) getAccountPeerFileLookupQueryPtr;
 @end
 
 #pragma mark - HOPProvisioningAccount_ForFutureUse_internal.h
@@ -419,8 +452,17 @@ class OpenPeerProvisioningAccountDelegate_ForFutureUse;
     //std::list<boost::shared_ptr<OpenPeerProvisioningAccountDelegate> > listOfOpenPeerAccountDelegates;
 }
 
+- (id) initSingleton;
+
+@property (retain) NSMutableDictionary* dictionaryOfIdentityLookupQueries;
+@property (retain) NSMutableDictionary* dictionaryOfPeerFilesLookupQueries;
+
 - (BOOL) createLocalDelegates:(id<HOPOpenpeerProvisioningAccountDelegate>) provisioningAccountDelegate;
 - (void) deleteLocalDelegates;
+
+
+- (OpenpeerProvisioning_AccountIdentityLookupQuery*) getProvisioningAccountIdentityLookupQueryForUniqueId:(NSNumber*) uniqueId;
+- (OpenpeerProvisioning_AccountPeerFileLookupQuery*) getProvisioningAccountPeerFileLookupQueryForUniqueId:(NSNumber*) uniqueId;
 
 @end
 
@@ -440,7 +482,7 @@ protected:
 public:
     static boost::shared_ptr<OpenPeerProvisioningAccountDelegate_ForFutureUse> create(id<HOPOpenpeerProvisioningAccountDelegate> inProvisioningAccountDelegate);
     
-#pragma mark - provisioning2::IAccount delegate methods
+//#pragma mark - provisioning2::IAccount delegate methods
     
     virtual void onProvisioningAccountStateChanged(provisioning2::IAccountPtr account,provisioning2::IAccount::AccountStates state);
     
@@ -450,12 +492,61 @@ public:
     
     virtual void onProvisioningAccountIdentitiesChanged(provisioning2::IAccountPtr account);
     
-#pragma mark - hookflash::IAccount delegate methods
+//#pragma mark - hookflash::IAccount delegate methods
     
     virtual void onAccountStateChanged(hookflash::IAccountPtr account, hookflash::IAccount::AccountStates state);
 
 };
 
+#pragma mark - OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse.h
+class OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse : public provisioning2::IAccountIdentityLookupQueryDelegate
+{
+protected:
+    id<OpenpeerProvisioning_AccountIdentityLookupQueryDelegate> accountIdentityLookupQueryDelegate;
+    
+    OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse(id<OpenpeerProvisioning_AccountIdentityLookupQueryDelegate> inAccountIdentityLookupQueryDelegate);
+    
+//    OpenpeerProvisioning_AccountIdentityLookupQuery* getOpenPeerAccountIdentityLookupQuery(provisioning2::IAccountIdentityLookupQueryPtr accountIdentityLookupQuery);
+public:
+    static boost::shared_ptr<OpenPeerAccountIdentityLookupQueryDelegate_ForFutureUse> create(id<OpenpeerProvisioning_AccountIdentityLookupQueryDelegate> inAccountIdentityLookupQueryDelegate);
+    
+    virtual void onAccountIdentityLookupQueryComplete(provisioning2::IAccountIdentityLookupQueryPtr query);
+    
+};
+
+#pragma mark - OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse.h
+class OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse : public provisioning2::IAccountPeerFileLookupQueryDelegate
+{
+protected:
+    id<OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate> accountPeerFileLookupQueryDelegate;
+    
+    OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse(id<OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate> inAccountPeerFileLookupQueryDelegate);
+    
+    OpenpeerProvisioning_AccountPeerFileLookupQuery* getOpenPeerAccountPeerFileLookupQuery(provisioning2::IAccountPeerFileLookupQueryPtr accountPeerFileLookupQuery);
+public:
+    static boost::shared_ptr<OpenPeerAccountPeerFileLookupQueryDelegate_ForFutureUse> create(id<OpenpeerProvisioning_AccountPeerFileLookupQueryDelegate> inAccountPeerFileLookupQueryDelegate);
+    
+    virtual void onAccountPeerFileLookupQueryComplete(provisioning2::IAccountPeerFileLookupQueryPtr query);
+    
+};
+
+#pragma mark - OpenPeerIdentityLoginSessionDelegate_ForFutureUse.h
+class OpenPeerIdentityLoginSessionDelegate_ForFutureUse : public provisioning2::IIdentityLoginSessionDelegate
+{
+protected:
+    id<OpenpeerProvisioning_IdentityLoginSessionDelegate> identityLoginSessionDelegate;
+    
+    OpenPeerIdentityLoginSessionDelegate_ForFutureUse(id<OpenpeerProvisioning_IdentityLoginSessionDelegate> inIdentityLoginSessionDelegate);
+    
+    //    OpenpeerProvisioning_AccountIdentityLookupQuery* getOpenPeerAccountIdentityLookupQuery(provisioning2::IAccountIdentityLookupQueryPtr accountIdentityLookupQuery);
+public:
+    static boost::shared_ptr<OpenPeerIdentityLoginSessionDelegate_ForFutureUse> create(id<OpenpeerProvisioning_IdentityLoginSessionDelegate> inIdentityLoginSessionDelegate);
+    
+    virtual void onIdentityLoginSessionBrowserWindowRequired(provisioning2::IIdentityLoginSessionPtr session);
+    
+    virtual void onIdentityLoginSessionCompleted(provisioning2::IIdentityLoginSessionPtr session);
+    
+};
 /*
 
  */

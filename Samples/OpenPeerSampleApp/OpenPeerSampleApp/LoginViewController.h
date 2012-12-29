@@ -33,6 +33,7 @@
 
 @interface LoginViewController : UIViewController
 
+- (IBAction)actionLoginWithFacebook:(id)sender;
 - (IBAction)actionLoginWithLinkedIn:(id)sender;
 
 @end

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		872725C3166636F50089CBB6 /* HOPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 872725C1166636F50089CBB6 /* HOPMessage.h */; };
+		872725C3166636F50089CBB6 /* HOPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 872725C1166636F50089CBB6 /* HOPMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		872725C6166637660089CBB6 /* HOPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 872725C5166637660089CBB6 /* HOPMessage.m */; };
 		87343EDC165A50D60070E6E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87343EDB165A50D60070E6E0 /* UIKit.framework */; };
 		874ADC2B166DEF9C0095FE33 /* libvorbis_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87B015161661731000E8938B /* libvorbis_ios.a */; };
@@ -1398,6 +1398,7 @@
 				87B013FD1661557C00E8938B /* HOPIdentityInfo.h in Headers */,
 				87B013FE1661557C00E8938B /* HOPLookupProfileInfo.h in Headers */,
 				87B013FF1661557C00E8938B /* HOPMediaEngineRtpRtcpStatistics.h in Headers */,
+				872725C3166636F50089CBB6 /* HOPMessage.h in Headers */,
 				87B014001661557C00E8938B /* HOPIdentity.h in Headers */,
 				87B014011661557C00E8938B /* HOPProvisioningAccountOAuthIdentityAssociation.h in Headers */,
 				87B014021661557C00E8938B /* HOPProvisioningAccountPush.h in Headers */,
@@ -1412,6 +1413,7 @@
 				87A68D5E1662A5EB0021A9BB /* HOPProvisioningAccount_Internal.h in Headers */,
 				87A68D5F1662A5EB0021A9BB /* HOPProvisioningAccountIdentityLookupQuery_Internal.h in Headers */,
 				87A68D601662A5EB0021A9BB /* HOPProvisioningAccountOAuthIdentityAssociation_Internal.h in Headers */,
+				87A68D701662A5EB0021A9BB /* OpenPeerUtility.h in Headers */,
 				87A68D611662A5EB0021A9BB /* HOPProvisioningAccountPeerFileLookupQuery_Internal.h in Headers */,
 				87A68D621662A5EB0021A9BB /* HOPProvisioningAccountPush_Internal.h in Headers */,
 				87A68D631662A5EB0021A9BB /* HOPStack_Internal.h in Headers */,
@@ -1425,8 +1427,6 @@
 				87A68D6D1662A5EB0021A9BB /* OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate.h in Headers */,
 				87A68D6E1662A5EB0021A9BB /* OpenPeerStackDelegate.h in Headers */,
 				87A68D6F1662A5EB0021A9BB /* OpenPeerStorageManager.h in Headers */,
-				87A68D701662A5EB0021A9BB /* OpenPeerUtility.h in Headers */,
-				872725C3166636F50089CBB6 /* HOPMessage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2341,8 +2341,10 @@
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/openpeer_ios_sdk.dst;
 				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "openpeer-ios-sdk/openpeer-ios-sdk-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"../OP/hookflash-core/core/",
 					"../OP/hookflash-libs/Airship/**",
@@ -2398,8 +2400,10 @@
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/openpeer_ios_sdk.dst;
 				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "openpeer-ios-sdk/openpeer-ios-sdk-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"../OP/hookflash-core/core/",
 					"../OP/hookflash-libs/Airship/**",

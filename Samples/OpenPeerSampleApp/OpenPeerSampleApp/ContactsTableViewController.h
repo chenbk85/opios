@@ -34,8 +34,10 @@
 @interface ContactsTableViewController : UIViewController<UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (retain, nonatomic) IBOutlet UITableView *contactsTableView;
-@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activitiIndicator;
+
 
 - (void) onContactsLoadingStarted;
+- (void) onContactsPeerFilesLoadingStarted;
 - (void) onContactsLoaded;
+
 @end

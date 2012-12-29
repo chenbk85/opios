@@ -30,21 +30,34 @@
  */
 
 #import "LoginManager.h"
-#import "MainViewController.h"
+
+
 #import "OpenPeer.h"
-#import "OpenPeerSDK/HOPProvisioningAccount.h"
-#import "OpenPeerSDK/HOPTypes.h"
-#import "StackDelegate.h"
+#import "OpenPeerUser.h"
+//Utility
 #import "XMLWriter.h"
 #import "Utility.h"
+#import "Constants.h"
+//Managers
 #import "ContactsManager.h"
-#import "OpenPeerUser.h"
+//SDK
+#import "OpenPeerSDK/HOPProvisioningAccount.h"
 #import "OpenPeerSDK/HOPIdentityInfo.h"
+#import "OpenPeerSDK/HOPTypes.h"
+//Delegates
+#import "StackDelegate.h"
+//View Controllers
+#import "MainViewController.h"
+#import "LoginViewController.h"
+#import "ActivityIndicatorViewController.h"
 
 @interface LoginManager ()
 
 - (id) initSingleton;
+
 @end
+
+
 @implementation LoginManager
 
 /**
@@ -95,13 +108,7 @@
  Logout from the current account.
  */
 - (void) logout
-{
-    //Delete all cookies from linkedin login page.
-//    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-//    for (NSHTTPCookie *each in [[[cookieStorage cookiesForURL:[NSURL URLWithString:@"https://www.linkedin.com/secure/login?session_full_logout=&trk=hb_signout"]] copy] autorelease]) {
-//        [cookieStorage deleteCookie:each];
-//    }
-    
+{    
     //Delete all cookies from linkedin login page.
     [Utility removeCookiesAndClearCredentialsForUrl:@"https://www.linkedin.com/secure/login?session_full_logout=&trk=hb_signout"];
     
@@ -118,10 +125,14 @@
 /**
  Initiates login procedure.
  */
-- (void) startLogin
+- (void) startLoginWithSocialProvider:(HOPProvisioningAccountIdentityTypes) socialProvider
 {
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting login url ..." inView:[[[[OpenPeer sharedOpenPeer] mainViewController] loginViewController] view]];
+    
     //Call to the SDK in order to setup delegate for the OAuth Login process, and to initiate first time OAuth login.
-    [[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:@"provisioning-stable-dev.hookflash.me" deviceToken:@"" oauthIdentityType:HOPProvisioningAccountIdentityTypeLinkedInID];
+    [[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" oauthIdentityType:socialProvider];
+    
+    //[[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" oauthIdentityType:HOPProvisioningAccountIdentityTypeFacebookID];
 }
 
 /**
@@ -129,13 +140,18 @@
  */
 - (void) startRelogin
 {
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Relogin ..." inView:[[[OpenPeer sharedOpenPeer] mainViewController] view]];
+    
     //Information about login identity.
-    HOPIdentityInfo* identityInfo = [[HOPIdentityInfo alloc] init];
-    identityInfo.type = HOPProvisioningAccountIdentityTypeLinkedInID;
+    HOPIdentityInfo* identityInfoLI = [[HOPIdentityInfo alloc] init];
+    identityInfoLI.type = HOPProvisioningAccountIdentityTypeLinkedInID;
+    HOPIdentityInfo* identityInfoFB = [[HOPIdentityInfo alloc] init];
+    identityInfoFB.type = HOPProvisioningAccountIdentityTypeFacebookID;
     
     //Call to the SDK in order to setup delegate for the OAuth relogin process, and to initiate OAuth relogin. This method call also requires that user will provide information which is saved after the last successful login process. This information is required in order to successfuly access existing account and fetch private peer password.
-    [[HOPProvisioningAccount sharedProvisioningAccount] reloginWithProvisioningAccountDelegate:[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:@"provisioning-stable-dev.hookflash.me" deviceToken:@"" userID:[[OpenPeerUser sharedOpenPeerUser] userId] accountSalt:[[OpenPeerUser sharedOpenPeerUser] accountSalt] passwordNonce:[[OpenPeerUser sharedOpenPeerUser] passwordNonce] password:[[OpenPeerUser sharedOpenPeerUser] peerFilePassword] privatePeerFile:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] lastProfileUpdatedTimestamp:[[OpenPeerUser sharedOpenPeerUser] lastProfileUpdateTimestamp]  previousIdentities:[NSArray arrayWithObject:identityInfo ]];
-    [identityInfo release];
+    [[HOPProvisioningAccount sharedProvisioningAccount] reloginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" userID:[[OpenPeerUser sharedOpenPeerUser] userId] accountSalt:[[OpenPeerUser sharedOpenPeerUser] accountSalt] passwordNonce:[[OpenPeerUser sharedOpenPeerUser] passwordNonce] password:[[OpenPeerUser sharedOpenPeerUser] peerFilePassword] privatePeerFile:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] lastProfileUpdatedTimestamp:[[OpenPeerUser sharedOpenPeerUser] lastProfileUpdateTimestamp]  previousIdentities:[NSArray arrayWithObjects: identityInfoFB, nil ]];
+    [identityInfoLI release];
+    [identityInfoFB release];
 }
 
 /**
@@ -143,8 +159,11 @@
  @param url NSString Login URL.
  */
 - (void) onLoginSocialUrlReceived:(NSString*) url
-{    
+{
+    //Login url is received. Remove activity indicator
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
     [[[OpenPeer sharedOpenPeer] mainViewController] showWebLoginView:url];
+    
 }
 
 /**
@@ -252,6 +271,9 @@
  */
 - (void) onUserLoggedIn
 {
+    //Login finished. Remove activity indicator
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
+    
     //Save user data on successful login.
     [[OpenPeerUser sharedOpenPeerUser] saveUserData];
 

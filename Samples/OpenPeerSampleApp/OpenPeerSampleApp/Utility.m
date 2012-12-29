@@ -32,6 +32,8 @@
 #import "Utility.h"
 #include <sys/types.h>
 #include <sys/sysctl.h>
+
+
 @implementation Utility
 
 static const char _base64EncodingTable[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -119,7 +121,7 @@ static const short _base64DecodingTable[256] = {
     int i = 0, j = 0, k;
     
     unsigned char * objResult;
-    objResult = calloc(intLength, sizeof(char));
+    objResult = calloc(intLength, sizeof(unsigned char));
     
     // Run through the whole string, converting as we go
     while ( ((intCurrent = *objPointer++) != '\0') && (intLength-- > 0) ) {
@@ -181,8 +183,12 @@ static const short _base64DecodingTable[256] = {
         }
     }
     
+    NSData* retData = [[NSData alloc] initWithBytesNoCopy:objResult length:j freeWhenDone:YES];
+    NSString* retString = [[NSString alloc] initWithData:retData encoding:NSUTF8StringEncoding];
+    [retData release];
+    return [retString autorelease];
     // Cleanup and setup the return NSData
-    return [[NSString alloc] initWithData:[[[NSData alloc] initWithBytesNoCopy:objResult length:j freeWhenDone:YES] autorelease] encoding:NSUTF8StringEncoding];
+    //return [[NSString alloc] initWithData:[[[NSData alloc] initWithBytesNoCopy:objResult length:j freeWhenDone:YES] autorelease] encoding:NSUTF8StringEncoding];
     //return string should be autorelease
     //[[[NSData alloc] initWithBytesNoCopy:objResult length:j freeWhenDone:YES] autorelease];
     
@@ -254,5 +260,65 @@ static const short _base64DecodingTable[256] = {
     for (NSHTTPCookie *each in [[[cookieStorage cookiesForURL:[NSURL URLWithString:url]] copy] autorelease]) {
         [cookieStorage deleteCookie:each];
     }
+}
+
++ (NSString *)getGUIDstring
+{
+    // get new UUID(in windows world is guid)
+    CFUUIDRef guid = CFUUIDCreate(nil);
+    NSString *strGuid = (NSString *)CFUUIDCreateString(nil, guid);
+    CFRelease(guid);
+    return [strGuid autorelease];
+}
+
++ (NSString*) getCallStateAsString:(HOPCallStates) callState
+{
+    NSString *res;
+    
+    switch (callState)
+    {
+            case HOPCallStateNone:
+                res = NSLocalizedString(@"none", @"");
+                break;
+            case HOPCallStatePreparing:
+                res = NSLocalizedString(@"preparing", @"");
+                break;
+            case HOPCallStateIncoming:
+                res = NSLocalizedString(@"incoming", @"");
+                break;
+            case HOPCallStatePlaced:
+                res = NSLocalizedString(@"placed", @"");
+                break;
+            case HOPCallStateEarly:
+                res = NSLocalizedString(@"early", @"");
+                break;
+            case HOPCallStateRinging:
+                res = NSLocalizedString(@"ringing", @"");
+                break;
+            case HOPCallStateRingback:
+                res = NSLocalizedString(@"ringback", @"");
+                break;
+            case HOPCallStateOpen:
+                res = NSLocalizedString(@"open", @"");
+                break;
+            case HOPCallStateActive:
+                res = NSLocalizedString(@"active", @"");
+                break;
+            case HOPCallStateInactive:
+                res = NSLocalizedString(@"inactive", @"");
+                break;
+            case HOPCallStateHold:
+                res = NSLocalizedString(@"hold", @"");
+                break;
+            case HOPCallStateClosing:
+                res = NSLocalizedString(@"closing", @"");
+                break;
+            case HOPCallStateClosed:
+                res = NSLocalizedString(@"closed", @"");
+                break;
+            default:
+                return nil;
+    }
+    return res;
 }
 @end

@@ -142,49 +142,5 @@
 {
     [_dictionaryProvisioningAccount setObject:account forKey:userId];
 }
-/*
-- (IStackPtr) getStackPtr
-{
-    return stackPtr;
-}
-- (void) setStackPtr:(IStackPtr) inStackPtr
-{
-    stackPtr = inStackPtr;
-}
 
-- (boost::shared_ptr<OpenPeerCallDelegate>) getOpenPeerCallDelegate
-{
-    return openPeerCallDelegatePtr;
-}
-- (void) setOpenPeerCallDelegate:(boost::shared_ptr<OpenPeerCallDelegate>) inOpenPeerCallDelegate
-{
-    openPeerCallDelegatePtr = inOpenPeerCallDelegate;
-}
-
-- (boost::shared_ptr<OpenPeerStackDelegate>) getOpenPeerStackDelegate
-{
-    return openPeerStackDelegatePtr;
-}
-- (void) setOpenPeerStackDelegate:(boost::shared_ptr<OpenPeerStackDelegate>) inOpenPeerStackDelegate
-{
-    openPeerStackDelegatePtr = inOpenPeerStackDelegate;
-}
-
-- (boost::shared_ptr<OpenPeerMediaEngineDelegate>) getOpenPeerMediaEngineDelegate
-{
-    return openPeerMediaEngineDelegatePtr;
-}
-- (void) setOpenPeerMediaEngineDelegate:(boost::shared_ptr<OpenPeerMediaEngineDelegate>) inOpenPeerMediaEngineDelegate
-{
-    openPeerMediaEngineDelegatePtr = inOpenPeerMediaEngineDelegate;
-}
-
-- (boost::shared_ptr<OpenPeerConversationThreadDelegate>) getOpenPeerConversationThreadDelegate
-{
-    return openPeerConversationThreadDelegatePtr;
-}
-- (void) setOpenPeerConversationThreadDelegate:(boost::shared_ptr<OpenPeerConversationThreadDelegate>) inOpenPeerConversationThreadDelegate
-{
-    openPeerConversationThreadDelegatePtr = inOpenPeerConversationThreadDelegate;
-}*/
 @end

@@ -95,6 +95,7 @@
 */
 - (Session*)createSessionForContact:(Contact *)contact
 {
+    NSLog(@"Create session for contact");
     Session* ret = nil;
     
     //Create user profile which will be passed to other partie.
@@ -127,6 +128,7 @@
 */
 - (Session*) createSessionForContacts:(NSArray*) contacts andConversationThread:(HOPConversationThread*) inConversationThread
 {
+    NSLog(@"Create session for contacts");
     Session* ret = [[Session alloc] initWithContacts:contacts conversationThread:inConversationThread];
     
     if (ret)
@@ -156,20 +158,57 @@
 
 }
 
+/**
+ Make call for session.
+ @param inSession Session session.
+ @param includeVideo BOOL If YES make video call
+ */
 - (void) makeCallForSession:(Session*) inSession includeVideo:(BOOL) includeVideo
 {
+    NSLog(@"Make call for sesison");
+    //Currently we are not supporting group conferences, so only one participant is possible
     HOPContact* contact = [[[inSession participantsArray] objectAtIndex:0] hopContact];
+    //Place a audio or video call for chosen contact 
     inSession.currentCall = [HOPCall placeCall:inSession.conversationThread toContact:contact includeAudio:YES includeVideo:includeVideo];
 }
 
-- (void) endCallForSession:(Session*) inSession
+/**
+ Answer an incoming call
+ @param inSession Session session.
+ */
+- (void) answerCallForSession:(Session*) inSession
 {
-    [[inSession currentCall] hangup:HOPCallClosedReasonUser];
+    NSLog(@"Answer call for session");
+    //Answer an incoming call
+    [[inSession currentCall] answer];
 }
 
+/**
+ End call
+ @param inSession Session session.
+ */
+- (void) endCallForSession:(Session*) inSession
+{
+    NSLog(@"End call for sesison");
+    //Hangup current active call
+    [[inSession currentCall] hangup:HOPCallClosedReasonUser];
+    //Set flag that there is no active call
+    [self setCallFlag:NO forSession:inSession];
+}
+
+/**
+ Handle incoming call.
+ @param call HOPCall Incomin call
+ @param inSession Session session.
+ */
 - (void) handleIncomingCall:(HOPCall*) call forSession:(Session*) inSession
 {
+    NSLog(@"Handle incoming call for sesison");
+    
+    //Set current call
     BOOL callFlagIsSet = [self setCallFlag:YES forSession:inSession];
+    
+    //If callFlagIsSet is YES, show incoming call view, and move call to ringing state
     if (callFlagIsSet)
     {
         inSession.currentCall = call;
@@ -178,8 +217,17 @@
 
         [call ring];
     }
+    else //If callFlagIsSet is NO, hangup incoming call. 
+    {
+        [call hangup:HOPCallClosedReasonUser];
+    }
 }
 
+/**
+ Set session with active call.
+ @param activeCall BOOL Flag if call is being active or it is ended
+ @param inSession Session session.
+ */
 - (BOOL) setCallFlag:(BOOL) activeCall forSession:(Session*) inSession
 {
     BOOL ret = NO;
@@ -187,11 +235,13 @@
     {
         if (activeCall && self.sessionWithActiveCall == nil)
         {
+            //If there is no session with active call, set it
             self.sessionWithActiveCall = inSession;
             ret = YES;
         }
         else if (!activeCall && self.sessionWithActiveCall)
         {
+            //If there is session with active call, set it to nil, because call is ended
             self.sessionWithActiveCall = nil;
             ret = YES;
         }
@@ -199,18 +249,36 @@
     return ret;
 }
 
+/**
+ Sends message for session.
+ @param message NSString Message text
+ @param inSession Session session.
+ */
 - (void) sendMessage:(NSString*) message forSession:(Session*) inSession
 {
+    NSLog(@"Send message");
+    
+    //Currently it is not available group chat, so we can have only one message recipients
     HOPContact* contact = [[[inSession participantsArray] objectAtIndex:0] hopContact];
+    //Create a message object
     HOPMessage* hopMessage = [[HOPMessage alloc] initWithMessageId:[Utility getGUIDstring] andMessage:message andContact:contact andMessageType:@"text" andMessageDate:[NSDate date]];
+    //Send message
     [inSession.conversationThread sendMessage:hopMessage];
     [hopMessage release];
 }
 
+/**
+ Sends message for session.
+ @param message HOPMessage Message
+ @param sessionId NSString Session id.
+ */
 - (void) onMessageReceived:(HOPMessage*) message forSessionId:(NSString*) sessionId
 {
-    [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:[self.sessionsDictionary objectForKey:sessionId]  forIncomingCall:NO];
+    NSLog(@"Message received");
     
+    //If session view controller with message sender is not yet shown, show it
+    [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:[self.sessionsDictionary objectForKey:sessionId]  forIncomingCall:NO];
+    //Get message sender
     Contact* contact  = [[ContactsManager sharedContactsManager] getContactForIdentities:[message.contact getIdentities]];
     NSString* from = [NSString stringWithFormat:@"Message from %@",[contact fullName] ];
     UIAlertView* alertView = [[[UIAlertView alloc] initWithTitle:from

@@ -56,8 +56,9 @@
 - (void) showWebLoginView:(NSString*) url;
 - (void) showContactsTable;
 
-- (void) showSessionViewControllerForSession:(Session*) session;
+//- (void) showSessionViewControllerForSession:(Session*) session;
+- (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall;
 - (void) removeSessionViewControllerForSession:(NSString*) sessionId;
 
-- (void) showIncominCallForSession:(Session*) session forIncomingCall:(BOOL) incomingCall;
+- (void) showIncominCallForSession:(Session*) session;
 @end

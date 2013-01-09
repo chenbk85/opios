@@ -109,17 +109,22 @@
  */
 - (void) logout
 {    
-    //Delete all cookies from linkedin login page.
-    [Utility removeCookiesAndClearCredentialsForUrl:@"https://www.linkedin.com/secure/login?session_full_logout=&trk=hb_signout"];
+    //Delete all cookies.
+    [Utility removeCookiesAndClearCredentials];
     
     //Delete user data stored on device.
     [[OpenPeerUser sharedOpenPeerUser] deleteUserData];
+    
+    //Remove all contacts
+    [[[ContactsManager sharedContactsManager] contactArray] removeAllObjects];
+    [[[ContactsManager sharedContactsManager] contactsDictionaryByProvider] removeAllObjects];
     
     //Call to the SDK in order to shutdown Open Peer engine.
     [[HOPProvisioningAccount sharedProvisioningAccount] shutdown];
     
     //Return to the login page.
     [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
+    
 }
 
 /**
@@ -127,6 +132,7 @@
  */
 - (void) startLoginWithSocialProvider:(HOPProvisioningAccountIdentityTypes) socialProvider
 {
+    NSLog(@"Login started");
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting login url ..." inView:[[[[OpenPeer sharedOpenPeer] mainViewController] loginViewController] view]];
     
     //Call to the SDK in order to setup delegate for the OAuth Login process, and to initiate first time OAuth login.
@@ -140,6 +146,7 @@
  */
 - (void) startRelogin
 {
+    NSLog(@"Relogin started");
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Relogin ..." inView:[[[OpenPeer sharedOpenPeer] mainViewController] view]];
     
     //Information about login identity.

@@ -2347,9 +2347,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"../OP/hookflash-core/core/",
-					"../OP/hookflash-libs/Airship/**",
-					"../OP/hookflash-staging/iPhoneOS5.0/include",
-					"../OP/hookflash-staging/iPhoneOS5.1/include",
+					"../OP/hookflash-staging/iPhoneOS/include",
 					"../OP/hookflash-libs/curl/curl-7.22.0/armv7/include",
 					"../OP/hookflash-libs/cryptopp",
 					"../OP/hookflash-libs/zsLib/",
@@ -2369,14 +2367,13 @@
 					"../OP/hookflash-core/webRTC/webRTC_ios/src/voice_engine/main/interface",
 					"../OP/hookflash-core/webRTC/webRTC_ios/src",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfservices/build/Debug-iphoneos\"",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfstack/build/Debug-iphoneos\"",
+					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfservices/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
+					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfstack/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../OP/hookflash-libs/Airship\"",
-					"\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS5.1/lib\"",
+					"\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS/lib\"",
 					"\"$(SRCROOT)/../OP/hookflash-libs/curl/libs/ios/lib\"",
 					"\"$(SRCROOT)/../OP/hookflash-staging/lib\"",
 				);
@@ -2406,9 +2403,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"../OP/hookflash-core/core/",
-					"../OP/hookflash-libs/Airship/**",
-					"../OP/hookflash-staging/iPhoneOS5.0/include",
-					"../OP/hookflash-staging/iPhoneOS5.1/include",
+					"../OP/hookflash-staging/iPhoneOS/include",
 					"../OP/hookflash-libs/curl/curl-7.22.0/armv7/include",
 					"../OP/hookflash-libs/cryptopp",
 					"../OP/hookflash-libs/zsLib/",
@@ -2428,14 +2423,13 @@
 					"../OP/hookflash-core/webRTC/webRTC_ios/src/voice_engine/main/interface",
 					"../OP/hookflash-core/webRTC/webRTC_ios/src",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfservices/build/Debug-iphoneos\"",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfstack/build/Debug-iphoneos\"",
+					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfservices/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
+					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfstack/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../OP/hookflash-libs/Airship\"",
-					"\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS5.1/lib\"",
+					"\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS/lib\"",
 					"\"$(SRCROOT)/../OP/hookflash-libs/curl/libs/ios/lib\"",
 					"\"$(SRCROOT)/../OP/hookflash-staging/lib\"",
 				);

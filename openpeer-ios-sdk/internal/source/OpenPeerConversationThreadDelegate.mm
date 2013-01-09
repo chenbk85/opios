@@ -50,10 +50,11 @@ HOPConversationThread* OpenPeerConversationThreadDelegate::getOpenPeerConversati
 {
     HOPConversationThread * hopConversationThread = nil;
     
-    NSString* threadId = [NSString stringWithUTF8String:conversationThread->getThreadID()];
+    NSString* threadId = [[NSString alloc] initWithUTF8String:conversationThread->getThreadID()];//[NSString stringWithUTF8String:conversationThread->getThreadID()];
     if (threadId)
     {
         hopConversationThread = [[OpenPeerStorageManager sharedStorageManager] getConversationThreadForId:threadId];
+        [threadId release];
     }
     return hopConversationThread;
 }

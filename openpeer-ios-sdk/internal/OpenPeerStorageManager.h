@@ -49,13 +49,6 @@
     NSMutableDictionary* _dictionaryContacts;
     NSMutableDictionary* _dictionaryContactsWithUserId;
     NSMutableDictionary* _dictionaryProvisioningAccount;
-    
-//    IStackPtr stackPtr;
-//    
-//    boost::shared_ptr<OpenPeerCallDelegate> openPeerCallDelegatePtr;
-//    boost::shared_ptr<OpenPeerStackDelegate> openPeerStackDelegatePtr;
-//    boost::shared_ptr<OpenPeerMediaEngineDelegate> openPeerMediaEngineDelegatePtr;
-//    boost::shared_ptr<OpenPeerConversationThreadDelegate> openPeerConversationThreadDelegatePtr;
 }
 + (id)sharedStorageManager;
 
@@ -74,18 +67,4 @@
 - (HOPProvisioningAccount*) getProvisioningAccountForUserId:(NSString*) userId;
 - (void) setCProvisioningAccount:(HOPProvisioningAccount*) account forUserId:(NSString*) userId;
 
-//- (IStackPtr) getStackPtr;
-//- (void) setStackPtr:(IStackPtr) inStackPtr;
-//
-//- (boost::shared_ptr<OpenPeerCallDelegate>) getOpenPeerCallDelegate;
-//- (void) setOpenPeerCallDelegate:(boost::shared_ptr<OpenPeerCallDelegate>) inOpenPeerCallDelegate;
-//
-//- (boost::shared_ptr<OpenPeerStackDelegate>) getOpenPeerStackDelegate;
-//- (void) setOpenPeerStackDelegate:(boost::shared_ptr<OpenPeerStackDelegate>) inOpenPeerStackDelegate;
-//
-//- (boost::shared_ptr<OpenPeerMediaEngineDelegate>) getOpenPeerMediaEngineDelegate;
-//- (void) setOpenPeerMediaEngineDelegate:(boost::shared_ptr<OpenPeerMediaEngineDelegate>) inOpenPeerMediaEngineDelegate;
-//
-//- (boost::shared_ptr<OpenPeerConversationThreadDelegate>) getOpenPeerConversationThreadDelegate;
-//- (void) setOpenPeerConversationThreadDelegate:(boost::shared_ptr<OpenPeerConversationThreadDelegate>) inOpenPeerConversationThreadDelegate;
 @end

@@ -254,10 +254,11 @@ static const short _base64DecodingTable[256] = {
     return userAgent;
 }
 
-+ (void)removeCookiesAndClearCredentialsForUrl:(NSString*) url
++ (void)removeCookiesAndClearCredentials
 {
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    for (NSHTTPCookie *each in [[[cookieStorage cookiesForURL:[NSURL URLWithString:url]] copy] autorelease]) {
+    for (NSHTTPCookie *each in [[[cookieStorage cookies] copy] autorelease])
+    {
         [cookieStorage deleteCookie:each];
     }
 }

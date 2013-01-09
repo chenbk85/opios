@@ -49,6 +49,8 @@ boost::shared_ptr<OpenPeerAccountPeerFileLookupQueryDelegate> OpenPeerAccountPee
 
 void OpenPeerAccountPeerFileLookupQueryDelegate::onAccountPeerFileLookupQueryComplete(IAccountPeerFileLookupQueryPtr query)
 {
+    NSAutoreleasePool* _pool = [[NSAutoreleasePool alloc] init];
+    
     HOPProvisioningAccountPeerFileLookupQuery* hopQuery = [[HOPProvisioningAccount sharedProvisioningAccount] getProvisioningAccountPeerFileLookupQueryForUniqueId:[NSNumber numberWithUnsignedLong:query->getID()]];
     
     if([hopQuery isComplete] && [hopQuery didSucceed])
@@ -65,4 +67,6 @@ void OpenPeerAccountPeerFileLookupQueryDelegate::onAccountPeerFileLookupQueryCom
     }
     
     [provisioningAccountPeerFileLookupQueryDelegate onAccountPeerFileLookupQueryComplete:hopQuery];
+    
+    [_pool release];
 }

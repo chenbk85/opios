@@ -39,12 +39,14 @@
 #import "Session.h"
 #import "MainViewController.h"
 #import "ActiveSessionViewController.h"
-
+#import "Utility.h"
 
 @implementation CallDelegate
 
 - (void) onCallStateChanged:(HOPCall*) call callState:(HOPCallStates) callState
 {
+    NSLog(@"Call state: %@", [Utility getCallStateAsString:[call getState]]);
+    
     NSString* sessionId = [[call getConversationThread] getThreadId];
     dispatch_async(dispatch_get_main_queue(), ^{
         Session* session = [[[SessionManager sharedSessionManager] sessionsDictionary] objectForKey:sessionId];
@@ -59,7 +61,7 @@
                         [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:YES];
                         if (!sessionViewController)
                             sessionViewController = [[[[OpenPeer sharedOpenPeer] mainViewController] sessionViewControllersDictionary] objectForKey:sessionId];
-                        [sessionViewController prepareForIncomingCall];
+                        //[sessionViewController prepareForIncomingCall];
                     }
                     [sessionViewController updateCallState];
                 }
@@ -67,7 +69,7 @@
                 
             case HOPCallStateIncoming:              //Receives just callee
                 [[SessionManager sharedSessionManager] handleIncomingCall:call forSession:session];
-                [sessionViewController prepareForIncomingCall];
+                //[sessionViewController prepareForIncomingCall];
                 [sessionViewController updateCallState];
                 break;
                 
@@ -105,7 +107,8 @@
                 break;
                 
             case HOPCallStateClosing:               //Receives both parties
-                [call hangup:HOPCallClosedReasonUser];
+                 [[SessionManager sharedSessionManager] endCallForSession:session];
+                                                    //[call hangup:HOPCallClosedReasonUser];
                 break;
                 
             case HOPCallStateClosed:                //Receives both parties

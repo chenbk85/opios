@@ -39,7 +39,7 @@
 + (NSString*) getDeviceOs;
 + (NSString*) getPlatform;
 + (NSString*) getUserAgentName;
-+ (void) removeCookiesAndClearCredentialsForUrl:(NSString*) url;
++ (void) removeCookiesAndClearCredentials;
 + (NSString *) getGUIDstring;
 + (NSString*) getCallStateAsString:(HOPCallStates) callState;
 @end

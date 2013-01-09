@@ -50,6 +50,7 @@
 - (void) endSession:(Session*) session;
 
 - (void) makeCallForSession:(Session*) inSession includeVideo:(BOOL) includeVideo;
+- (void) answerCallForSession:(Session*) inSession;
 - (void) endCallForSession:(Session*) inSession;
 
 - (void) handleIncomingCall:(HOPCall*) call forSession:(Session*) inSession;

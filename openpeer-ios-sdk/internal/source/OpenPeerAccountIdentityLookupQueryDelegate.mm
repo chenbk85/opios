@@ -50,6 +50,7 @@ boost::shared_ptr<OpenPeerAccountIdentityLookupQueryDelegate> OpenPeerAccountIde
 
 void OpenPeerAccountIdentityLookupQueryDelegate::onAccountIdentityLookupQueryComplete(IAccountIdentityLookupQueryPtr query)
 {
+    NSAutoreleasePool* _pool = [[NSAutoreleasePool alloc] init];
     HOPProvisioningAccountIdentityLookupQuery* hopQuery = [[HOPProvisioningAccount sharedProvisioningAccount] getProvisioningAccountIdentityLookupQueryForUniqueId:[NSNumber numberWithUnsignedLong:query->getID()]];
     
     if([hopQuery isComplete] && [hopQuery didSucceed])
@@ -83,4 +84,5 @@ void OpenPeerAccountIdentityLookupQueryDelegate::onAccountIdentityLookupQueryCom
     }
 
     [accountIdentityLookupQueryDelegate onAccountIdentityLookupQueryComplete:hopQuery];
+    [_pool release];
 }

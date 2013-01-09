@@ -38,6 +38,7 @@
 
 #define MAKE_CALL 1
 #define END_CALL 2
+
 @interface ActiveSessionViewController ()
 
 @property (nonatomic, assign) int messageCounter;
@@ -59,8 +60,9 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    if (self)
+    {
+        
     }
     return self;
 }
@@ -68,20 +70,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    self.callStatusView.hidden = YES;
-//    self.incomingCallView.hidden = YES;
-//    self.videoView.hidden = YES;
+
+    //Set UIImageViews where will be shown camera preview and video
     [[HOPMediaEngine sharedInstance] setCaptureRenderView:self.videoPreviewImageView];
     [[HOPMediaEngine sharedInstance] setChannelRenderView:self.videoImageView];
+    //Set default video orientation to be portrait
     [[HOPMediaEngine sharedInstance] setDefaultVideoOrientation:HOPMediaEngineVideoOrientationPortrait];
-    //[[HOPMediaEngine sharedInstance] setVideoOrientation];
     
     [self.view bringSubviewToFront:self.buttonsView];
+    //Prepare view controller for default state - no call
     [self prepareForCall:NO withVideo:NO];
     
+    //In case this session is created for incoming call prepare it for
     if (self.isIncomingCall)
     {
         [self prepareForIncomingCall];
+        //This is just used for opening session view controller so we can reset it to default state
         self.isIncomingCall = NO;
     }
     
@@ -90,10 +94,10 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
     [_videoView release];
     [_callStatusView release];
     [_buttonsView release];
@@ -106,9 +110,13 @@
     [_videoPreviewImageView release];
     [super dealloc];
 }
+
 - (IBAction)actionSendMessage:(id)sender
 {
+    //Create a message and send it
     [[SessionManager sharedSessionManager] sendMessage:[NSString stringWithFormat:@"This is a test message %d.",self.messageCounter] forSession:self.session];
+    
+    //Increase counter just to distinguish new message from previous
     self.messageCounter++;
 }
 
@@ -116,12 +124,15 @@
 {
     if ([sender tag] == MAKE_CALL)
     {
+        //Prepare view for video call
         [self prepareForCall:YES withVideo:YES];
+        //Create a video call
         [[SessionManager sharedSessionManager] makeCallForSession:self.session includeVideo:YES];
     }
     else
     {
-        [self.session.currentCall hangup:HOPCallClosedReasonUser];
+        //End video call
+        [[SessionManager sharedSessionManager] endCallForSession:self.session];
     }
 }
 
@@ -129,34 +140,42 @@
 {
     if ([((UIButton*)sender) tag] == MAKE_CALL)
     {
+        //Prepare view for audio call
         [self prepareForCall:YES withVideo:NO];
+        //Create a audio call
         [[SessionManager sharedSessionManager] makeCallForSession:self.session includeVideo:NO];
     }
     else
     {
-        [self.session.currentCall hangup:HOPCallClosedReasonUser];
+        //End audio call
+        [[SessionManager sharedSessionManager] endCallForSession:self.session];
     }
 }
 
 - (IBAction)actionDeclineCall:(id)sender
 {
-    [self.session.currentCall hangup:CallClosedReasonDecline];
+    //End incoming call
+    [[SessionManager sharedSessionManager] endCallForSession:self.session];
 }
 
 - (IBAction)actionAcceptCall:(id)sender
 {
-    [self.session.currentCall answer];
+    //Answer call
+    [[SessionManager sharedSessionManager] answerCallForSession:self.session];
 }
 
 - (void)prepareForCall:(BOOL)isCallSession withVideo:(BOOL)includeVideo
 {
+    //Hide incoming view 
     self.incomingCallView.hidden = YES;
+    //Show control buttons (Audio, Video, Message)
     self.buttonsView.hidden = NO;
+    
     if (isCallSession)
     {
         self.callStatusView.hidden = NO;
-        //[self.statusLabel setText:[NSString stringWithFormat:@"%d",[self.session.currentCall getState]]];
-        if (includeVideo)
+        
+        if (includeVideo) //Update controller if video call is active
         {
             self.videoView.hidden = NO;
             self.voiceCallButton.enabled = NO;
@@ -164,14 +183,13 @@
             self.videoCallButton.tag = END_CALL;
             [self.voiceCallButton setTitle:@"Audio" forState:UIControlStateNormal];
             [self.videoCallButton setTitle:@"End Call" forState:UIControlStateNormal];
-            //[[HOPMediaEngine sharedInstance] setVideoOrientation];
             [self.view bringSubviewToFront:self.buttonsView];
             self.videoImageView.contentMode = UIViewContentModeScaleAspectFill;
             self.videoImageView.clipsToBounds = YES;
             self.videoPreviewImageView.contentMode = UIViewContentModeScaleAspectFill;
             self.videoPreviewImageView.clipsToBounds = YES;
         }
-        else
+        else //Update controller if audio call is active
         {
             self.videoView.hidden = YES;
             self.videoCallButton.enabled = NO;
@@ -182,7 +200,7 @@
             [self.videoCallButton setTitle:@"Video" forState:UIControlStateNormal];
         }
     }
-    else
+    else //Update controller if call is not active
     {
         self.videoView.hidden = YES;
         self.callStatusView.hidden = YES;
@@ -197,17 +215,15 @@
 
 - (void) prepareForIncomingCall
 {
+    NSLog(@"Prepare for incoming call");
     self.incomingCallView.hidden = NO;
     self.callStatusView.hidden = NO;
     self.videoView.hidden = YES;
     self.buttonsView.hidden = YES;
-    
-    //[self.statusLabel setText:[NSString stringWithFormat:@"%d",[self.session.currentCall getState]]];
 }
 
 - (void) updateCallState
 {
-    //[self.statusLabel setText:[NSString stringWithFormat:@"%d",[self.session.currentCall getState]]];
     [self.statusLabel setText:[Utility getCallStateAsString:[self.session.currentCall getState]]];
 }
 @end

@@ -2367,16 +2367,8 @@
 					"../OP/hookflash-core/webRTC/webRTC_ios/src/voice_engine/main/interface",
 					"../OP/hookflash-core/webRTC/webRTC_ios/src",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfservices/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfstack/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS/lib\"",
-					"\"$(SRCROOT)/../OP/hookflash-libs/curl/libs/ios/lib\"",
-					"\"$(SRCROOT)/../OP/hookflash-staging/lib\"",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS/lib\"";
 				MACH_O_TYPE = staticlib;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -2423,16 +2415,8 @@
 					"../OP/hookflash-core/webRTC/webRTC_ios/src/voice_engine/main/interface",
 					"../OP/hookflash-core/webRTC/webRTC_ios/src",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfservices/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)/../OP/hookflash-core/core/projects/xcode/hfstack/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS/lib\"",
-					"\"$(SRCROOT)/../OP/hookflash-libs/curl/libs/ios/lib\"",
-					"\"$(SRCROOT)/../OP/hookflash-staging/lib\"",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS/lib\"";
 				MACH_O_TYPE = staticlib;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

@@ -598,25 +598,16 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"<Multiple",
-					"values>",
-					"\"$(SRCROOT)/../../build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)/3rdParties/JMCAndHockey/HockeySDK-iOS\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/3rdParties/JMCAndHockey/HockeySDK-iOS\"";
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenPeerSampleApp/OpenPeerSampleApp-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = "../../../OP/hookflash-libs/JMCAndHockey/Support/SBJSON";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "OpenPeerSampleApp/OpenPeerSampleApp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -640,25 +631,16 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = (
-					"<Multiple",
-					"values>",
-					"\"$(SRCROOT)/../../build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)/3rdParties/JMCAndHockey/HockeySDK-iOS\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/3rdParties/JMCAndHockey/HockeySDK-iOS\"";
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenPeerSampleApp/OpenPeerSampleApp-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = "../../../OP/hookflash-libs/JMCAndHockey/Support/SBJSON";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "OpenPeerSampleApp/OpenPeerSampleApp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"",
-					"\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

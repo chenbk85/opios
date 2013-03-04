@@ -50,5 +50,5 @@
 + (id) sharedOpenPeer;
 
 - (void) prepareWithMainViewController:(MainViewController*) inMainViewController;
-
+- (void) startLogger;
 @end

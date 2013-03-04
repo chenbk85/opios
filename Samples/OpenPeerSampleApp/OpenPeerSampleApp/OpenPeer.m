@@ -77,6 +77,9 @@
 {
     self.mainViewController = inMainViewController;
     
+    //Set log levels and start logging
+    [self startLogger];
+    
     //Created all delegates required for openpeer stack initialization.
     [self createDelegates];
 
@@ -100,5 +103,24 @@
     self.conversationThreadDelegate = [[[ConversationThreadDelegate alloc] init] autorelease];
     self.callDelegate = [[[CallDelegate alloc] init] autorelease];
     self.provisioningAccountDelegate = [[[ProvisioningAccountDelegate alloc] init] autorelease];
+}
+
+/**
+ Method used for setting log levels and starting logger.
+ */
+- (void) startLogger
+{
+    //For each system you can choose log level from HOPClientLogLevelNone (turned off) to HOPClientLogLevelTrace (most detail).
+    [HOPStack setLogLevel:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"hookflash_gui" level:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"hookflash" level:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"hookflash_services" level:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"zsLib" level:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"hookflash_services_http" level:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"hookflash_stack_message" level:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"hookflash_stack" level:HOPClientLogLevelNone];
+    [HOPStack setLogLevelbyName:@"hookflash_webrtc" level:HOPClientLogLevelNone];
+    //Srart logger without colorized output
+    [HOPStack installStdOutLogger:NO];
 }
 @end

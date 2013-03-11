@@ -96,20 +96,6 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)dealloc
-{
-    [_videoView release];
-    [_callStatusView release];
-    [_buttonsView release];
-    [_statusLabel release];
-    [_voiceCallButton release];
-    [_videoCallButton release];
-    [_messageButton release];
-    [_incomingCallView release];
-    [_videoImageView release];
-    [_videoPreviewImageView release];
-    [super dealloc];
-}
 
 - (IBAction)actionSendMessage:(id)sender
 {

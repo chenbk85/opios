@@ -39,7 +39,7 @@
 
 @interface SessionManager : NSObject
 
-@property (retain) NSMutableDictionary* sessionsDictionary;
+@property (strong) NSMutableDictionary* sessionsDictionary;
 
 
 + (id) sharedSessionManager;

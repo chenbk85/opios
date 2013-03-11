@@ -39,7 +39,7 @@
     self = [super init];
     if (self)
     {
-        self.participantsArray = [[[NSMutableArray alloc] init] autorelease];
+        self.participantsArray = [[NSMutableArray alloc] init];
         [self.participantsArray addObject:inContact];
     }
     self.conversationThread = inConverationThread;
@@ -51,7 +51,7 @@
     self = [super init];
     if (self)
     {
-        self.participantsArray = [[[NSMutableArray alloc] init] autorelease];
+        self.participantsArray = [[NSMutableArray alloc] init];
         if (inContacts)
             [self.participantsArray addObjectsFromArray:inContacts];
     }

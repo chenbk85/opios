@@ -42,58 +42,7 @@ boost::shared_ptr<OpenPeerStackDelegate>  OpenPeerStackDelegate::create(id<HOPSt
     return boost::shared_ptr<OpenPeerStackDelegate>  (new OpenPeerStackDelegate(inStackDelegate));
 }
 
-void OpenPeerStackDelegate::onShutdownReady()
+void OpenPeerStackDelegate::onStackShutdown(IStackAutoCleanupPtr ignoreThisArgument)
 {
-    [stackDelegate onShutdownReady];
-}
-
-void OpenPeerStackDelegate::onMessagePutInGUIQueue()
-{
-    [stackDelegate onMessagePutInGUIQueue];
-}
-
-void OpenPeerStackDelegate::onNewSubsystem(zsLib::PTRNUMBER subsystemID, const char *subsystemName)
-{
-    [stackDelegate onNewSubsystem:subsystemID subsystemName:[NSString stringWithUTF8String:subsystemName]];
-}
-
-void OpenPeerStackDelegate::onLog(
-                                  zsLib::PTRNUMBER subsystemID,
-                                  const char *subsystemName,
-                                  IClient::Log::Severity inSeverity,
-                                  IClient::Log::Level inLevel,
-                                  const char *inMessage,
-                                  const char *inFunction,
-                                  const char *inFilePath,
-                                  zsLib::ULONG inLineNumber
-                                  )
-{
-    [stackDelegate onLog:subsystemID subsystemName:[NSString stringWithUTF8String:subsystemName] severity:(HOPClientLogSeverities) inSeverity level:(HOPClientLogLevels) inLevel message:[NSString stringWithUTF8String:inMessage] function:[NSString stringWithUTF8String:inFunction] filePath:[NSString stringWithUTF8String:inFilePath] lineNumber:inLineNumber];
-    /*const char *posBackslash = strrchr(inFilePath, '\\');
-     const char *posSlash = strrchr(inFilePath, '/');
-     
-     const char *fileName = inFilePath;
-     
-     if (!posBackslash)
-     posBackslash = posSlash;
-     
-     if (!posSlash)
-     posSlash = posBackslash;
-     
-     if (posSlash)
-     {
-     if (posBackslash > posSlash)
-     posSlash = posBackslash;
-     fileName = posSlash + 1;
-     }
-     
-     NSString * severity = @"NONE";
-     switch (inSeverity)
-     {
-     case IClient::Log::Informational: severity = @"i:"; break;
-     case IClient::Log::Warning:       severity = @"W:"; break;
-     case IClient::Log::Error:         severity = @"E:"; break;
-     case IClient::Log::Fatal:         severity = @"F:"; break;
-     }*/
-    // NSLog(@"%@ %@ @%@(%lu) [%@-%@]", severity, [NSString stringWithCString:inMessage encoding:NSUTF8StringEncoding],  [NSString stringWithCString:fileName encoding:NSUTF8StringEncoding], inLineNumber, [NSString stringWithCString:subsystemName encoding:NSUTF8StringEncoding], [NSString stringWithCString:inFunction encoding:NSUTF8StringEncoding]);
+    [stackDelegate onStackShutdown];
 }

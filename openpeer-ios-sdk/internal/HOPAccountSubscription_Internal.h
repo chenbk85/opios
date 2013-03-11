@@ -31,9 +31,10 @@
 
 
 #import "HOPAccountSubscription.h"
-#import <hookflash/hookflashTypes.h>
+#import <hookflash/core/types.h>
 
 using namespace hookflash;
+using namespace hookflash::core;
 
 @interface HOPAccountSubscription ()
 {

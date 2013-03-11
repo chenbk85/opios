@@ -31,10 +31,10 @@
 
 
 #import "HOPProvisioningAccountPush.h"
-#import <hookflash/provisioning/IAccount.h>
+#import <hookflash/core/IAccount.h>
 
 using namespace hookflash;
-using namespace hookflash::provisioning;
+using namespace hookflash::core;
 
 @interface HOPProvisioningAccountPush ()
 {

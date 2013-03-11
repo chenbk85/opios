@@ -30,24 +30,70 @@
  */
 
 
-#import <hookflash/IConversationThread.h>
-#import <hookflash/IContact.h>
-#import <hookflash/IXML.h>
+#import <hookflash/core/IConversationThread.h>
+#import <hookflash/core/IContact.h>
+#import <hookflash/core/IHelper.h>
 
 #import "HOPConversationThread_Internal.h"
-#import "HOPConversationThread.h"
 #import "HOPContact_Internal.h"
-#import "HOPContact.h"
 #import "OpenPeerUtility.h"
-#import "HOPProvisioningAccount.h"
-#import "HOPProvisioningAccount_Internal.h"
 #import "HOPMessage.h"
-
+#import "HOPAccount_Internal.h"
 #import "OpenPeerStorageManager.h"
 
 using namespace hookflash;
+using namespace hookflash::core;
 
 @implementation HOPConversationThread
+
++ (NSString*) stringForMessageDeliveryState:(HOPConversationThreadMessageDeliveryStates) state
+{
+    return [NSString stringWithUTF8String: IConversationThread::toString((IConversationThread::MessageDeliveryStates) state)];
+}
+
++ (NSString*) stringForContactState:(HOPConversationThreadContactStates) state
+{
+    return [NSString stringWithUTF8String: IConversationThread::toString((IConversationThread::ContactStates) state)];
+}
+
++ (NSString*) debugStringForConversationThread:(HOPConversationThread*) conversationThread includeCommaPrefix:(BOOL) includeCommaPrefix
+{
+    return [NSString stringWithUTF8String: IConversationThread::toDebugString([conversationThread getConversationThreadPtr],includeCommaPrefix)];
+}
+
+//HOP_TODO: Check is this required
++ (HOPConversationThread*) conversationThreadWithAccount:(HOPAccount*) account profileBundle:(NSString*) profileBundle
+{
+    HOPConversationThread* ret = nil;
+    
+    zsLib::XML::ElementPtr elementPtr;
+    
+    if ([profileBundle length] > 0)
+        elementPtr = IHelper::createFromString([profileBundle UTF8String]);
+    else
+        elementPtr = zsLib::XML::ElementPtr();
+    
+    IConversationThreadPtr tempConversationThreadPtr = IConversationThread::create([account getAccountPtr], elementPtr);
+    
+    if (tempConversationThreadPtr)
+    {
+        ret = [[self alloc] initWithConversationThread:tempConversationThreadPtr];
+    }
+    return [ret autorelease];
+}
+
++ (NSArray*) getConversationThreadsForAccount:(HOPAccount*) account
+{
+    return [[OpenPeerStorageManager sharedStorageManager] getConversationThreads];
+}
+
++ (HOPConversationThread*) getConversationThreadForAccount:(HOPAccount*) account threadID:(NSString*) threadID
+{
+    HOPConversationThread* ret = nil;
+    if (threadID)
+        ret =[[OpenPeerStorageManager sharedStorageManager] getConversationThreadForId:threadID];
+    return ret;
+}
 
 + (NSString*) deliveryStateToString: (HOPConversationThreadMessageDeliveryStates) state
 {
@@ -56,7 +102,7 @@ using namespace hookflash;
 
 + (NSString*) stateToString: (HOPConversationThreadContactStates) state
 {
-    return [NSString stringWithUTF8String: IConversationThread::toString((hookflash::IConversationThread::ContactStates) state)];
+    return [NSString stringWithUTF8String: IConversationThread::toString((IConversationThread::ContactStates) state)];
 }
 
 - (id)init
@@ -84,11 +130,11 @@ using namespace hookflash;
     zsLib::XML::ElementPtr elementPtr;
     
     if ([profileBundle length] > 0)
-        elementPtr = IXML::createFromString([profileBundle UTF8String]);
+        elementPtr = IHelper::createFromString([profileBundle UTF8String]);
     else
         elementPtr = zsLib::XML::ElementPtr();
     
-    IConversationThreadPtr tempConversationThreadPtr = IConversationThread::create([[HOPProvisioningAccount sharedProvisioningAccount] getOpenpeerAccountPtr], elementPtr);
+    IConversationThreadPtr tempConversationThreadPtr = IConversationThread::create([[HOPAccount sharedAccount] getAccountPtr], elementPtr);
     
     if (tempConversationThreadPtr)
     {
@@ -147,21 +193,26 @@ using namespace hookflash;
     return ret;
 }
 
+- (HOPAccount*) getAssociatedAccount
+{
+    return [HOPAccount sharedAccount];
+}
+
 - (NSArray*) getContacts
 {
     NSMutableArray* contactArray = nil;
     if (conversationThreadPtr)
     {
         contactArray = [[NSMutableArray alloc] init];
-        IConversationThread::ContactList contactList;
-        conversationThreadPtr->getContacts(contactList);
+        //IConversationThread::ContactList contactList;
+        ContactListPtr contactList = conversationThreadPtr->getContacts();
         
-        for (IConversationThread::ContactList::iterator contact = contactList.begin(); contact != contactList.end(); ++contact)
+        for (ContactList::iterator contact = contactList->begin(); contact != contactList->end(); ++contact)
         {
             IContactPtr contactPtr = *contact;
             if (!contactPtr->isSelf())
             {
-                HOPContact* tempContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:contactPtr->getContactID()]];
+                HOPContact* tempContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:contactPtr->getStableUniqueID()]];
                 [contactArray addObject:tempContact];
             }
         }
@@ -180,7 +231,7 @@ using namespace hookflash;
     NSString* ret = nil;
     if (conversationThreadPtr)
     {
-        ret = [NSString stringWithUTF8String:IXML::convertToString(conversationThreadPtr->getProfileBundle([contact getContactPtr]))];
+        ret = [NSString stringWithUTF8String:IHelper::convertToString(conversationThreadPtr->getProfileBundle([contact getContactPtr]))];
     }
     else
     {
@@ -210,10 +261,10 @@ using namespace hookflash;
     {
         if ([contacts count] > 0)
         {
-            IConversationThread::ContactInfoList contactList;
+            ContactProfileInfoList contactList;
             for (HOPContact* contact in contacts)
             {
-                hookflash::IConversationThread::ContactInfo contactInfo;
+                ContactProfileInfo contactInfo;
                 contactInfo.mContact = [contact getContactPtr];
                 contactInfo.mProfileBundleEl = zsLib::XML::ElementPtr();
                 
@@ -234,7 +285,7 @@ using namespace hookflash;
     {
         if ([contacts count] > 0)
         {
-            IConversationThread::ContactList contactList;
+            ContactList contactList;
             for (HOPContact* contact in contacts)
             {
                 contactList.push_back([contact getContactPtr]);
@@ -289,7 +340,7 @@ using namespace hookflash;
         {
             hopMessage = [[HOPMessage alloc] init];
             
-            hopMessage.contact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:fromContact->getContactID()]];
+            hopMessage.contact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:fromContact->getStableUniqueID()]];
             hopMessage.type = [NSString stringWithUTF8String:messageType];
             hopMessage.text = [NSString stringWithUTF8String:message];
             hopMessage.date = [OpenPeerUtility convertPosixTimeToDate:messageTime];
@@ -317,7 +368,7 @@ using namespace hookflash;
         
         if (fromContact && messageType && message)
         {
-            *outFrom = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:fromContact->getContactID()]];
+            *outFrom = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:fromContact->getStableUniqueID()]];
             *outMessageType = [NSString stringWithUTF8String:messageType];
             *outMessage = [NSString stringWithUTF8String:message];
             *outTime = [OpenPeerUtility convertPosixTimeToDate:messageTime];
@@ -335,7 +386,7 @@ using namespace hookflash;
 - (BOOL) getMessageDeliveryState: (NSString*) messageID outDeliveryState:(HOPConversationThreadMessageDeliveryStates*) outDeliveryState
 {
     BOOL ret = NO;
-    hookflash::IConversationThread::MessageDeliveryStates tmpState;
+    IConversationThread::MessageDeliveryStates tmpState;
 
     if(conversationThreadPtr)
     {

@@ -69,13 +69,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc
-{
-    [_activityIndicator release];
-    [_activityLabel release];
-    [super dealloc];
-}
-
 - (void) showActivityIndicator:(BOOL) show withText:(NSString*) text inView:(UIView*) inView
 {
     [self.activityIndicator stopAnimating];

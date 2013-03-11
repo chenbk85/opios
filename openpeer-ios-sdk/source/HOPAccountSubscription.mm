@@ -30,7 +30,7 @@
  */
 
 
-#import <hookflash/IAccount.h>
+#import <hookflash/core/IAccount.h>
 
 #import "HOPAccountSubscription.h"
 #import "HOPAccountSubscription_Internal.h"

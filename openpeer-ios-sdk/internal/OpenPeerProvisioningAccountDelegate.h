@@ -33,9 +33,9 @@
 #import <Foundation/Foundation.h>
 #import <dispatch/dispatch.h>
 
-#include <hookflash/hookflashTypes.h>
-#include <hookflash/provisioning/IAccount.h>
-#include <hookflash/IAccount.h>
+#include <hookflash/core/types.h>
+#include <hookflash/core/IAccount.h>
+//#include <hookflash/IAccount.h>
 #import "HOPProtocols.h"
 
 using namespace hookflash;

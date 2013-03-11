@@ -59,24 +59,11 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        self.sessionViewControllersDictionary = [[[NSMutableDictionary alloc] init] autorelease];
+        self.sessionViewControllersDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [_loginViewController release];
-    [_webLoginViewController release];
-    [_contactsTableViewController release];
-    [_contactsNavigationController release];
-    [_sessionViewControllersDictionary release];
-    
-    [_activityIndicator release];
-    [_activityLabel release];
-    [_activityView release];
-    [super dealloc];
-}
 
 - (void)viewDidLoad
 {
@@ -103,7 +90,7 @@
 {
     if (!self.loginViewController)
     {
-        self.loginViewController = [[[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil] autorelease];
+        self.loginViewController = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
     }
     
     [self removeAllSubViews];
@@ -117,7 +104,7 @@
 - (void) showWebLoginView:(NSString*) url
 {
     if (!self.webLoginViewController)
-        self.webLoginViewController = [[[WebLoginViewController alloc] initWithNibName:@"WebLoginViewController" bundle:nil] autorelease];
+        self.webLoginViewController = [[WebLoginViewController alloc] initWithNibName:@"WebLoginViewController" bundle:nil];
     
     if (url)
     {
@@ -136,11 +123,11 @@
     [self removeAllSubViews];
     
     if (!self.contactsTableViewController)
-        self.contactsTableViewController = [[[ContactsTableViewController alloc] initWithNibName:@"ContactsTableViewController" bundle:nil] autorelease];
+        self.contactsTableViewController = [[ContactsTableViewController alloc] initWithNibName:@"ContactsTableViewController" bundle:nil];
     
     if (!self.contactsNavigationController)
     {
-        self.contactsNavigationController = [[[UINavigationController alloc] initWithRootViewController:self.contactsTableViewController] autorelease];
+        self.contactsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.contactsTableViewController];
         [self.contactsNavigationController.navigationBar.topItem setTitle:@"Contacts"];
         // Add logout button in navigation bar
         UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"LogOut"
@@ -148,7 +135,6 @@
                                                                      target:[LoginManager sharedLoginManager]
                                                                      action:@selector(logout)];
         self.contactsTableViewController.navigationItem.rightBarButtonItem = barButton;
-        [barButton release];
     }
     
     [self presentViewController:self.contactsNavigationController animated:NO completion:nil];
@@ -163,7 +149,7 @@
     
     if (!sessionViewContorller)
     {
-        sessionViewContorller = [[[ActiveSessionViewController alloc] initWithSession:session] autorelease];
+        sessionViewContorller = [[ActiveSessionViewController alloc] initWithSession:session];
         [self.sessionViewControllersDictionary setObject:sessionViewContorller forKey:sessionId];
     }
     

@@ -31,11 +31,12 @@
 
 
 #import <Foundation/Foundation.h>
-#include <hookflash/hookflashTypes.h>
-#include <hookflash/ICall.h>
+#include <hookflash/core/types.h>
+#include <hookflash/core/ICall.h>
 #import "HOPProtocols.h"
 
 using namespace hookflash;
+using namespace hookflash::core;
 
 class OpenPeerCallDelegate : public ICallDelegate
 {

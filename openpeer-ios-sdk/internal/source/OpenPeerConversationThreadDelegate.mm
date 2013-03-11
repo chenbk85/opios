@@ -34,7 +34,7 @@
 #import "OpenPeerStorageManager.h"
 #import "HOPConversationThread_Internal.h"
 
-#include <zsLib/zsTypes.h>
+#include <zsLib/types.h>
 
 OpenPeerConversationThreadDelegate::OpenPeerConversationThreadDelegate(id<HOPConversationThreadDelegate> inConversationThreadDelegate)
 {
@@ -103,7 +103,7 @@ void OpenPeerConversationThreadDelegate::onConversationThreadPushMessage(IConver
 {
     HOPConversationThread * hopConversationThread = this->getOpenPeerConversationThread(conversationThread);
     NSString* messageId = [NSString stringWithUTF8String:messageID];
-    HOPContact* hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:contact->getContactID()]];
+    HOPContact* hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:contact->getStableUniqueID()]];
     
     if (hopConversationThread && hopContact && [messageId length] > 0)
         [conversationThreadDelegate onConversationThreadPushMessage:hopConversationThread messageID:messageId contact:hopContact];
@@ -112,7 +112,7 @@ void OpenPeerConversationThreadDelegate::onConversationThreadPushMessage(IConver
 void OpenPeerConversationThreadDelegate::onConversationThreadContactStateChanged(IConversationThreadPtr conversationThread,IContactPtr contact,ContactStates state)
 {
     HOPConversationThread * hopConversationThread = this->getOpenPeerConversationThread(conversationThread);
-    HOPContact* hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:contact->getContactID()]];
+    HOPContact* hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithUTF8String:contact->getStableUniqueID()]];
     
     if (hopConversationThread && hopContact)
         [conversationThreadDelegate onConversationThreadContactStateChanged:hopConversationThread contact:hopContact contactState:(HOPConversationThreadContactStates)state];

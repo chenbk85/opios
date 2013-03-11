@@ -54,13 +54,25 @@
  @param platform Plafrom name (e.g. "iPhone 4S", "iPod Touch 4G")
  @returns YES if initialisation was sucessfull
  */
-- (BOOL) initStackDelegate:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) conversationThreadDelegate callDelegate:(id<HOPCallDelegate>) callDelegate userAgent:(NSString*) userAgent deviceOs:(NSString*) deviceOs platform:(NSString*) platform;
+//- (BOOL) initStackDelegate:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) conversationThreadDelegate callDelegate:(id<HOPCallDelegate>) callDelegate userAgent:(NSString*) userAgent deviceOs:(NSString*) deviceOs platform:(NSString*) platform;
+
+/**
+ Initialise delegates objects required for communication between core and client.
+ @param stackDelegate IStack delegate
+ @param mediaEngineDelegate IMediaEngine delegate
+ @param deviceID device identifier
+ @param userAgent e.g. "App Name/App version (iOS/iPad)"
+ @param deviceOs iOs version (e.g. "iOS 5.1.1")
+ @param system System name (e.g. "iPhone 4S", "iPod Touch 4G")
+ */
+- (void) setupWithStackDelegate:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate deviceID:(NSString*) deviceID userAgent:(NSString*) userAgent deviceOs:(NSString*) deviceOs system:(NSString*) system;
 
 /**
  Shutdown stack.
  */
 - (void) shutdown;
 
+#if 0
 #pragma mark IClient interface wrapper
 
 /**
@@ -162,5 +174,5 @@
  @returns String representation of call closed reason enum
  */
 + (void) log: (unsigned int) subsystemUniqueID severity: (HOPClientLogSeverities) severity level: (HOPClientLogLevels) level message: (NSString*) message function: (NSString*) function filePath: (NSString*) filePath lineNumber: (unsigned long) lineNumber;
-
+#endif
 @end

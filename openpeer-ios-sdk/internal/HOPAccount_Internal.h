@@ -30,17 +30,31 @@
  */
 
 
-#import "HOPIdentity.h"
+#import <hookflash/core/types.h>
+#import "HOPAccount.h"
 
+#import "OpenPeerAccountDelegate.h"
+#import "OpenPeerConversationThreadDelegate.h"
+#import "OpenPeerCallDelegate.h"
 
-@implementation HOPIdentity
-@synthesize identityType;
-@synthesize identityId = _identityId;
+using namespace hookflash;
+using namespace hookflash::core;
 
-- (void)dealloc
+@class HOPIdentity;
+
+@interface HOPAccount ()
 {
-    [_identityId release];
-    [super dealloc];
+    boost::shared_ptr<OpenPeerAccountDelegate> openpeerAccountDelegatePtr;
+    boost::shared_ptr<OpenPeerConversationThreadDelegate> openpeerConversationDelegatePtr;
+    boost::shared_ptr<OpenPeerCallDelegate> openpeerCallDelegatePtr;
+    
+    IAccountPtr accountPtr;
 }
 
+@property (nonatomic, strong) NSMutableDictionary* dictionaryOfIdentities;
+
+- (id) init;
+- (void) setLocalDelegates:(id<HOPAccountDelegate>) inAccountDelegate conversationThread:(id<HOPConversationThreadDelegate>) inConversationThread callDelegate:(id<HOPCallDelegate>) inCallDelegate;
+
+- (IAccountPtr) getAccountPtr;
 @end

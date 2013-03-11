@@ -33,7 +33,7 @@
 
 @interface ContactsTableViewController : UIViewController<UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
-@property (retain, nonatomic) IBOutlet UITableView *contactsTableView;
+@property (nonatomic, weak) IBOutlet UITableView *contactsTableView;
 
 
 - (void) onContactsLoadingStarted;

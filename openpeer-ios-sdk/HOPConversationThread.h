@@ -34,8 +34,9 @@
 
 @class HOPContact;
 @class HOPMessage;
+@class HOPAccount;
 
-//HOP_NOTICE: We don't need this to expose till we have group conversation
+//HOP_NOTICE: Don't expose this till group conversations are not enabled
 @interface ContactInfo
 {
   HOPContact* mContact;
@@ -46,12 +47,25 @@
 
 @interface HOPConversationThread : NSObject
 
++ (NSString*) stringForMessageDeliveryState:(HOPConversationThreadMessageDeliveryStates) state;
+
++ (NSString*) stringForContactState:(HOPConversationThreadContactStates) state;
+
++ (NSString*) debugStringForConversationThread:(HOPConversationThread*) conversationThread includeCommaPrefix:(BOOL) includeCommaPrefix;
+
++ (HOPConversationThread*) conversationThreadWithAccount:(HOPAccount*) account profileBundle:(NSString*) profileBundle;
+
++ (NSArray*) getConversationThreadsForAccount:(HOPAccount*) account;
+
++ (HOPConversationThread*) getConversationThreadForAccount:(HOPAccount*) account threadID:(NSString*) threadID;
+
+
 /**
  Retrieves string representation of the message delivery state.
  @param state HOPConversationThreadMessageDeliveryStates Message delivery state to convert to string
  @returns String representation of message delivery state
  */
-+ (NSString*) deliveryStateToString: (HOPConversationThreadMessageDeliveryStates) state;
++ (NSString*) deliveryStateToString: (HOPConversationThreadMessageDeliveryStates) state __attribute__((deprecated("use method stringForMessageDeliveryState instead")));
 
 /**
  Retrieves string representation of the contact state.
@@ -80,6 +94,8 @@
  @returns YES if self is host, NO if not
  */
 - (BOOL) amIHost;
+
+- (HOPAccount*) getAssociatedAccount;
 
 /**
  Retrieves the array of contacts participating in current conversation thread.

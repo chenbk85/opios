@@ -30,7 +30,7 @@
  */
 
 
-#import <hookflash/hookflashTypes.h>
+#import <hookflash/core/types.h>
 
 #import "HOPStack.h"
 #import "OpenPeerCallDelegate.h"
@@ -41,18 +41,19 @@
 @interface HOPStack ()
 {
     IStackPtr stackPtr;
-    IClientPtr clientPtr;
     
-    boost::shared_ptr<OpenPeerCallDelegate> openPeerCallDelegatePtr;
+    //boost::shared_ptr<OpenPeerCallDelegate> openPeerCallDelegatePtr;
     boost::shared_ptr<OpenPeerStackDelegate> openPeerStackDelegatePtr;
     boost::shared_ptr<OpenPeerMediaEngineDelegate> openPeerMediaEngineDelegatePtr;
-    boost::shared_ptr<OpenPeerConversationThreadDelegate> openPeerConversationThreadDelegatePtr;
+    //boost::shared_ptr<OpenPeerConversationThreadDelegate> openPeerConversationThreadDelegatePtr;
 }
 
-- (BOOL) createLocalDelegates:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) conversationThreadDelegate callDelegate:(id<HOPCallDelegate>) callDelegate;
+//- (BOOL) createLocalDelegates:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) conversationThreadDelegate callDelegate:(id<HOPCallDelegate>) callDelegate;
+
+- (void) createLocalDelegates:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate;
+
 - (void) deleteLocalDelegates;
 
 - (IStackPtr) getStackPtr;
 
-- (IClientPtr) getClientPtr;
 @end

@@ -121,7 +121,7 @@
     
     if (cell == nil)
     {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier];
     }
     
     Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
@@ -166,11 +166,5 @@
         
     }
 }
-
-- (void)dealloc {
-
-    [super dealloc];
-}
-
 
 @end

@@ -30,42 +30,24 @@
  */
 
 
-#import <hookflash/ICall.h>
-#import <hookflash/IConversationThread.h>
-#import <hookflash/IContact.h>
+#import <hookflash/core/ICall.h>
+#import <hookflash/core/IConversationThread.h>
+#import <hookflash/core/IContact.h>
 
 #import "HOPCall_Internal.h"
 #import "OpenPeerUtility.h"
 #import "HOPConversationThread_Internal.h"
 #import "HOPContact_Internal.h"
 #import "OpenPeerStorageManager.h"
-#import "HOPProvisioningAccount_Internal.h"
 
 #import "HOPCall.h"
-
-
+#import "HOPContact.h"
 
 using namespace hookflash;
+using namespace hookflash::core;
 
 @implementation HOPCall
 
-/*- (id) initCall:(HOPConversationThread*) conversationThread toContact:(HOPContact*) toContact includeAudio:(BOOL) includeAudio includeVideo:(BOOL) includeVideo
-{
-    self = [super init];
-    if (self)
-    {
-        if (conversationThread != nil && toContact != nil)
-        {
-            callPtr = ICall::placeCall([conversationThread getConversationThreadPtr], [toContact getContactPtr], includeAudio, includeVideo);
-        }
-        else
-        {
-            [NSException raise:NSInvalidArgumentException format:@"Invalid input arguments"];
-        }
-    }
-    
-    return self;
-}*/
 
 - (id)init
 {
@@ -102,12 +84,12 @@ using namespace hookflash;
 
 + (NSString*) stateToString: (HOPCallStates) state
 {
-    return [NSString stringWithUTF8String: ICall::toString((hookflash::ICall::CallStates) state)];
+    return [NSString stringWithUTF8String: ICall::toString((ICall::CallStates) state)];
 }
 
 + (NSString*) reasonToString: (HOPCallClosedReasons) reason
 {
-    return [NSString stringWithUTF8String: ICall::toString((hookflash::ICall::CallClosedReasons) reason)];
+    return [NSString stringWithUTF8String: ICall::toString((ICall::CallClosedReasons) reason)];
 }
 
 - (NSString*) getCallID
@@ -151,17 +133,17 @@ using namespace hookflash;
         IContactPtr contactPtr = callPtr->getCaller();
         if (contactPtr)
         {
-            NSString* contactID = [NSString stringWithUTF8String:contactPtr->getContactID()];
-            hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactID];
+            NSString* contactUniqueID = [NSString stringWithUTF8String:contactPtr->getStableUniqueID()];
+            hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactUniqueID];
             if (!hopContact)
             {
-                hopContact = [[[[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] getContactID] isEqualToString:contactID] ? [[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] : nil;
+                hopContact = [[[HOPContact getForSelf] getStableUniqueID] isEqualToString:contactUniqueID] ? [HOPContact getForSelf] : nil;
             }
         }
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     return hopContact;
 }
@@ -174,17 +156,17 @@ using namespace hookflash;
         IContactPtr contactPtr = callPtr->getCallee();
         if (contactPtr)
         {
-            NSString* contactID = [NSString stringWithUTF8String:contactPtr->getContactID()];
-            hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactID];
+            NSString* contactUniqueID = [NSString stringWithUTF8String:contactPtr->getStableUniqueID()];
+            hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactUniqueID];
             if (!hopContact)
             {
-                hopContact = [[[[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] getContactID] isEqualToString:contactID] ? [[HOPProvisioningAccount sharedProvisioningAccount] getSelfContact] : nil;
+                hopContact = [[[HOPContact getForSelf] getStableUniqueID] isEqualToString:contactUniqueID] ? [HOPContact getForSelf] : nil;
             }
         }
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     return hopContact;
 }
@@ -198,7 +180,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     
     return ret;
@@ -213,7 +195,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     
     return ret;
@@ -228,7 +210,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     
     return hopCallStates;
@@ -244,7 +226,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     
     return hopCallClosedReasons;
@@ -261,7 +243,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     return date;
 }
@@ -276,7 +258,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     return date;
 }
@@ -291,7 +273,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     return date;
 }
@@ -307,7 +289,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
     return date;
 }
@@ -320,7 +302,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
 }
 
@@ -332,7 +314,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
 }
 
@@ -345,7 +327,7 @@ using namespace hookflash;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
 }
 
@@ -354,11 +336,11 @@ using namespace hookflash;
 {
     if(callPtr)
     {
-        callPtr->hangup((hookflash::ICall::CallClosedReasons)reason);
+        callPtr->hangup((ICall::CallClosedReasons)reason);
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer call object!"];
     }
 }
 

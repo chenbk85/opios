@@ -30,20 +30,20 @@
  */
 
 
-#import <hookflash/provisioning/IAccount.h>
-#import <hookflash/IAccount.h>
-#import <hookflash/IXML.h>
-#include <zsLib/zsHelpers.h>
+#import <hookflash/core/IAccount.h>
+//#import <hookflash/IAccount.h>
+#import <hookflash/core/IHelper.h>
+#include <zsLib/Helpers.h>
 
-#import "HOPProvisioningAccountOAuthIdentityAssociation_Internal.h"
-#import "OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate.h"
-#import "HOPProvisioningAccountPeerFileLookupQuery_Internal.h"
-#import "HOPProvisioningAccountIdentityLookupQuery_Internal.h"
-#import "OpenPeerAccountIdentityLookupQueryDelegate.h"
-#import "OpenPeerAccountPeerFileLookupQueryDelegate.h"
-#import "OpenPeerAPNSDelegate.h"
-#import "HOPProvisioningAccountPush.h"
-#import "HOPProvisioningAccountPush_Internal.h"
+//#import "HOPProvisioningAccountOAuthIdentityAssociation_Internal.h"
+//#import "OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate.h"
+//#import "HOPProvisioningAccountPeerFileLookupQuery_Internal.h"
+//#import "HOPProvisioningAccountIdentityLookupQuery_Internal.h"
+//#import "OpenPeerAccountIdentityLookupQueryDelegate.h"
+//#import "OpenPeerAccountPeerFileLookupQueryDelegate.h"
+//#import "OpenPeerAPNSDelegate.h"
+//#import "HOPProvisioningAccountPush.h"
+//#import "HOPProvisioningAccountPush_Internal.h"
 #import "HOPProvisioningAccount_Internal.h"
 #import "HOPProvisioningAccount.h"
 #import "HOPStack_Internal.h"

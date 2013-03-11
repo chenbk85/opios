@@ -31,14 +31,14 @@
 
 
 #import <Foundation/Foundation.h>
-#include <hookflash/hookflashTypes.h>
-#include <hookflash/provisioning/IAccount.h>
+#include <hookflash/core/types.h>
+#include <hookflash/core/IAccount.h>
 #import "HOPProtocols.h"
 
 using namespace hookflash;
-using namespace hookflash::provisioning;
+using namespace hookflash::core;
 
-class OpenPeerAPNSDelegate : public provisioning::IAccountPushDelegate
+class OpenPeerAPNSDelegate : public IAccountPushDelegate
 {
 protected:
     id<HOPAPNSDelegate> apnsDelegate;

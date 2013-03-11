@@ -38,15 +38,17 @@
 @protocol HOPStackDelegate <NSObject>
 
 @optional
-- (void) onShutdownReady;
+- (void) onStackShutdown;
 
 //IClientDelegate method wrapper
 - (void) onMessagePutInGUIQueue;
+@end
 
-//IClientLogDelegate method wrapper
+@protocol HOPLoggerDelegate <NSObject>
+
+@optional
 - (void) onNewSubsystem:(unsigned short) subsystemUniqueID subsystemName:(NSString*) subsystemName;
-- (void) onLog:(unsigned short) subsystemUniqueID subsystemName:(NSString*)subsystemName severity:(HOPClientLogSeverities) severity level:(HOPClientLogLevels) level message:(NSString*) message function:(NSString*) function filePath:(NSString*) filePath lineNumber:(unsigned long) lineNumber;
-
+- (void) onLog:(unsigned short) subsystemUniqueID subsystemName:(NSString*)subsystemName severity:(HOPLoggerSeverities) severity level:(HOPLoggerLevels) level message:(NSString*) message function:(NSString*) function filePath:(NSString*) filePath lineNumber:(unsigned long) lineNumber;
 @end
 
 
@@ -64,6 +66,7 @@
 
 @required
 - (void) onAccountStateChanged:(HOPAccount*) account accountState:(HOPAccountStates) accountState;
+- (void) onAccountAssociatedIdentitiesChanged:(HOPAccount*) account;
 @end
 
 
@@ -141,6 +144,16 @@
 - (void) onProvisioningAccountProfileChanged:(HOPProvisioningAccount*) account;
 
 - (void) onProvisioningAccountIdentityValidationResult:(HOPProvisioningAccount*) account identity:(id) identity result:(HOPProvisioningAccountIdentityValidationResultCode) result;
+
+@end
+
+@class HOPIdentity;
+
+@protocol HOPIdentityDelegate <NSObject>
+@required
+- (void) identity:(HOPIdentity*) identity stateChanged:(HOPIdentityStates) state;
+
+- (void) onIdentityPendingMessageForInnerBrowserWindowFrame:(HOPIdentity*) identity;
 
 @end
 #endif

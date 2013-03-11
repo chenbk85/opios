@@ -98,11 +98,11 @@
  */
 - (void) createDelegates
 {
-    self.stackDelegate = [[[StackDelegate alloc] init] autorelease];
-    self.mediaEngineDelegate = [[[MediaEngineDelegate alloc] init] autorelease];
-    self.conversationThreadDelegate = [[[ConversationThreadDelegate alloc] init] autorelease];
-    self.callDelegate = [[[CallDelegate alloc] init] autorelease];
-    self.provisioningAccountDelegate = [[[ProvisioningAccountDelegate alloc] init] autorelease];
+    self.stackDelegate = [[StackDelegate alloc] init];
+    self.mediaEngineDelegate = [[MediaEngineDelegate alloc] init];
+    self.conversationThreadDelegate = [[ConversationThreadDelegate alloc] init];
+    self.callDelegate = [[CallDelegate alloc] init];
+    self.provisioningAccountDelegate = [[ProvisioningAccountDelegate alloc] init];
 }
 
 /**

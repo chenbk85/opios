@@ -31,14 +31,14 @@
 
 
 #import <Foundation/Foundation.h>
-#include <hookflash/hookflashTypes.h>
-#include <hookflash/provisioning/IAccount.h>
+#include <hookflash/core/types.h>
+#include <hookflash/core/IIdentity.h>
 #import "HOPProtocols.h"
 
 using namespace hookflash;
-using namespace hookflash::provisioning;
+using namespace hookflash::core;
 
-class OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate : public IAccountOAuthIdentityAssociationDelegate
+class OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate : public IIdentityDelegate
 {
 protected:
     id<HOPProvisioningAccountOAuthIdentityAssociationDelegate> accountOAuthIdentityAssociationDelegate;
@@ -46,7 +46,7 @@ protected:
 public:
     static boost::shared_ptr<OpenPeerProvisioningAccountOAuthIdentityAssociationDelegate> create(id<HOPProvisioningAccountOAuthIdentityAssociationDelegate> inAccountOAuthIdentityAssociationDelegate);
     
-    virtual void onAccountOAuthIdentityAssociationProviderURLReady(IAccountOAuthIdentityAssociationPtr association);
-    virtual void onAccountOAuthIdentityAssociationComplete(IAccountOAuthIdentityAssociationPtr association);
+    virtual void onIdentityStateChanged(IIdentityPtr identity,IdentityStates state);
+    virtual void onIdentityPendingMessageForInnerBrowserWindowFrame(IIdentityPtr identity);
 };
 

@@ -31,15 +31,16 @@
 
 
 #import "HOPProvisioningAccountOAuthIdentityAssociation.h"
-#import <hookflash/provisioning/IAccount.h>
+#import <hookflash/core/IIdentity.h>
 
 using namespace hookflash;
-using namespace hookflash::provisioning;
+using namespace hookflash::core;
+
 @interface HOPProvisioningAccountOAuthIdentityAssociation ()
 {
-    IAccountOAuthIdentityAssociationPtr accountOAuthIdentityAssociationPtr;
+    IIdentityPtr accountOAuthIdentityAssociationPtr;
 }
 
-- (void) setAccountOAuthIdentityAssociationPtr:(IAccountOAuthIdentityAssociationPtr) inAccountOAuthIdentityAssociationPtr;
-- (IAccountOAuthIdentityAssociationPtr) getAccountOAuthIdentityAssociationPtr;
+- (void) setAccountOAuthIdentityAssociationPtr:(IIdentityPtr) inAccountOAuthIdentityAssociationPtr;
+- (IIdentityPtr) getAccountOAuthIdentityAssociationPtr;
 @end

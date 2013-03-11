@@ -30,7 +30,7 @@
  */
 
 
-#import <hookflash/IStack.h>
+#import <hookflash/core/IStack.h>
 
 #import "HOPStack_Internal.h"
 #import "OpenPeerStorageManager.h"
@@ -50,6 +50,21 @@
     return _sharedObject;
 }
 
+- (void) setupWithStackDelegate:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate deviceID:(NSString*) deviceID userAgent:(NSString*) userAgent deviceOs:(NSString*) deviceOs system:(NSString*) system
+{
+    //Check if delegates are nil
+    if (!stackDelegate || !mediaEngineDelegate)
+        [NSException raise:NSInvalidArgumentException format:@"Passed invalid delegates!"];
+    
+    //Check if other arguments are valid
+    if ( ([userAgent length] == 0 ) || ([deviceOs length] == 0 ) || ([system length] == 0 ) || ([deviceID length] == 0))
+        [NSException raise:NSInvalidArgumentException format:@"Invalid system information!"];
+    
+    [self createLocalDelegates:stackDelegate mediaEngineDelegate:mediaEngineDelegate];
+    
+    IStack::singleton()->setup(openPeerStackDelegatePtr, openPeerMediaEngineDelegatePtr, [deviceID UTF8String], [userAgent UTF8String], [deviceOs UTF8String], [system UTF8String]);
+}
+/*
 - (BOOL) initStackDelegate:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) conversationThreadDelegate callDelegate:(id<HOPCallDelegate>) callDelegate userAgent:(NSString*) userAgent deviceOs:(NSString*) deviceOs platform:(NSString*) platform
 {
     BOOL initiated = NO;
@@ -79,33 +94,31 @@
     }
     
     return initiated;
-}
+}*/
 
 - (void) shutdown
 {
-    stackPtr->startShutdown();
-    clientPtr->finalizeShutdown();
+    IStack::singleton()->shutdown();
     [self deleteLocalDelegates];
 }
 
-- (BOOL) createLocalDelegates:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) conversationThreadDelegate callDelegate:(id<HOPCallDelegate>) callDelegate
+
+- (void) createLocalDelegates:(id<HOPStackDelegate>) stackDelegate mediaEngineDelegate:(id<HOPMediaEngineDelegate>) mediaEngineDelegate 
 {
     openPeerStackDelegatePtr = OpenPeerStackDelegate::create(stackDelegate);
-    openPeerCallDelegatePtr = OpenPeerCallDelegate::create(callDelegate);
-    openPeerConversationThreadDelegatePtr = OpenPeerConversationThreadDelegate::create(conversationThreadDelegate);
+    //openPeerCallDelegatePtr = OpenPeerCallDelegate::create(callDelegate);
+    //openPeerConversationThreadDelegatePtr = OpenPeerConversationThreadDelegate::create(conversationThreadDelegate);
     openPeerMediaEngineDelegatePtr = OpenPeerMediaEngineDelegate::create(mediaEngineDelegate);
-    
-    return YES;
 }
 
 - (void) deleteLocalDelegates
 {
     openPeerStackDelegatePtr.reset();
     openPeerMediaEngineDelegatePtr.reset();
-    openPeerConversationThreadDelegatePtr.reset();
-    openPeerCallDelegatePtr.reset();
+    //openPeerConversationThreadDelegatePtr.reset();
+    //openPeerCallDelegatePtr.reset();
 }
-
+/*
 #pragma mark - IClient methods wrapper
 
 + (void) setup
@@ -196,18 +209,14 @@
 {
     IClient::log((zsLib::PTRNUMBER) subsystemUniqueID, (IClient::Log::Severity) severity, (IClient::Log::Level) level, [message UTF8String], [function UTF8String], [filePath UTF8String], lineNumber);
 }
-
+*/
 
 #pragma mark - Internal methods
 - (IStackPtr) getStackPtr
 {
-    return stackPtr;
+    return IStack::singleton();
 }
 
-- (IClientPtr) getClientPtr
-{
-    return clientPtr;
-}
 @end
 
 

@@ -31,7 +31,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import <hookflash/hookflashTypes.h>
+#import <hookflash/core/types.h>
 //#import "OpenPeerCallDelegate.h"
 //#import "OpenPeerStackDelegate.h"
 //#import "OpenPeerConversationThreadDelegate.h"
@@ -41,6 +41,7 @@
 @class HOPConversationThread;
 @class HOPContact;
 @class HOPProvisioningAccount;
+@class HOPIdentity;
 
 @interface OpenPeerStorageManager : NSObject
 {
@@ -49,6 +50,7 @@
     NSMutableDictionary* _dictionaryContacts;
     NSMutableDictionary* _dictionaryContactsWithUserId;
     NSMutableDictionary* _dictionaryProvisioningAccount;
+    NSMutableDictionary* _dictionaryIdentities;
 }
 + (id)sharedStorageManager;
 
@@ -56,6 +58,7 @@
 - (void) setCall:(HOPCall*) call forId:(NSString*) callId;
 
 - (HOPConversationThread*) getConversationThreadForId:(NSString*) threadId;
+- (NSArray*) getConversationThreads;
 - (void) setConversationThread:(HOPConversationThread*) conversationThread forId:(NSString*) threadId;
 
 - (HOPContact*) getContactForId:(NSString*) contactId;
@@ -67,4 +70,6 @@
 - (HOPProvisioningAccount*) getProvisioningAccountForUserId:(NSString*) userId;
 - (void) setCProvisioningAccount:(HOPProvisioningAccount*) account forUserId:(NSString*) userId;
 
+- (HOPIdentity*) getIdentityForId:(NSString*) identityId;
+- (void) setIdentity:(HOPIdentity*) identity forId:(NSString*) identityId;
 @end

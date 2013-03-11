@@ -31,9 +31,10 @@
 
 
 #import "HOPContact.h"
-#import <hookflash/hookflashTypes.h>
+#import <hookflash/core/types.h>
 
 using namespace hookflash;
+using namespace hookflash::core;
 
 @interface HOPContact ()
 {
@@ -48,5 +49,5 @@ using namespace hookflash;
 
 - (id) initWithCoreContact:(IContactPtr) inContactPtr;
 - (IContactPtr) getContactPtr;
-- (void) createCoreContactWithPeerFile:(NSString*) peerFile;
+//- (void) createCoreContactWithPeerFile:(NSString*) peerFile;
 @end

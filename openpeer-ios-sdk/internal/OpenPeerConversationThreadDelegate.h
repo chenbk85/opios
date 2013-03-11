@@ -32,13 +32,14 @@
 
 #import <Foundation/Foundation.h>
 
-#include <hookflash/hookflashTypes.h>
-#include <hookflash/IContact.h>
-#include <hookflash/IConversationThread.h>
+#include <hookflash/core/types.h>
+#include <hookflash/core/IContact.h>
+#include <hookflash/core/IConversationThread.h>
 #import "HOPProtocols.h"
 
 
 using namespace hookflash;
+using namespace hookflash::core;
 
 /**
  Wrapper class for conversation thread.

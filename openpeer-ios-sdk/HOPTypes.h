@@ -173,23 +173,36 @@ typedef enum
     HOPProvisioningAccountIdentityTypeAddressBook
 } HOPProvisioningAccountIdentityTypes;
 
+#pragma mark - HOPIdentity enums
+typedef enum 
+{
+    HOPIdentityStatePending,
+    HOPIdentityStateWaitingAttachment,
+    HOPIdentityStateWaitingToLoadBrowserWindow,
+    HOPIdentityStateWaitingToMakeBrowserWindowVisible,
+    HOPIdentityStateWaitingLoginCompleteBrowserRedirection,
+    HOPIdentityStateWaitingAssociation,
+    HOPIdentityStateReady,
+    HOPIdentityStateShutdown
+} HOPIdentityStates;
+
 #pragma mark - HOPClientLog enums
 typedef enum
 {
-    HOPClientLogSeverityInformational,
-    HOPClientLogSeverityWarning,
-    HOPClientLogSeverityError,
-    HOPClientLogSeverityFatal
-} HOPClientLogSeverities;
+    HOPLoggerSeverityInformational,
+    HOPLoggerSeverityWarning,
+    HOPLoggerSeverityError,
+    HOPLoggerSeverityFatal
+} HOPLoggerSeverities; //Replacing HOPClientLogSeverities
 
 typedef enum
 {
-    HOPClientLogLevelNone,
-    HOPClientLogLevelBasic,
-    HOPClientLogLevelDetail,
-    HOPClientLogLevelDebug,
-    HOPClientLogLevelTrace
-} HOPClientLogLevels;
+    HOPLoggerLevelNone,
+    HOPLoggerLevelBasic,
+    HOPLoggerLevelDetail,
+    HOPLoggerLevelDebug,
+    HOPLoggerLevelTrace
+} HOPLoggerLevels; //Replacing HOPClientLogSeverities
 
 #pragma mark - Client enums
 typedef enum 

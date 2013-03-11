@@ -312,7 +312,7 @@ enum OpenpeerProvisioning_AccountErrorCodes
 
 #pragma mark - OpenpeerProvisioning_IdentityLoginSession_internal.h
 
-#import <hookflash/provisioning2/hookflashTypes.h>
+#import <hookflash/core/types.h>
 
 @interface OpenpeerProvisioning_IdentityLoginSession ()
 {

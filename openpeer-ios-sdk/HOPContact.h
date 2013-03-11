@@ -52,21 +52,11 @@
  @param inContactId contact Id string stored locally (initialy is received for identity lookup). This argument is mandatory.
  @returns Ponter to the created contact object
  */
-- (id) initWithPeerFile:(NSString*) publicPeerFile userId:(NSString*) inUserId contactId:(NSString*) inContactId;
+- (id) initWithPeerFile:(NSString*) publicPeerFile previousStableUniqueID:(NSString*) previousStableUniqueID;
 
+- (id) initFromPeerURI:(NSString*) peerURI findSecret:(NSString*) findSecret previousStableUniqueID:(NSString*) previousStableUniqueID;
 
-/**
- Retrieves contact ID from the contact object
- @returns NSString representation of contact ID
- */
-- (NSString*) getContactID;
-
-/**
- Return user ID 
- @returns NSString representation of user ID
- */
-- (NSString*) getUserID;
-
++ (HOPContact*) getForSelf;
 /**
  Check if contact object is self contact
  @returns YES if contact is self, NO if contact is remote
@@ -74,59 +64,26 @@
 - (BOOL) isSelf;
 
 /**
- Retrieves contact type
- @returns Contact type enum
+ Retrieves peer URI from the contact object
+ @returns NSString representation of peer URI
  */
-- (HOPContactTypes) getContactType;
+- (NSString*) getPeerURI;
 
-/**
- Check if contact is editable
- @returns YES if contact is editable, NO if isn't
- */
-- (BOOL) isEditable;
-
-/**
- Check if public XML is editable
- @returns YES if public XML is editable, NO if isn't
- */
-- (BOOL) isPublicXMLEditable;
-
-/**
- Retrieves public XML for the contact object
- @returns NSString representation of public XML
- */
-- (NSString*) getPublicXML;
-
-/**
- Retrieves private XML for the contact object
- @returns NSString representation of private XML
- */
-- (NSString*) getPrivateXML;
-
-/**
- Updates contact profile with provided information
- @param publicXML NSString Pointer to the information in public XML
- @param privateXML NSString Pointer to the information in public XML
- @returns YES if update succeed, NO if it fails
- */
-- (BOOL) updateProfile:(NSString*) publicXML privateXML:(NSString*) privateXML;
-
-/**
- Retrieves contact profile version
- @returns Contact profile version number
- */
-- (unsigned long) getProfileVersion;
+- (NSString*) getFindSecret;
+- (NSString*) getStableUniqueID;
 
 
 /**
- Retrieves contact peer file
- @returns Contact peer file
+ Check contact object has public peer file
+ @returns YES if it has
  */
-- (NSString*) getPeerFile;
+- (BOOL) hasPeerFilePublic;
 
-/**
- Retrieves associated identities for contact
- @returns List of contact associated identities
- */
-- (NSArray*) getIdentities;
+
+- (NSString*) savePeerFilePublic;
+
+
+- (HOPAccount*) getAssociatedAccount;
+
+- (void) hintAboutLocation:(NSString*) contactsLocationID;
 @end

@@ -31,7 +31,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import <zsLib/zsTypes.h>
+#import <zsLib/types.h>
 
 @interface OpenPeerUtility : NSObject
 

@@ -60,6 +60,7 @@
     _dictionaryContacts = [[NSMutableDictionary alloc] init];
     _dictionaryContactsWithUserId = [[NSMutableDictionary alloc] init];
     _dictionaryConversationThreads = [[NSMutableDictionary alloc] init];
+    _dictionaryIdentities = [[NSMutableDictionary alloc] init];
 }
 
 
@@ -96,6 +97,10 @@
     return conversationThread;
 }
 
+- (NSArray*) getConversationThreads
+{
+    return [_dictionaryConversationThreads allValues];
+}
 - (void) setConversationThread:(HOPConversationThread*) conversationThread forId:(NSString*) threadId
 {
     [_dictionaryConversationThreads setObject:conversationThread forKey:threadId];
@@ -143,4 +148,16 @@
     [_dictionaryProvisioningAccount setObject:account forKey:userId];
 }
 
+- (HOPIdentity*) getIdentityForId:(NSString*) identityId
+{
+    HOPIdentity* identity = nil;
+    
+    identity = [_dictionaryIdentities objectForKey:identityId];
+    
+    return identity;
+}
+- (void) setIdentity:(HOPIdentity*) identity forId:(NSString*) identityId
+{
+    [_dictionaryIdentities setObject:identity forKey:identityId];
+}
 @end

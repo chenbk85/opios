@@ -32,7 +32,9 @@
 
 #import "HOPMediaEngine_Internal.h"
 #import "HOPMediaEngine.h"
-#import <hookflash/IMediaEngine.h>
+#import <hookflash/core/IMediaEngine.h>
+
+using namespace hookflash::core;
 
 @interface HOPMediaEngine()
 
@@ -42,13 +44,13 @@
 
 + (NSString*) cameraTypeToString: (HOPMediaEngineCameraTypes) type
 {
-  return [NSString stringWithUTF8String: IMediaEngine::toString((hookflash::IMediaEngine::CameraTypes) type)];
+  return [NSString stringWithUTF8String: IMediaEngine::toString((IMediaEngine::CameraTypes) type)];
 }
 
 
 + (NSString*) audioRouteToString: (HOPMediaEngineOutputAudioRoutes) route
 {
-  return [NSString stringWithUTF8String: IMediaEngine::toString((hookflash::IMediaEngine::OutputAudioRoutes) route)];
+  return [NSString stringWithUTF8String: IMediaEngine::toString((IMediaEngine::OutputAudioRoutes) route)];
 }
 
 + (id)sharedInstance
@@ -85,7 +87,7 @@
 {
     if(mediaEnginePtr)
     {
-        mediaEnginePtr->setDefaultVideoOrientation((IMediaEngine::VideoOrientations)orientation);
+        //mediaEnginePtr->setDefaultVideoOrientation((IMediaEngine::VideoOrientations)orientation);
     }
     else
     {
@@ -270,7 +272,7 @@
 {
     if(mediaEnginePtr)
     {
-        mediaEnginePtr->setCameraType((hookflash::IMediaEngine::CameraTypes)type);
+        mediaEnginePtr->setCameraType((IMediaEngine::CameraTypes)type);
     }
     else
     {
@@ -280,7 +282,7 @@
 
 - (int) getVideoTransportStatistics: (HOPMediaEngineRtpRtcpStatistics*) stat
 {
-    hookflash::IMediaEngine::RtpRtcpStatistics coreStat;
+    IMediaEngine::RtpRtcpStatistics coreStat;
     int ret = 0;
 
     if(mediaEnginePtr)
@@ -306,7 +308,7 @@
 
 - (int) getVoiceTransportStatistics: (HOPMediaEngineRtpRtcpStatistics*) stat
 {
-    hookflash::IMediaEngine::RtpRtcpStatistics coreStat;
+    IMediaEngine::RtpRtcpStatistics coreStat;
     int ret = 0;
 
     if(mediaEnginePtr)

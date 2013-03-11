@@ -87,11 +87,11 @@
         keyJSONContactPictureURL  = @"pictureUrl";
         keyJSONContactFullName    = @"fullName";
         
-        self.linkedinContactsWebView = [[[UIWebView alloc] init] autorelease];
+        self.linkedinContactsWebView = [[UIWebView alloc] init];
         self.linkedinContactsWebView.delegate = self;
         
-        self.contactArray = [[[NSMutableArray alloc] init] autorelease];
-        self.contactsDictionaryByProvider = [[[NSMutableDictionary alloc] init] autorelease];
+        self.contactArray = [[NSMutableArray alloc] init];
+        self.contactsDictionaryByProvider = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -151,8 +151,7 @@
 {
     SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
     NSError *error = nil;
-    NSDictionary *result = [jsonParser objectWithString:input error:&error];
-    [jsonParser release], jsonParser = nil;
+    NSDictionary *result = [jsonParser objectWithString:input];
     if (!error)
     {
         NSString *fullName = [[NSString stringWithFormat:@"%@ %@", [result objectForKey:keyJSONContactFirstName], [result objectForKey:keyJSONContacLastName]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -189,8 +188,7 @@
     //Parse JSON to get the contacts
     SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
     NSError *error = nil;
-    NSArray *result = [jsonParser objectWithString:input error:&error];
-    [jsonParser release], jsonParser = nil;
+    NSArray *result = [jsonParser objectWithString:input];
     
     if (!error)
     {
@@ -213,12 +211,10 @@
             
                    [self.contactArray addObject:contact];
                    [contacts setObject:contact forKey:providerContactId];
-                   [contact release];
                }
            }
         }
         [self.contactsDictionaryByProvider setObject:contacts forKey:providerKey];
-        [contacts release];
     }
     
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
@@ -247,8 +243,6 @@
     }
     
     [[HOPProvisioningAccount sharedProvisioningAccount] identityLookup:self identities:identities];
-    
-    [identities release];
 }
 
 /**
@@ -259,8 +253,7 @@
 {
     SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
     NSError *error = nil;
-    NSDictionary *result = [jsonParser objectWithString:input error:&error];
-    [jsonParser release], jsonParser = nil;
+    NSDictionary *result = [jsonParser objectWithString:input];
     if (!error)
     {
         NSString *fullName = [[result objectForKey:keyJSONContactFullName] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -288,8 +281,7 @@
     //Parse JSON to get the contacts
     SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
     NSError *error = nil;
-    NSArray *result = [jsonParser objectWithString:input error:&error];
-    [jsonParser release], jsonParser = nil;
+    NSArray *result = [jsonParser objectWithString:input];
     
     if (!error)
     {
@@ -316,12 +308,10 @@
                     
                     [self.contactArray addObject:contact];
                     [contacts setObject:contact forKey:providerContactId];
-                    [contact release];
                 }
             }
         }
         [self.contactsDictionaryByProvider setObject:contacts forKey:providerKey];
-        [contacts release];
     }
     
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
@@ -347,8 +337,6 @@
     
     //Ask for peer files for passed contacts
     [[HOPProvisioningAccount sharedProvisioningAccount] peerFileLookup:self contacts:hopContacts];
-    
-    [hopContacts release];
 }
 
 /**

@@ -40,17 +40,17 @@
 
 @interface MainViewController : UIViewController
 
-@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
-@property (retain, nonatomic) IBOutlet UILabel *activityLabel;
-@property (retain, nonatomic) IBOutlet UIView *activityView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, weak) IBOutlet UILabel *activityLabel;
+@property (nonatomic, weak) IBOutlet UIView *activityView;
 
 
-@property (retain, nonatomic) LoginViewController *loginViewController;
-@property (retain, nonatomic) WebLoginViewController *webLoginViewController;
-@property (retain, nonatomic) ContactsTableViewController *contactsTableViewController;
-@property (retain, nonatomic) UINavigationController *contactsNavigationController;
+@property (nonatomic, strong) LoginViewController *loginViewController;
+@property (nonatomic, strong) WebLoginViewController *webLoginViewController;
+@property (nonatomic, strong) ContactsTableViewController *contactsTableViewController;
+@property (nonatomic, strong) UINavigationController *contactsNavigationController;
 
-@property (retain, nonatomic) NSMutableDictionary *sessionViewControllersDictionary;
+@property (nonatomic, strong) NSMutableDictionary *sessionViewControllersDictionary;
 
 - (void) showLoginView;
 - (void) showWebLoginView:(NSString*) url;

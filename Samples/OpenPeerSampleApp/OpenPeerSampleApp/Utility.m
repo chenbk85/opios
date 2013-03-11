@@ -185,8 +185,7 @@ static const short _base64DecodingTable[256] = {
     
     NSData* retData = [[NSData alloc] initWithBytesNoCopy:objResult length:j freeWhenDone:YES];
     NSString* retString = [[NSString alloc] initWithData:retData encoding:NSUTF8StringEncoding];
-    [retData release];
-    return [retString autorelease];
+    return retString;
     // Cleanup and setup the return NSData
     //return [[NSString alloc] initWithData:[[[NSData alloc] initWithBytesNoCopy:objResult length:j freeWhenDone:YES] autorelease] encoding:NSUTF8StringEncoding];
     //return string should be autorelease
@@ -257,7 +256,7 @@ static const short _base64DecodingTable[256] = {
 + (void)removeCookiesAndClearCredentials
 {
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    for (NSHTTPCookie *each in [[[cookieStorage cookies] copy] autorelease])
+    for (NSHTTPCookie *each in [cookieStorage cookies])
     {
         [cookieStorage deleteCookie:each];
     }
@@ -267,9 +266,9 @@ static const short _base64DecodingTable[256] = {
 {
     // get new UUID(in windows world is guid)
     CFUUIDRef guid = CFUUIDCreate(nil);
-    NSString *strGuid = (NSString *)CFUUIDCreateString(nil, guid);
+    NSString *strGuid = (NSString *)CFBridgingRelease(CFUUIDCreateString(nil, guid));
     CFRelease(guid);
-    return [strGuid autorelease];
+    return strGuid;
 }
 
 + (NSString*) getCallStateAsString:(HOPCallStates) callState

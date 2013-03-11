@@ -32,10 +32,34 @@
 
 #import <Foundation/Foundation.h>
 #import "HOPTypes.h"
+#import "HOPProtocols.h"
+
+@interface HOPIdentityState : NSObject
+@property (nonatomic, assign) HOPIdentityStates state;
+@property (nonatomic, assign) unsigned short lastErrorCode;
+@property (nonatomic, strong) NSString* lastErrorReason;
+@end
 
 @interface HOPIdentity : NSObject
 
 @property (assign) HOPProvisioningAccountIdentityTypes identityType;
 @property (copy) NSString* identityId;
 
++ toStringIdentityState:(HOPIdentityStates) state;
+
++ (id) loginWithDelegate:(id<HOPIdentityDelegate>) inIdentityDelegate redirectAfterLoginCompleteURL:(NSString*) redirectAfterLoginCompleteURL identityURIOridentityBaseURI:(NSString*) identityURIOridentityBaseURI identityProviderDomain:(NSString*) identityProviderDomain;
+
+- (HOPIdentityState*) getState;
+- (BOOL) isAttached;
+- (void) attachWithRedirectionURL:(NSString*) redirectAfterLoginCompleteURL identityDelegate:(id<HOPIdentityDelegate>) inIdentityDelegate;
+- (NSString*) getIdentityURI;
+- (NSString*) getIdentityProviderDomain;
+- (NSString*) getIdentityReloginAccessKey;
+- (NSString*) getSignedIdentityBundle;
+- (NSString*) getIdentityLoginURL;
+- (NSDate*) getLoginExpires;
+- (void) notifyBrowserWindowVisible;
+- (void) notifyLoginCompleteBrowserWindowRedirection;
+- (NSString*) getNextMessageForInnerBrowerWindowFrame;
+- (void) cancel;
 @end

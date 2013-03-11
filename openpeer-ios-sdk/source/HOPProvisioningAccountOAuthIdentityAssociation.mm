@@ -32,16 +32,16 @@
 
 #import "HOPProvisioningAccountOAuthIdentityAssociation_Internal.h"
 #import "HOPProvisioningAccountOAuthIdentityAssociation.h"
-#import <hookflash/IXML.h>
+#import <hookflash/core/IHelper.h>
 
 @implementation HOPProvisioningAccountOAuthIdentityAssociation
 
 #pragma mark - Internal methods
-- (void) setAccountOAuthIdentityAssociationPtr:(IAccountOAuthIdentityAssociationPtr) inAccountOAuthIdentityAssociationPtr
+- (void) setAccountOAuthIdentityAssociationPtr:(IIdentityPtr) inAccountOAuthIdentityAssociationPtr
 {
     accountOAuthIdentityAssociationPtr = inAccountOAuthIdentityAssociationPtr;
 }
-- (IAccountOAuthIdentityAssociationPtr) getAccountOAuthIdentityAssociationPtr
+- (IIdentityPtr) getAccountOAuthIdentityAssociationPtr
 {
     return accountOAuthIdentityAssociationPtr;
 }
@@ -52,7 +52,7 @@
   
   if (accountOAuthIdentityAssociationPtr)
   {
-    ret = accountOAuthIdentityAssociationPtr->isComplete();
+      //ret = accountOAuthIdentityAssociationPtr->isComplete();
   }
   else
   {
@@ -67,7 +67,7 @@
   
   if (accountOAuthIdentityAssociationPtr)
   {
-    ret = accountOAuthIdentityAssociationPtr->didSucceed();
+      //ret = accountOAuthIdentityAssociationPtr->didSucceed();
   }
   else
   {
@@ -94,7 +94,7 @@
   
   if(accountOAuthIdentityAssociationPtr)
   {
-    loginURL = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getOAuthLoginURL()];
+      //loginURL = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getOAuthLoginURL()];
   }
   else
   {
@@ -108,7 +108,7 @@
   HOPProvisioningAccountIdentityTypes providerType = HOPProvisioningAccountIdentityTypeNone;
   if(accountOAuthIdentityAssociationPtr)
   {
-    providerType = (HOPProvisioningAccountIdentityTypes)accountOAuthIdentityAssociationPtr->getProviderType();
+      //providerType = (HOPProvisioningAccountIdentityTypes)accountOAuthIdentityAssociationPtr->getProviderType();
   }
   else
   {
@@ -124,7 +124,7 @@
   
   if(accountOAuthIdentityAssociationPtr)
   {
-    providerUniqueId = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getProviderUniqueID()];
+      //providerUniqueId = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getProviderUniqueID()];
   }
   else
   {
@@ -139,7 +139,7 @@
   
   if(accountOAuthIdentityAssociationPtr)
   {
-    accessToken = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getProviderOAuthAccessToken()];
+      //accessToken = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getProviderOAuthAccessToken()];
   }
   else
   {
@@ -154,7 +154,7 @@
   
   if(accountOAuthIdentityAssociationPtr)
   {
-    encryptedAccessSecret = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getProviderEncryptedOAuthAccessSecret()];
+      //encryptedAccessSecret = [NSString stringWithUTF8String: accountOAuthIdentityAssociationPtr->getProviderEncryptedOAuthAccessSecret()];
   }
   else
   {
@@ -167,7 +167,7 @@
   
   if(accountOAuthIdentityAssociationPtr)
   {
-    accountOAuthIdentityAssociationPtr->completeOAuthLoginProcess(IXML::createFromString([xmlResultFromJavascript UTF8String]));
+      //accountOAuthIdentityAssociationPtr->completeOAuthLoginProcess(IHelper::createFromString([xmlResultFromJavascript UTF8String]));
   }
   else
   {

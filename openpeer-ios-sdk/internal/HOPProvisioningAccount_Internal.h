@@ -30,13 +30,13 @@
  */
 
 
-#import <hookflash/provisioning/hookflashTypes.h>
+#import <hookflash/core/types.h>
 
 #import "OpenPeerProvisioningAccountDelegate.h"
 #import "HOPProvisioningAccount.h"
 
 using namespace hookflash;
-using namespace hookflash::provisioning;
+using namespace hookflash::core;
 
 @class HOPContact;
 @class HOPAccountSubscription;

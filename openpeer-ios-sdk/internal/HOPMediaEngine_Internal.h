@@ -30,10 +30,11 @@
  */
 
 
-#import <hookflash/hookflashTypes.h>
+#import <hookflash/core/types.h>
 #import "HOPMediaEngine.h"
 
 using namespace hookflash;
+using namespace hookflash::core;
 
 @interface HOPMediaEngine ()
 {

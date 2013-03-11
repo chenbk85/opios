@@ -36,17 +36,17 @@
 
 @interface Contact : NSObject
 
-@property (copy) NSString* fullName;
-@property (copy) NSString* profession;
-@property (copy) NSString* avatarUrl;
+@property (strong) NSString* fullName;
+@property (strong) NSString* profession;
+@property (strong) NSString* avatarUrl;
 //@property (copy) NSString* peerFile;
-@property (retain) HOPContact* hopContact;
+@property (strong) HOPContact* hopContact;
 
-@property (nonatomic, copy) NSString *userId;
-@property (nonatomic, copy) NSString *contactId;
+@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString *contactId;
 @property (nonatomic, assign) long lastProfileUpdateTimestamp;
 
-@property (retain) NSMutableArray* identities;
+@property (strong) NSMutableArray* identities;
 
 - (id) initWithFullName:(NSString*) inFullName profession:(NSString*) inProfession avatarUrl:(NSString*) inAvatarUrl identityProvider:(HOPProvisioningAccountIdentityTypes) identityProvider identityContactId:(NSString*) identityContactId;
 @end

@@ -35,7 +35,7 @@
 #import "HOPIdentity.h"
 #import "HOPLookupProfileInfo.h"
 #import "OpenPeerUtility.h"
-#include <zsLib/zsHelpers.h>
+#include <zsLib/helpers.h>
 
 @implementation HOPProvisioningAccountIdentityLookupQuery
 

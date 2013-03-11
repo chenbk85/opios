@@ -40,12 +40,12 @@
 
 @interface OpenPeer : NSObject
 
-@property (retain, nonatomic) CallDelegate *callDelegate;
-@property (retain, nonatomic) StackDelegate *stackDelegate;
-@property (retain, nonatomic) MediaEngineDelegate *mediaEngineDelegate;
-@property (retain, nonatomic) ConversationThreadDelegate *conversationThreadDelegate;
-@property (retain, nonatomic) ProvisioningAccountDelegate *provisioningAccountDelegate;
-@property (retain, nonatomic) MainViewController *mainViewController;
+@property (nonatomic,strong) CallDelegate *callDelegate;
+@property (nonatomic,strong) StackDelegate *stackDelegate;
+@property (nonatomic,strong) MediaEngineDelegate *mediaEngineDelegate;
+@property (nonatomic,strong) ConversationThreadDelegate *conversationThreadDelegate;
+@property (nonatomic,strong) ProvisioningAccountDelegate *provisioningAccountDelegate;
+@property (nonatomic,strong) MainViewController *mainViewController;
 
 + (id) sharedOpenPeer;
 

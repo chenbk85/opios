@@ -76,7 +76,7 @@
         NSData* data = [[NSUserDefaults standardUserDefaults] objectForKey:keyOpenPeerUser];
         if (data)
         {
-            NSKeyedUnarchiver *aDecoder = [[[NSKeyedUnarchiver alloc] initForReadingWithData:data] autorelease];
+            NSKeyedUnarchiver *aDecoder = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
             
             self.userId = [aDecoder decodeObjectForKey:archiveUserId];
             self.contactId = [aDecoder decodeObjectForKey:archiveContactId];
@@ -106,7 +106,7 @@
     self.lastProfileUpdateTimestamp = [[HOPProvisioningAccount sharedProvisioningAccount] getLastProfileUpdatedTime];
     
     NSMutableData *data = [NSMutableData data];
-    NSKeyedArchiver *aCoder = [[[NSKeyedArchiver alloc] initForWritingWithMutableData:data] autorelease];
+    NSKeyedArchiver *aCoder = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
     [aCoder encodeObject:self.userId forKey:archiveUserId];
     [aCoder encodeObject:self.contactId forKey:archiveContactId];
     [aCoder encodeObject:self.accountSalt forKey:archiveAccountSalt];
@@ -174,7 +174,6 @@
     [xmlWriter writeEndElement];
     
     ret = [NSString stringWithString: [xmlWriter toString]];
-    [xmlWriter release];
     return ret;
 }
 @end

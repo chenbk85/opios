@@ -60,11 +60,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)dealloc {
-    [_loginWebView release];
-    [super dealloc];
-}
-
 - (void) openLoginUrl:(NSString*) url
 {
     [self.loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];

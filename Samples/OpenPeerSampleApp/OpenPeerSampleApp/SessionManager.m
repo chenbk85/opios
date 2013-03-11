@@ -77,17 +77,11 @@
     self = [super init];
     if (self)
     {
-        self.sessionsDictionary = [[[NSMutableDictionary alloc] init] autorelease];
+        self.sessionsDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [_sessionsDictionary release];
-    
-    [super dealloc];
-}
 
 /**
  Creates a session for selected contacts
@@ -118,7 +112,7 @@
         [self.sessionsDictionary setObject:ret forKey:[conversationThread getThreadId]];
     }
     
-    return [ret autorelease];
+    return ret;
 }
 
 /**
@@ -135,7 +129,7 @@
     {
         [self.sessionsDictionary setObject:ret forKey:[inConversationThread getThreadId]];
     }
-    return [ret autorelease];
+    return ret;
 }
 
 /**
@@ -264,7 +258,6 @@
     HOPMessage* hopMessage = [[HOPMessage alloc] initWithMessageId:[Utility getGUIDstring] andMessage:message andContact:contact andMessageType:@"text" andMessageDate:[NSDate date]];
     //Send message
     [inSession.conversationThread sendMessage:hopMessage];
-    [hopMessage release];
 }
 
 /**
@@ -281,11 +274,11 @@
     //Get message sender
     Contact* contact  = [[ContactsManager sharedContactsManager] getContactForIdentities:[message.contact getIdentities]];
     NSString* from = [NSString stringWithFormat:@"Message from %@",[contact fullName] ];
-    UIAlertView* alertView = [[[UIAlertView alloc] initWithTitle:from
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:from
                                                          message:message.text
                                                         delegate:self
                                                cancelButtonTitle:@"Ok"
-                                               otherButtonTitles:nil] autorelease];
+                                               otherButtonTitles:nil];
     [alertView show];
 }
 @end

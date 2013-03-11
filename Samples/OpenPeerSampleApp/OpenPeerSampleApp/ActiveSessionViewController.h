@@ -34,21 +34,21 @@
 @class Session;
 @interface ActiveSessionViewController : UIViewController
 
-@property (nonatomic, retain) Session* session;
+@property (nonatomic, strong) Session* session;
 
-@property (retain, nonatomic) IBOutlet UIView *videoView;
-@property (retain, nonatomic) IBOutlet UIView *callStatusView;
-@property (retain, nonatomic) IBOutlet UIView *buttonsView;
-@property (retain, nonatomic) IBOutlet UIView *incomingCallView;
-@property (retain, nonatomic) IBOutlet UIImageView *videoImageView;
-@property (retain, nonatomic) IBOutlet UIImageView *videoPreviewImageView;
+@property (nonatomic, weak) IBOutlet UIView *videoView;
+@property (nonatomic, weak) IBOutlet UIView *callStatusView;
+@property (nonatomic, weak) IBOutlet UIView *buttonsView;
+@property (nonatomic, weak) IBOutlet UIView *incomingCallView;
+@property (nonatomic, weak) IBOutlet UIImageView *videoImageView;
+@property (nonatomic, weak) IBOutlet UIImageView *videoPreviewImageView;
 
 
-@property (retain, nonatomic) IBOutlet UILabel *statusLabel;
+@property (nonatomic, weak) IBOutlet UILabel *statusLabel;
 
-@property (retain, nonatomic) IBOutlet UIButton *voiceCallButton;
-@property (retain, nonatomic) IBOutlet UIButton *videoCallButton;
-@property (retain, nonatomic) IBOutlet UIButton *messageButton;
+@property (nonatomic, weak) IBOutlet UIButton *voiceCallButton;
+@property (nonatomic, weak) IBOutlet UIButton *videoCallButton;
+@property (nonatomic, weak) IBOutlet UIButton *messageButton;
 
 @property (assign) BOOL isIncomingCall;
 

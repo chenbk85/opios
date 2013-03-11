@@ -156,8 +156,22 @@
     
     return identity;
 }
+- (NSArray*) getIdentities
+{
+    return [_dictionaryIdentities allValues];
+}
+
 - (void) setIdentity:(HOPIdentity*) identity forId:(NSString*) identityId
 {
     [_dictionaryIdentities setObject:identity forKey:identityId];
+}
+
+- (HOPIdentityLookup*) getIdentityLookupForPUID:(PUID) puid
+{
+    
+}
+- (void) setIdentityLookup:(HOPIdentityLookup*) lookup forPUID:(PUID) puid
+{
+    
 }
 @end

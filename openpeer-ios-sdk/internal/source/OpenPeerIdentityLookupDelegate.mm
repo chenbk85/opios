@@ -30,22 +30,21 @@
  */
 
 
-#import <UIKit/UIKit.h>
-#include <hookflash/core/types.h>
-#include <hookflash/core/IAccount.h>
-#import "HOPProtocols.h"
+#import "OpenPeerIdentityLookupDelegate.h"
+#import "HOPIdentityLookup_Internal.h"
 
-using namespace hookflash;
-using namespace hookflash::core;
 
-class OpenPeerAccountIdentityLookupQueryDelegate : public IAccountIdentityLookupQueryDelegate
+OpenPeerIdentityLookupDelegate::OpenPeerIdentityLookupDelegate(id<HOPIdentityLookupDelegate> inIdentityLookupDelegate)
 {
-protected:
-    id<HOPProvisioningAccountIdentityLookupQueryDelegate> accountIdentityLookupQueryDelegate;
-    OpenPeerAccountIdentityLookupQueryDelegate(id<HOPProvisioningAccountIdentityLookupQueryDelegate> inAccountIdentityLookupQueryDelegate);
-public:
+    identityLookupDelegate = inIdentityLookupDelegate;
+}
+
+boost::shared_ptr<OpenPeerIdentityLookupDelegate> OpenPeerIdentityLookupDelegate::create(id<HOPIdentityLookupDelegate> inIdentityLookupDelegate)
+{
+    return boost::shared_ptr<OpenPeerIdentityLookupDelegate> (new OpenPeerIdentityLookupDelegate(inIdentityLookupDelegate));
+}
+
+void OpenPeerIdentityLookupDelegate::onIdentityLookupCompleted(IIdentityLookupPtr lookup)
+{
     
-    static boost::shared_ptr<OpenPeerAccountIdentityLookupQueryDelegate> create(id<HOPProvisioningAccountIdentityLookupQueryDelegate> inAccountIdentityLookupQueryDelegate);
-    
-    virtual void onAccountIdentityLookupQueryComplete(IAccountIdentityLookupQueryPtr query);
-};
+}

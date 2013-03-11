@@ -30,22 +30,23 @@
  */
 
 
-#import <Foundation/Foundation.h>
-#include <hookflash/core/types.h>
-#include <hookflash/core/IAccount.h>
+#import <hookflash/core/types.h>
+#import "HOPContactPeerFilePublicLookup.h"
+#import "OpenPeerContactPeerFilePublicLookupDelegate.h"
 #import "HOPProtocols.h"
 
 using namespace hookflash;
-using namespace hookflash::provisioning;
+using namespace hookflash::core;
 
-class OpenPeerAccountPeerFileLookupQueryDelegate : public IAccountPeerFileLookupQueryDelegate
+@interface HOPContactPeerFilePublicLookup ()
 {
-protected:
-    id<HOPProvisioningAccountPeerFileLookupQueryDelegate> provisioningAccountPeerFileLookupQueryDelegate;
-    OpenPeerAccountPeerFileLookupQueryDelegate(id<HOPProvisioningAccountPeerFileLookupQueryDelegate> inProvisioningAccountPeerFileLookupQueryDelegate);
-public:
-    static boost::shared_ptr<OpenPeerAccountPeerFileLookupQueryDelegate> create(id<HOPProvisioningAccountPeerFileLookupQueryDelegate> inProvisioningAccountPeerFileLookupQueryDelegate);
-    
-    virtual void onAccountPeerFileLookupQueryComplete(IAccountPeerFileLookupQueryPtr query);
+    IContactPeerFilePublicLookupPtr contactPeerFilePublicLookupPtr;
+    boost::shared_ptr<OpenPeerContactPeerFilePublicLookupDelegate> openPeerContactPeerFilePublicLookupDelegatePtr;
+}
 
-};
+@property (nonatomic, strong) NSArray* contactsList;
+
+- (void) setLocalDelegates:(id<HOPContactPeerFilePublicLookupDelegate>) inContactPeerFilePublicLookupDelegate;
+- (void) convertArrayOfContacts:(NSArray*) arrayOfContacts toContactList:(ContactList*) outContactList;
+- (IContactPeerFilePublicLookupPtr) getContactPeerFilePublicLookupPtr;
+@end

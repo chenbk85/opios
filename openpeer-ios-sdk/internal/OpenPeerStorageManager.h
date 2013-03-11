@@ -32,6 +32,8 @@
 
 #import <Foundation/Foundation.h>
 #import <hookflash/core/types.h>
+#import <zsLib/types.h>
+
 //#import "OpenPeerCallDelegate.h"
 //#import "OpenPeerStackDelegate.h"
 //#import "OpenPeerConversationThreadDelegate.h"
@@ -42,6 +44,9 @@
 @class HOPContact;
 @class HOPProvisioningAccount;
 @class HOPIdentity;
+@class HOPIdentityLookup;
+
+using namespace zsLib;
 
 @interface OpenPeerStorageManager : NSObject
 {
@@ -71,5 +76,9 @@
 - (void) setCProvisioningAccount:(HOPProvisioningAccount*) account forUserId:(NSString*) userId;
 
 - (HOPIdentity*) getIdentityForId:(NSString*) identityId;
+- (NSArray*) getIdentities;
 - (void) setIdentity:(HOPIdentity*) identity forId:(NSString*) identityId;
+
+- (HOPIdentityLookup*) getIdentityLookupForPUID:(PUID) puid;
+- (void) setIdentityLookup:(HOPIdentityLookup*) lookup forPUID:(PUID) puid;
 @end

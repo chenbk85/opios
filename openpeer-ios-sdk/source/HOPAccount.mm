@@ -30,6 +30,10 @@
  */
 
 #import "HOPAccount_Internal.h"
+#import "HOPIdentity_Internal.h"
+
+#import "OpenPeerStorageManager.h"
+
 #import <hookflash/core/IAccount.h>
 #import <hookflash/core/IContact.h>
 #import <hookflash/core/IIdentity.h>
@@ -76,6 +80,11 @@ using namespace hookflash::core;
     
     [self setLocalDelegates:inAccountDelegate conversationThread:inConversationThreadDelegate callDelegate:inCallDelegate];
     
+    accountPtr = IAccount::login(openpeerAccountDelegatePtr, openpeerConversationDelegatePtr, openpeerCallDelegatePtr, [inPeerContactServiceDomain UTF8String], [inIdentity getIdentityPtr]);
+    
+    if (accountPtr)
+        passedWithoutErrors = YES;
+    
     return passedWithoutErrors;
 }
 
@@ -85,6 +94,13 @@ using namespace hookflash::core;
     
     if (!inAccountDelegate || !inConversationThreadDelegate || !inCallDelegate || [inPeerFilePrivate length] == 0 || [inPeerFilePrivateSecret length] == 0)
         return passedWithoutErrors;
+    
+    [self setLocalDelegates:inAccountDelegate conversationThread:inConversationThreadDelegate callDelegate:inCallDelegate];
+    
+    accountPtr = IAccount::relogin(openpeerAccountDelegatePtr, openpeerConversationDelegatePtr, openpeerCallDelegatePtr, IHelper::createFromString([inPeerFilePrivate UTF8String]), [inPeerFilePrivateSecret UTF8String]);
+    
+    if (accountPtr)
+        passedWithoutErrors = YES;
     
     return passedWithoutErrors;
 }
@@ -177,13 +193,16 @@ using namespace hookflash::core;
         
         if (associatedIdentities->size() > 0)
         {
+            array = [[NSMutableArray alloc] init];
             for (IdentityList::iterator it = associatedIdentities->begin(); it != associatedIdentities->end(); ++it)
             {
                 NSString* identityURI = [NSString stringWithUTF8String: it->get()->getIdentityURI()];
-                if (![[self.dictionaryOfIdentities allKeys] containsObject:identityURI])
-                {
-                    //Create identity
-                }
+                
+                HOPIdentity* identity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:identityURI];
+                
+                //HOP_CHECK: At this moment this identity should be present in the dictionary. Check if this is not the case.
+                if (identity)
+                    [array addObject:identity];
             }
         }
     }
@@ -192,22 +211,6 @@ using namespace hookflash::core;
         [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
     }
     return array;
-    
-        
-        /*for (std::list<hookflash::provisioning::IAccount::IdentityInfo>::iterator it = coreIdentities.begin(); it != coreIdentities.end(); ++it)
-        {
-            HOPIdentityInfo* tmpInfo = [[HOPIdentityInfo alloc] init];
-            tmpInfo.type = (HOPProvisioningAccountIdentityTypes) it->mType;
-            tmpInfo.uniqueId = [NSString stringWithUTF8String: it->mUniqueID];
-            tmpInfo.uniqueIDProof = [NSString stringWithUTF8String: it->mUniqueIDProof];
-            tmpInfo.validationState = (HOPProvisioningAccountIdentityValidationStates) it->mValidationState;
-            tmpInfo.validationId = [NSString stringWithUTF8String: it->mValidationID];
-            tmpInfo.priority = it->mPriority;
-            tmpInfo.weight = it->mWeight;
-            
-            [array addObject:tmpInfo];
-            [tmpInfo release];
-        }*/
 }
 
 - (void) associateIdentities:(NSArray*) inIdentitiesToAssociate identitiesToRemove:(NSArray*) identitiesToRemove

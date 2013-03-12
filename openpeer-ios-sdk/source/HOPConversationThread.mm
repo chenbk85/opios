@@ -79,7 +79,7 @@ using namespace hookflash::core;
     {
         ret = [[self alloc] initWithConversationThread:tempConversationThreadPtr];
     }
-    return [ret autorelease];
+    return ret;//[ret autorelease];
 }
 
 + (NSArray*) getConversationThreadsForAccount:(HOPAccount*) account
@@ -107,7 +107,7 @@ using namespace hookflash::core;
 
 - (id)init
 {
-    [self release];
+    //[self release];
     [NSException raise:NSInvalidArgumentException format:@"Don't use init for object creation. Use class method conversationThreadWithProfileBundle."];
     return nil;
 }
@@ -140,7 +140,7 @@ using namespace hookflash::core;
     {
         ret = [[self alloc] initWithConversationThread:tempConversationThreadPtr];
     }
-    return [ret autorelease];
+    return ret;//[ret autorelease];
 }
 
 /*- (id) initWithProfileBundle:(NSString*) profileBundle
@@ -223,7 +223,7 @@ using namespace hookflash::core;
         [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer conversation thread pointer!"];
     }
     
-    return [contactArray autorelease];
+    return contactArray;//[contactArray autorelease];
 }
 
 - (NSString*) getProfileBundle: (HOPContact*) contact
@@ -352,7 +352,7 @@ using namespace hookflash::core;
         [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer conversation thread pointer!"];
     }
 
-    return [hopMessage autorelease];
+    return hopMessage;//[hopMessage autorelease];
 }
 - (BOOL) getMessage: (NSString*) messageID outFrom:(HOPContact**) outFrom outMessageType:(NSString**) outMessageType outMessage:(NSString**) outMessage outTime:(NSDate**) outTime
 {

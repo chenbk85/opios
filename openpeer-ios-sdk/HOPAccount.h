@@ -66,6 +66,6 @@
 
 - (NSArray*) getAssociatedIdentities;
 
-- (void) associateIdentities:(NSArray*) inIdentitiesToAssociate identitiesToRemove:(NSArray*) identitiesToRemove;
+- (void) associateIdentities:(NSArray*) inIdentitiesToAssociate identitiesToRemove:(NSArray*) inIdentitiesToRemove;
 
 @end

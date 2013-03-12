@@ -56,6 +56,7 @@ using namespace zsLib;
     NSMutableDictionary* _dictionaryContactsWithUserId;
     NSMutableDictionary* _dictionaryProvisioningAccount;
     NSMutableDictionary* _dictionaryIdentities;
+    NSMutableDictionary* _dictionaryIdentityLookups;
 }
 + (id)sharedStorageManager;
 

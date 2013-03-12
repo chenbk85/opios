@@ -61,16 +61,7 @@
     _dictionaryContactsWithUserId = [[NSMutableDictionary alloc] init];
     _dictionaryConversationThreads = [[NSMutableDictionary alloc] init];
     _dictionaryIdentities = [[NSMutableDictionary alloc] init];
-}
-
-
-- (void)dealloc
-{
-    [_dictionaryCalls release];
-    [_dictionaryContacts release];
-    [_dictionaryContactsWithUserId release];
-    
-    [super dealloc];
+    _dictionaryIdentityLookups = [[NSMutableDictionary alloc] init];
 }
 
 
@@ -168,10 +159,10 @@
 
 - (HOPIdentityLookup*) getIdentityLookupForPUID:(PUID) puid
 {
-    
+    return [_dictionaryIdentityLookups objectForKey:[NSNumber numberWithInt:puid]];
 }
 - (void) setIdentityLookup:(HOPIdentityLookup*) lookup forPUID:(PUID) puid
 {
-    
+    [_dictionaryIdentityLookups setObject:lookup forKey:[NSNumber numberWithInt:puid]];
 }
 @end

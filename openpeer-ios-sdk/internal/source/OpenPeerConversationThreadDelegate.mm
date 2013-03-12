@@ -54,7 +54,7 @@ HOPConversationThread* OpenPeerConversationThreadDelegate::getOpenPeerConversati
     if (threadId)
     {
         hopConversationThread = [[OpenPeerStorageManager sharedStorageManager] getConversationThreadForId:threadId];
-        [threadId release];
+        //[threadId release];
     }
     return hopConversationThread;
 }
@@ -68,7 +68,7 @@ void OpenPeerConversationThreadDelegate::onConversationThreadNew(IConversationTh
         hopConversationThread = [[HOPConversationThread alloc] initWithConversationThread:conversationThread];
         [[OpenPeerStorageManager sharedStorageManager] setConversationThread:hopConversationThread forId:[NSString stringWithUTF8String:conversationThread->getThreadID()]];
         [conversationThreadDelegate onConversationThreadNew:hopConversationThread];
-        [hopConversationThread release];
+        //[hopConversationThread release];
     }
 }
 

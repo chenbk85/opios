@@ -51,7 +51,7 @@ using namespace hookflash::core;
 
 - (id)init
 {
-    [self release];
+    //[self release];
     [NSException raise:NSInvalidArgumentException format:@"Don't use init for object creation. Use class method placeCall."];
     return nil;
 }
@@ -79,7 +79,7 @@ using namespace hookflash::core;
             [[OpenPeerStorageManager sharedStorageManager] setCall:ret forId:[NSString stringWithUTF8String:tempCallPtr->getCallID()]];
         }
     }
-    return [ret autorelease];
+    return ret;
 }
 
 + (NSString*) stateToString: (HOPCallStates) state

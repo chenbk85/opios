@@ -46,7 +46,7 @@ boost::shared_ptr<OpenPeerCallDelegate> OpenPeerCallDelegate::create(id<HOPCallD
 
 void OpenPeerCallDelegate::onCallStateChanged(ICallPtr call,CallStates state)
 {
-    NSAutoreleasePool* _pool = [[NSAutoreleasePool alloc] init];
+    //NSAutoreleasePool* _pool = [[NSAutoreleasePool alloc] init];
     
     NSString* callId = [NSString stringWithUTF8String:call->getCallID()];
     if (callId)
@@ -56,10 +56,10 @@ void OpenPeerCallDelegate::onCallStateChanged(ICallPtr call,CallStates state)
         {
             hopCall = [[HOPCall alloc] initWithCallPtr:call];
             [[OpenPeerStorageManager sharedStorageManager] setCall:hopCall forId:[NSString stringWithUTF8String:call->getCallID()]];
-            [hopCall release];
+            //[hopCall release];
         }
         [callDelegate onCallStateChanged:hopCall callState:(HOPCallStates) state];
     }
     
-    [_pool release];
+    //[_pool release];
 }

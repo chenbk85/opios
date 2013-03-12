@@ -19,9 +19,7 @@
 		87A5B1A316EDE5EB007E825A /* HOPContact.mm in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B18F16EDE5EB007E825A /* HOPContact.mm */; };
 		87A5B1A416EDE5EB007E825A /* HOPConversationThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19016EDE5EB007E825A /* HOPConversationThread.mm */; };
 		87A5B1A516EDE5EB007E825A /* HOPIdentity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19116EDE5EB007E825A /* HOPIdentity.mm */; };
-		87A5B1A616EDE5EB007E825A /* HOPIdentityInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19216EDE5EB007E825A /* HOPIdentityInfo.m */; };
 		87A5B1A716EDE5EB007E825A /* HOPLogger.mm in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19316EDE5EB007E825A /* HOPLogger.mm */; };
-		87A5B1A816EDE5EB007E825A /* HOPLookupProfileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19416EDE5EB007E825A /* HOPLookupProfileInfo.m */; };
 		87A5B1A916EDE5EB007E825A /* HOPMediaEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19516EDE5EB007E825A /* HOPMediaEngine.mm */; };
 		87A5B1AA16EDE5EB007E825A /* HOPMediaEngineRtpRtcpStatistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19616EDE5EB007E825A /* HOPMediaEngineRtpRtcpStatistics.m */; };
 		87A5B1AB16EDE5EB007E825A /* HOPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B19716EDE5EB007E825A /* HOPMessage.m */; };
@@ -64,10 +62,57 @@
 		87B013F61661557C00E8938B /* HOPMediaEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 874F657C1652652A00E580F0 /* HOPMediaEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87B013F81661557C00E8938B /* HOPProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = 874F65A716528FCF00E580F0 /* HOPProtocols.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87B013F91661557C00E8938B /* HOPTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 872E40771653CFE2006ECA60 /* HOPTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		87B013FD1661557C00E8938B /* HOPIdentityInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 87343FE1165E3FF80070E6E0 /* HOPIdentityInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		87B013FE1661557C00E8938B /* HOPLookupProfileInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 87343FE4165E42C20070E6E0 /* HOPLookupProfileInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87B013FF1661557C00E8938B /* HOPMediaEngineRtpRtcpStatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 87343FE9165E4B0C0070E6E0 /* HOPMediaEngineRtpRtcpStatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87B014001661557C00E8938B /* HOPIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 87FA4CE0165F891A00F7D973 /* HOPIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		87F9073C16EF465300B0D22C /* libaec_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3C16E68F0600A2FE5E /* libaec_ios.a */; };
+		87F9073D16EF465300B0D22C /* libaecm_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3E16E68F0600A2FE5E /* libaecm_ios.a */; };
+		87F9073E16EF465300B0D22C /* libagc_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4016E68F0600A2FE5E /* libagc_ios.a */; };
+		87F9073F16EF465300B0D22C /* libapm_util_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4616E68F0600A2FE5E /* libapm_util_ios.a */; };
+		87F9074016EF465300B0D22C /* libaudio_coding_module_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3216E68F0600A2FE5E /* libaudio_coding_module_ios.a */; };
+		87F9074116EF465300B0D22C /* libaudio_conference_mixer_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3616E68F0600A2FE5E /* libaudio_conference_mixer_ios.a */; };
+		87F9074216EF465300B0D22C /* libaudio_device_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3816E68F0600A2FE5E /* libaudio_device_ios.a */; };
+		87F9074316EF465300B0D22C /* libaudio_processing_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3A16E68F0600A2FE5E /* libaudio_processing_ios.a */; };
+		87F9074416EF465300B0D22C /* libbitrate_controller_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4816E68F0600A2FE5E /* libbitrate_controller_ios.a */; };
+		87F9074516EF465300B0D22C /* libCNG_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2016E68F0600A2FE5E /* libCNG_ios.a */; };
+		87F9074616EF465300B0D22C /* libcryptopp_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786892816E609830090A3D9 /* libcryptopp_ios.a */; };
+		87F9074716EF465300B0D22C /* libG711_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2216E68F0600A2FE5E /* libG711_ios.a */; };
+		87F9074816EF465300B0D22C /* libG722_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2416E68F0600A2FE5E /* libG722_ios.a */; };
+		87F9074916EF465300B0D22C /* libhfcore_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786890F16E609240090A3D9 /* libhfcore_ios.a */; };
+		87F9074A16EF465300B0D22C /* libhfservices_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786891916E609560090A3D9 /* libhfservices_ios.a */; };
+		87F9074B16EF465300B0D22C /* libhfstack_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786891416E609390090A3D9 /* libhfstack_ios.a */; };
+		87F9074C16EF465300B0D22C /* libiLBC_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2A16E68F0600A2FE5E /* libiLBC_ios.a */; };
+		87F9074D16EF465300B0D22C /* libiSAC_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2616E68F0600A2FE5E /* libiSAC_ios.a */; };
+		87F9074E16EF465300B0D22C /* libiSACFix_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2816E68F0600A2FE5E /* libiSACFix_ios.a */; };
+		87F9074F16EF465300B0D22C /* libjpeg_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786893C16E60A1A0090A3D9 /* libjpeg_ios.a */; };
+		87F9075016EF465300B0D22C /* liblibogg_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786893716E60A0A0090A3D9 /* liblibogg_ios.a */; };
+		87F9075116EF465300B0D22C /* libmedia_file_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4A16E68F0600A2FE5E /* libmedia_file_ios.a */; };
+		87F9075216EF465300B0D22C /* libNetEq_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3416E68F0600A2FE5E /* libNetEq_ios.a */; };
+		87F9075316EF465300B0D22C /* libns_fix_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4416E68F0600A2FE5E /* libns_fix_ios.a */; };
+		87F9075416EF465300B0D22C /* libns_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4216E68F0600A2FE5E /* libns_ios.a */; };
+		87F9075516EF465300B0D22C /* libopus_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3016E68F0600A2FE5E /* libopus_ios.a */; };
+		87F9075616EF465300B0D22C /* libPCM16B_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2C16E68F0600A2FE5E /* libPCM16B_ios.a */; };
+		87F9075716EF465300B0D22C /* libresampler_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A7A16E68F0600A2FE5E /* libresampler_ios.a */; };
+		87F9075816EF465300B0D22C /* librtp_rtcp_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4C16E68F0600A2FE5E /* librtp_rtcp_ios.a */; };
+		87F9075916EF465300B0D22C /* libsignal_processing_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A7C16E68F0600A2FE5E /* libsignal_processing_ios.a */; };
+		87F9075A16EF465300B0D22C /* libsystem_wrappers_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A7316E68F0600A2FE5E /* libsystem_wrappers_ios.a */; };
+		87F9075B16EF465300B0D22C /* libudns_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786892316E609740090A3D9 /* libudns_ios.a */; };
+		87F9075C16EF465300B0D22C /* libudp_transport_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4E16E68F0600A2FE5E /* libudp_transport_ios.a */; };
+		87F9075D16EF465300B0D22C /* libvad_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A7E16E68F0600A2FE5E /* libvad_ios.a */; };
+		87F9075E16EF465300B0D22C /* libvideo_capture_module_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A5216E68F0600A2FE5E /* libvideo_capture_module_ios.a */; };
+		87F9075F16EF465300B0D22C /* libvideo_engine_core_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786896316E60C690090A3D9 /* libvideo_engine_core_ios.a */; };
+		87F9076016EF465300B0D22C /* libvideo_processing_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A5A16E68F0600A2FE5E /* libvideo_processing_ios.a */; };
+		87F9076116EF465300B0D22C /* libvideo_render_module_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A5C16E68F0600A2FE5E /* libvideo_render_module_ios.a */; };
+		87F9076216EF465300B0D22C /* libvoice_engine_core_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786895116E60A350090A3D9 /* libvoice_engine_core_ios.a */; };
+		87F9076316EF465300B0D22C /* libvorbis_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A2E16E68F0600A2FE5E /* libvorbis_ios.a */; };
+		87F9076416EF465300B0D22C /* libvpx_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786893216E609F80090A3D9 /* libvpx_ios.a */; };
+		87F9076516EF465300B0D22C /* libwebrtc_i420_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A5416E68F0600A2FE5E /* libwebrtc_i420_ios.a */; };
+		87F9076616EF465300B0D22C /* libwebrtc_jpeg_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A6C16E68F0600A2FE5E /* libwebrtc_jpeg_ios.a */; };
+		87F9076716EF465300B0D22C /* libwebrtc_libyuv_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A6E16E68F0600A2FE5E /* libwebrtc_libyuv_ios.a */; };
+		87F9076816EF465300B0D22C /* libwebrtc_utility_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A5016E68F0600A2FE5E /* libwebrtc_utility_ios.a */; };
+		87F9076916EF465300B0D22C /* libwebrtc_video_coding_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A5816E68F0600A2FE5E /* libwebrtc_video_coding_ios.a */; };
+		87F9076A16EF465300B0D22C /* libwebrtc_vp8_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A5616E68F0600A2FE5E /* libwebrtc_vp8_ios.a */; };
+		87F9076B16EF465300B0D22C /* libyuv_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786892D16E609BC0090A3D9 /* libyuv_ios.a */; };
+		87F9076C16EF465300B0D22C /* libzsLib_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8786891E16E609660090A3D9 /* libzsLib_ios.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -460,8 +505,6 @@
 		872725C1166636F50089CBB6 /* HOPMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HOPMessage.h; sourceTree = "<group>"; };
 		872E40771653CFE2006ECA60 /* HOPTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HOPTypes.h; sourceTree = "<group>"; };
 		87343EDB165A50D60070E6E0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		87343FE1165E3FF80070E6E0 /* HOPIdentityInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HOPIdentityInfo.h; sourceTree = "<group>"; };
-		87343FE4165E42C20070E6E0 /* HOPLookupProfileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HOPLookupProfileInfo.h; sourceTree = "<group>"; };
 		87343FE9165E4B0C0070E6E0 /* HOPMediaEngineRtpRtcpStatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HOPMediaEngineRtpRtcpStatistics.h; sourceTree = "<group>"; };
 		8740FFD316E88A37008016C0 /* HOPAccount.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HOPAccount.h; sourceTree = "<group>"; };
 		874ADC36166DF0E20095FE33 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -490,9 +533,7 @@
 		87A5B18F16EDE5EB007E825A /* HOPContact.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HOPContact.mm; sourceTree = "<group>"; };
 		87A5B19016EDE5EB007E825A /* HOPConversationThread.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HOPConversationThread.mm; sourceTree = "<group>"; };
 		87A5B19116EDE5EB007E825A /* HOPIdentity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HOPIdentity.mm; sourceTree = "<group>"; };
-		87A5B19216EDE5EB007E825A /* HOPIdentityInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HOPIdentityInfo.m; sourceTree = "<group>"; };
 		87A5B19316EDE5EB007E825A /* HOPLogger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HOPLogger.mm; sourceTree = "<group>"; };
-		87A5B19416EDE5EB007E825A /* HOPLookupProfileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HOPLookupProfileInfo.m; sourceTree = "<group>"; };
 		87A5B19516EDE5EB007E825A /* HOPMediaEngine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HOPMediaEngine.mm; sourceTree = "<group>"; };
 		87A5B19616EDE5EB007E825A /* HOPMediaEngineRtpRtcpStatistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HOPMediaEngineRtpRtcpStatistics.m; sourceTree = "<group>"; };
 		87A5B19716EDE5EB007E825A /* HOPMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HOPMessage.m; sourceTree = "<group>"; };
@@ -551,6 +592,55 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87F9073C16EF465300B0D22C /* libaec_ios.a in Frameworks */,
+				87F9073D16EF465300B0D22C /* libaecm_ios.a in Frameworks */,
+				87F9073E16EF465300B0D22C /* libagc_ios.a in Frameworks */,
+				87F9073F16EF465300B0D22C /* libapm_util_ios.a in Frameworks */,
+				87F9074016EF465300B0D22C /* libaudio_coding_module_ios.a in Frameworks */,
+				87F9074116EF465300B0D22C /* libaudio_conference_mixer_ios.a in Frameworks */,
+				87F9074216EF465300B0D22C /* libaudio_device_ios.a in Frameworks */,
+				87F9074316EF465300B0D22C /* libaudio_processing_ios.a in Frameworks */,
+				87F9074416EF465300B0D22C /* libbitrate_controller_ios.a in Frameworks */,
+				87F9074516EF465300B0D22C /* libCNG_ios.a in Frameworks */,
+				87F9074616EF465300B0D22C /* libcryptopp_ios.a in Frameworks */,
+				87F9074716EF465300B0D22C /* libG711_ios.a in Frameworks */,
+				87F9074816EF465300B0D22C /* libG722_ios.a in Frameworks */,
+				87F9074916EF465300B0D22C /* libhfcore_ios.a in Frameworks */,
+				87F9074A16EF465300B0D22C /* libhfservices_ios.a in Frameworks */,
+				87F9074B16EF465300B0D22C /* libhfstack_ios.a in Frameworks */,
+				87F9074C16EF465300B0D22C /* libiLBC_ios.a in Frameworks */,
+				87F9074D16EF465300B0D22C /* libiSAC_ios.a in Frameworks */,
+				87F9074E16EF465300B0D22C /* libiSACFix_ios.a in Frameworks */,
+				87F9074F16EF465300B0D22C /* libjpeg_ios.a in Frameworks */,
+				87F9075016EF465300B0D22C /* liblibogg_ios.a in Frameworks */,
+				87F9075116EF465300B0D22C /* libmedia_file_ios.a in Frameworks */,
+				87F9075216EF465300B0D22C /* libNetEq_ios.a in Frameworks */,
+				87F9075316EF465300B0D22C /* libns_fix_ios.a in Frameworks */,
+				87F9075416EF465300B0D22C /* libns_ios.a in Frameworks */,
+				87F9075516EF465300B0D22C /* libopus_ios.a in Frameworks */,
+				87F9075616EF465300B0D22C /* libPCM16B_ios.a in Frameworks */,
+				87F9075716EF465300B0D22C /* libresampler_ios.a in Frameworks */,
+				87F9075816EF465300B0D22C /* librtp_rtcp_ios.a in Frameworks */,
+				87F9075916EF465300B0D22C /* libsignal_processing_ios.a in Frameworks */,
+				87F9075A16EF465300B0D22C /* libsystem_wrappers_ios.a in Frameworks */,
+				87F9075B16EF465300B0D22C /* libudns_ios.a in Frameworks */,
+				87F9075C16EF465300B0D22C /* libudp_transport_ios.a in Frameworks */,
+				87F9075D16EF465300B0D22C /* libvad_ios.a in Frameworks */,
+				87F9075E16EF465300B0D22C /* libvideo_capture_module_ios.a in Frameworks */,
+				87F9075F16EF465300B0D22C /* libvideo_engine_core_ios.a in Frameworks */,
+				87F9076016EF465300B0D22C /* libvideo_processing_ios.a in Frameworks */,
+				87F9076116EF465300B0D22C /* libvideo_render_module_ios.a in Frameworks */,
+				87F9076216EF465300B0D22C /* libvoice_engine_core_ios.a in Frameworks */,
+				87F9076316EF465300B0D22C /* libvorbis_ios.a in Frameworks */,
+				87F9076416EF465300B0D22C /* libvpx_ios.a in Frameworks */,
+				87F9076516EF465300B0D22C /* libwebrtc_i420_ios.a in Frameworks */,
+				87F9076616EF465300B0D22C /* libwebrtc_jpeg_ios.a in Frameworks */,
+				87F9076716EF465300B0D22C /* libwebrtc_libyuv_ios.a in Frameworks */,
+				87F9076816EF465300B0D22C /* libwebrtc_utility_ios.a in Frameworks */,
+				87F9076916EF465300B0D22C /* libwebrtc_video_coding_ios.a in Frameworks */,
+				87F9076A16EF465300B0D22C /* libwebrtc_vp8_ios.a in Frameworks */,
+				87F9076B16EF465300B0D22C /* libyuv_ios.a in Frameworks */,
+				87F9076C16EF465300B0D22C /* libzsLib_ios.a in Frameworks */,
 				87343EDC165A50D60070E6E0 /* UIKit.framework in Frameworks */,
 				8792E9C51651A8DA00DEAC58 /* libboost_date_time.a in Frameworks */,
 				8792E9C61651A8DA00DEAC58 /* libboost_regex.a in Frameworks */,
@@ -776,8 +866,6 @@
 				874F657C1652652A00E580F0 /* HOPMediaEngine.h */,
 				87343FE9165E4B0C0070E6E0 /* HOPMediaEngineRtpRtcpStatistics.h */,
 				87FA4CE0165F891A00F7D973 /* HOPIdentity.h */,
-				87343FE1165E3FF80070E6E0 /* HOPIdentityInfo.h */,
-				87343FE4165E42C20070E6E0 /* HOPLookupProfileInfo.h */,
 				872725C1166636F50089CBB6 /* HOPMessage.h */,
 				87DFA51D16E7576900C77326 /* HOPLogger.h */,
 				8740FFD316E88A37008016C0 /* HOPAccount.h */,
@@ -818,9 +906,7 @@
 				87A5B18F16EDE5EB007E825A /* HOPContact.mm */,
 				87A5B19016EDE5EB007E825A /* HOPConversationThread.mm */,
 				87A5B19116EDE5EB007E825A /* HOPIdentity.mm */,
-				87A5B19216EDE5EB007E825A /* HOPIdentityInfo.m */,
 				87A5B19316EDE5EB007E825A /* HOPLogger.mm */,
-				87A5B19416EDE5EB007E825A /* HOPLookupProfileInfo.m */,
 				87A5B19516EDE5EB007E825A /* HOPMediaEngine.mm */,
 				87A5B19616EDE5EB007E825A /* HOPMediaEngineRtpRtcpStatistics.m */,
 				87A5B19716EDE5EB007E825A /* HOPMessage.m */,
@@ -908,8 +994,6 @@
 				87B013F61661557C00E8938B /* HOPMediaEngine.h in Headers */,
 				87B013F81661557C00E8938B /* HOPProtocols.h in Headers */,
 				87B013F91661557C00E8938B /* HOPTypes.h in Headers */,
-				87B013FD1661557C00E8938B /* HOPIdentityInfo.h in Headers */,
-				87B013FE1661557C00E8938B /* HOPLookupProfileInfo.h in Headers */,
 				87B013FF1661557C00E8938B /* HOPMediaEngineRtpRtcpStatistics.h in Headers */,
 				872725C3166636F50089CBB6 /* HOPMessage.h in Headers */,
 				87B014001661557C00E8938B /* HOPIdentity.h in Headers */,
@@ -1448,9 +1532,7 @@
 				87A5B1A316EDE5EB007E825A /* HOPContact.mm in Sources */,
 				87A5B1A416EDE5EB007E825A /* HOPConversationThread.mm in Sources */,
 				87A5B1A516EDE5EB007E825A /* HOPIdentity.mm in Sources */,
-				87A5B1A616EDE5EB007E825A /* HOPIdentityInfo.m in Sources */,
 				87A5B1A716EDE5EB007E825A /* HOPLogger.mm in Sources */,
-				87A5B1A816EDE5EB007E825A /* HOPLookupProfileInfo.m in Sources */,
 				87A5B1A916EDE5EB007E825A /* HOPMediaEngine.mm in Sources */,
 				87A5B1AA16EDE5EB007E825A /* HOPMediaEngineRtpRtcpStatistics.m in Sources */,
 				87A5B1AB16EDE5EB007E825A /* HOPMessage.m in Sources */,
@@ -1524,6 +1606,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/openpeer_ios_sdk.dst;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -1572,6 +1655,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/openpeer_ios_sdk.dst;
 				GCC_ENABLE_CPP_RTTI = YES;

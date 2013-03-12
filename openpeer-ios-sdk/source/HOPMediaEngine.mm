@@ -98,7 +98,7 @@ using namespace hookflash::core;
 {
     if(mediaEnginePtr)
     {
-        mediaEnginePtr->setCaptureRenderView((void*) renderView);
+        mediaEnginePtr->setCaptureRenderView((__bridge void*) renderView);
     }
     else
     {
@@ -110,7 +110,7 @@ using namespace hookflash::core;
 {
     if(mediaEnginePtr)
     {
-        mediaEnginePtr->setChannelRenderView((void*) renderView);
+        mediaEnginePtr->setChannelRenderView((__bridge void*) renderView);
     }
     else
     {

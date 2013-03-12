@@ -54,13 +54,5 @@
     }
     return self;
 }
-- (void)dealloc
-{
-    [_messageID release];
-    [_contact release];
-    [_type release];
-    [_text release];
-    [_date release];
-    [super dealloc];
-}
+
 @end

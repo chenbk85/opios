@@ -88,6 +88,7 @@ using namespace hookflash::core;
     return passedWithoutErrors;
 }
 
+
 - (BOOL)reloginWithAccountDelegate:(id<HOPAccountDelegate>)inAccountDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>)inConversationThreadDelegate callDelegate:(id<HOPCallDelegate>)inCallDelegate peerFilePrivate:(NSString *)inPeerFilePrivate peerFilePrivateSecret:(NSString *)inPeerFilePrivateSecret
 {
     BOOL passedWithoutErrors = NO;
@@ -105,6 +106,27 @@ using namespace hookflash::core;
     return passedWithoutErrors;
 }
 
+- (HOPAccountState*) getState
+{
+    HOPAccountState* ret = nil;
+    
+    if(accountPtr)
+    {
+        ret = [[HOPAccountState alloc] init];
+        WORD errorCode;
+        String errorReason;
+        ret.state  = (HOPAccountStates) accountPtr->getState(&errorCode, &errorReason);
+        ret.errorCode = errorCode;
+        ret.errorReason = [NSString stringWithUTF8String:errorReason];
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid account object!"];
+    }
+    
+    return ret;
+}
+
 - (NSString*) getUserID
 {
     NSString* ret = nil;
@@ -115,10 +137,11 @@ using namespace hookflash::core;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid account pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid account object!"];
     }
     return ret;
 }
+
 
 - (NSString*) getLocationID
 {
@@ -130,10 +153,11 @@ using namespace hookflash::core;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid account pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid account object!"];
     }
     return ret;
 }
+
 
 - (void) shutdown
 {
@@ -143,9 +167,10 @@ using namespace hookflash::core;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid account pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid account object!"];
     }
 }
+
 
 - (NSString*) savePeerFilePrivate
 {
@@ -160,10 +185,11 @@ using namespace hookflash::core;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid account object!"];
     }
     return xml;
 }
+
 
 - (NSString*) getPeerFilePrivateSecret
 {
@@ -178,10 +204,11 @@ using namespace hookflash::core;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid OpenPeer account pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid account object!"];
     }
     return ret;
 }
+
 
 - (NSArray*) getAssociatedIdentities
 {
@@ -208,36 +235,40 @@ using namespace hookflash::core;
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid provisioning account pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid account object!"];
     }
     return array;
 }
 
-- (void) associateIdentities:(NSArray*) inIdentitiesToAssociate identitiesToRemove:(NSArray*) identitiesToRemove
+
+- (void) associateIdentities:(NSArray*) inIdentitiesToAssociate identitiesToRemove:(NSArray*) inIdentitiesToRemove
 {
+    IdentityList identitiesToAssociate;
+    IdentityList identitiesToRemove;
+    
     if ([inIdentitiesToAssociate count] > 0)
     {
-//        provisioning::IAccount::IdentityIDList identityList;
-//        for (HOPIdentity* identity in identities)
-//        {
-//            provisioning::IAccount::IdentityID identityID;
-//            identityID.first = (provisioning::IAccount::IdentityTypes)identity.identityType;
-//            identityID.second = [identity.identityId UTF8String];
-//            identityList.push_back(identityID);
-//        }
+        for (HOPIdentity* identity in inIdentitiesToAssociate)
+        {
+            if ([identity getIdentityPtr])
+            {
+                identitiesToAssociate.push_back([identity getIdentityPtr]);
+            }
+        }
     }
     
-    if ([identitiesToRemove count] > 0)
+    if ([inIdentitiesToRemove count] > 0)
     {
-        //        provisioning::IAccount::IdentityIDList identityList;
-        //        for (HOPIdentity* identity in identities)
-        //        {
-        //            provisioning::IAccount::IdentityID identityID;
-        //            identityID.first = (provisioning::IAccount::IdentityTypes)identity.identityType;
-        //            identityID.second = [identity.identityId UTF8String];
-        //            identityList.push_back(identityID);
-        //        }
+        for (HOPIdentity* identity in inIdentitiesToRemove)
+        {
+            if ([identity getIdentityPtr])
+            {
+                identitiesToRemove.push_back([identity getIdentityPtr]);
+            }
+        }
     }
+    
+    [self getAccountPtr]->associateIdentities(identitiesToAssociate, identitiesToRemove);
 }
 
 + (NSString*) toStringAccountState:(HOPAccountStates) state

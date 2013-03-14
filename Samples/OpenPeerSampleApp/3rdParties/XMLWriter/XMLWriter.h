@@ -124,8 +124,8 @@
 	BOOL automaticEmptyElements;
 }
 
-@property (nonatomic, retain, readwrite) NSString* indentation;
-@property (nonatomic, retain, readwrite) NSString* lineBreak;
+@property (nonatomic, strong, readwrite) NSString* indentation;
+@property (nonatomic, strong, readwrite) NSString* lineBreak;
 @property (nonatomic, assign, readwrite) BOOL automaticEmptyElements;
 @property (nonatomic, readonly) int level;
 

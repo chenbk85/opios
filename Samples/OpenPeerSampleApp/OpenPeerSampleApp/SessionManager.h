@@ -37,19 +37,23 @@
 @class HOPConversationThread;
 @class HOPMessage;
 
+
 @interface SessionManager : NSObject
 
 @property (retain) NSMutableDictionary* sessionsDictionary;
-
+@property (assign) Session* lastEndedCallSession;
+@property (nonatomic, assign) Session* sessionWithFaceDetectionOn;
 
 + (id) sharedSessionManager;
 
 - (Session*) createSessionForContact:(Contact*) contact;
 - (Session*) createSessionForContacts:(NSArray*) contacts andConversationThread:(HOPConversationThread*) inConversationThread;
+- (Session*) createSessionInitiatedFromSession:(Session*) inSession forContactUserIds:(NSString*) userIds;
+- (Session*) createRemoteSessionForContacts:(NSArray*) participants;
 - (Session*) getSessionForContact:(Contact*) contact;
 - (void) endSession:(Session*) session;
 
-- (void) makeCallForSession:(Session*) inSession includeVideo:(BOOL) includeVideo;
+- (void) makeCallForSession:(Session*) inSession includeVideo:(BOOL) includeVideo isRedial:(BOOL) isRedial;
 - (void) answerCallForSession:(Session*) inSession;
 - (void) endCallForSession:(Session*) inSession;
 
@@ -57,4 +61,10 @@
 
 - (void) sendMessage:(NSString*) message forSession:(Session*) inSession;
 - (void) onMessageReceived:(HOPMessage*) message forSessionId:(NSString*) sessionId;
+
+- (void) onAvailabilityCheckReceivedForSession:(Session*) inSession;
+- (void) redialCallForSession:(Session*) inSession;
+
+- (void) onCallEnded:(Session*) inSession;
+- (void) onFaceDetected;
 @end

@@ -29,22 +29,29 @@
  
  */
 
-#import "MediaEngineDelegate.h"
-#import "SessionManager.h"
+#import <Foundation/Foundation.h>
 
-@implementation MediaEngineDelegate
+@class HOPMessage;
+@class Session;
 
-- (void) onMediaEngineAudioRouteChanged:(HOPMediaEngineOutputAudioRoutes) audioRoute
+typedef enum
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-    });
-}
+    SystemMessage_EstablishSessionBetweenTwoPeers,
+    SystemMessage_IsContactAvailable,
+    SystemMessage_IsContactAvailable_Response,
+    SystemMessage_CallAgain
+}SystemMessageTypes;
 
-- (void) onMediaEngineFaceDetected
-{
-    dispatch_async(dispatch_get_main_queue(), ^
-    {
-        [[SessionManager sharedSessionManager] onFaceDetected];
-    });
-}
+@interface MessageManager : NSObject
+
++ (id) sharedMessageManager;
+
+- (HOPMessage*) createSystemMessageWithType:(SystemMessageTypes) type andText:(NSString*) text;
+- (void) sendSystemMessageToInitSessionBetweenPeers:(NSArray*) peers forSession:(Session*) inSession;
+- (void) sendSystemMessageToCallAgainForSession:(Session*) inSession;
+- (void) sendSystemMessageToCheckAvailabilityForSession:(Session*) inSession;
+
+- (void) sendSystemMessageToCheckAvailabilityResponseForSession:(Session*) inSession message:(NSString*) message;
+
+- (void) parseSystemMessage:(HOPMessage*) inMessage forSession:(Session*) inSession;
 @end

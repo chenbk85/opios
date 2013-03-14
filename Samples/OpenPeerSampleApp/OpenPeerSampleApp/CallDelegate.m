@@ -36,6 +36,8 @@
 #import <OpenpeerSDK/HOPTypes.h>
 #import <OpenpeerSDK/HOPConversationThread.h>
 #import "SessionManager.h"
+#import "MessageManager.h"
+
 #import "Session.h"
 #import "MainViewController.h"
 #import "ActiveSessionViewController.h"
@@ -114,6 +116,25 @@
             case HOPCallStateClosed:                //Receives both parties
                 [sessionViewController updateCallState];
                 [sessionViewController prepareForCall:NO withVideo:NO];
+                [[SessionManager sharedSessionManager] onCallEnded:session];
+                
+                /*[[SessionManager sharedSessionManager] setLastEndedCallSession: session];
+                if (![[call getCaller] isSelf])
+                {
+                    if ([call getClosedReason] == HOPCallClosedReasonNone || [call getClosedReason] == HOPCallClosedReasonRequestTerminated || [call getClosedReason] == HOPCallClosedReasonTemporarilyUnavailable)
+                    {
+                        [[MessageManager sharedMessageManager] sendSystemMessageToCallAgainForSession:session];
+                        session.isRedial = YES;
+                    }
+                    else
+                    {
+                        session.isRedial = NO;
+                    }
+                }
+                else
+                {
+                    session.isRedial = NO;
+                }*/
                 break;
                 
             case HOPCallStateNone:

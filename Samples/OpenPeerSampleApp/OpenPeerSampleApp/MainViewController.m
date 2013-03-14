@@ -30,11 +30,17 @@
  */
 
 #import "MainViewController.h"
+#import "OpenPeer.h"
+#import "Constants.h"
+
 //SDK
 #import <OpenpeerSDK/HOPConversationThread.h>
+#import <OpenpeerSDK/HOPContact.h>
 //Managers
 #import "SessionManager.h"
 #import "LoginManager.h"
+#import "ContactsManager.h"
+#import "MessageManager.h"
 //Model
 #import "Session.h"
 #import "Contact.h"
@@ -49,6 +55,7 @@
 @interface MainViewController ()
 
 - (void) removeAllSubViews;
+- (void) actionDemo;
 
 @end
 
@@ -59,24 +66,11 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        self.sessionViewControllersDictionary = [[[NSMutableDictionary alloc] init] autorelease];
+        self.sessionViewControllersDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [_loginViewController release];
-    [_webLoginViewController release];
-    [_contactsTableViewController release];
-    [_contactsNavigationController release];
-    [_sessionViewControllersDictionary release];
-    
-    [_activityIndicator release];
-    [_activityLabel release];
-    [_activityView release];
-    [super dealloc];
-}
 
 - (void)viewDidLoad
 {
@@ -95,6 +89,29 @@
     [[[self view] subviews] makeObjectsPerformSelector: @selector(removeFromSuperview)];
 }
 
+
+/**
+ Show Demo menu
+ */
+- (void)actionDemo
+{
+    NSString* remoteSessionTitle = ![[OpenPeer sharedOpenPeer] isRemoteSessionActivationModeOn] ? @"Remote Session - Turn On" : @"Remote Session - Turn Off";
+    NSString* faceDectionTitle = ![[OpenPeer sharedOpenPeer] isFaceDetectionModeOn] ? @"Face Detection - Turn On" : @"Face Detection - Turn Off";
+    
+    NSString* redialTitle = ![[OpenPeer sharedOpenPeer] isRedialModeOn] ? @"Redial - Turn On" : @"Redial - Turn Off";
+    
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Demo options"
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                         destructiveButtonTitle:nil
+                                              otherButtonTitles:remoteSessionTitle, @"Check availability", faceDectionTitle, redialTitle,nil];
+    [sheet setActionSheetStyle:UIActionSheetStyleAutomatic];
+    
+    [sheet setAlpha:0.9];
+    
+    [sheet showFromBarButtonItem:self.contactsTableViewController.navigationItem.leftBarButtonItem animated:YES];
+}
+
 #pragma mark - Login views
 /**
  Show view with login button
@@ -103,7 +120,7 @@
 {
     if (!self.loginViewController)
     {
-        self.loginViewController = [[[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil] autorelease];
+        self.loginViewController = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
     }
     
     [self removeAllSubViews];
@@ -117,7 +134,7 @@
 - (void) showWebLoginView:(NSString*) url
 {
     if (!self.webLoginViewController)
-        self.webLoginViewController = [[[WebLoginViewController alloc] initWithNibName:@"WebLoginViewController" bundle:nil] autorelease];
+        self.webLoginViewController = [[WebLoginViewController alloc] initWithNibName:@"WebLoginViewController" bundle:nil];
     
     if (url)
     {
@@ -136,39 +153,53 @@
     [self removeAllSubViews];
     
     if (!self.contactsTableViewController)
-        self.contactsTableViewController = [[[ContactsTableViewController alloc] initWithNibName:@"ContactsTableViewController" bundle:nil] autorelease];
+        self.contactsTableViewController = [[ContactsTableViewController alloc] initWithNibName:@"ContactsTableViewController" bundle:nil];
     
     if (!self.contactsNavigationController)
     {
-        self.contactsNavigationController = [[[UINavigationController alloc] initWithRootViewController:self.contactsTableViewController] autorelease];
+        self.contactsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.contactsTableViewController];
         [self.contactsNavigationController.navigationBar.topItem setTitle:@"Contacts"];
         // Add logout button in navigation bar
-        UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"LogOut"
+        UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
                                                                       style:UIBarButtonItemStyleBordered
                                                                      target:[LoginManager sharedLoginManager]
                                                                      action:@selector(logout)];
         self.contactsTableViewController.navigationItem.rightBarButtonItem = barButton;
-        [barButton release];
+        
+        //Create Demo options button
+        UIBarButtonItem *barButtonLeft = [[UIBarButtonItem alloc] initWithTitle:@"Demo"
+                                                                      style:UIBarButtonItemStyleBordered
+                                                                     target:self
+                                                                     action:@selector(actionDemo)];
+        self.contactsTableViewController.navigationItem.leftBarButtonItem = barButtonLeft;
     }
     
     [self presentViewController:self.contactsNavigationController animated:NO completion:nil];
 }
 
 #pragma mark - Session view
+/**
+ Show session view.
+ @param session Session which needs to be displyed
+ @param incomingCall BOOL - Yes if it is session with incoming call, otherwise NO
+ */
 - (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall
 {
     NSString* sessionId = [[session conversationThread] getThreadId];
     
+    //If session view controller is laredy created for this session get it from dictionary 
     ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:sessionId];
     
+    //If session view controller doesn't exist, create a new one
     if (!sessionViewContorller)
     {
-        sessionViewContorller = [[[ActiveSessionViewController alloc] initWithSession:session] autorelease];
+        sessionViewContorller = [[ActiveSessionViewController alloc] initWithSession:session];
         [self.sessionViewControllersDictionary setObject:sessionViewContorller forKey:sessionId];
     }
     
     sessionViewContorller.isIncomingCall = incomingCall;
     
+    //Set title, and push session view conntroller
     if (sessionViewContorller.parentViewController == nil)
     {
         NSString* title = [[[session participantsArray] objectAtIndex:0] fullName];
@@ -177,14 +208,84 @@
     }
 }
 
+/**
+ Remove specific session view controller from the dictionary.
+ @param sessionId NSString session id
+ */
 - (void) removeSessionViewControllerForSession:(NSString*) sessionId
 {
     [self.sessionViewControllersDictionary removeObjectForKey:sessionId];
 }
 
+/**
+ Prepare specific session vire controller for incoming call
+ @param session Session with incomming call
+ */
 - (void) showIncominCallForSession:(Session*) session
 {
     ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:[[session conversationThread] getThreadId]];
     [sessionViewContorller prepareForIncomingCall];
+}
+
+#pragma mark - UIActionSheet Delegate Methods
+/**
+ Handling choosed Demo option
+ */
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex)
+    {
+        case DEMO_REMOTE_SESSION_INIT:
+        {
+            ((OpenPeer*)[OpenPeer sharedOpenPeer]).isRemoteSessionActivationModeOn = ![[OpenPeer sharedOpenPeer] isRemoteSessionActivationModeOn];
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationRemoteSessionModeChanged object:nil];
+            
+            NSString* message = [[OpenPeer sharedOpenPeer] isRemoteSessionActivationModeOn] ? @"Remote session activation mode is turned ON. Please, select two openpeer contacts from your list and remote session will be created." : @"Remote session activation mode is turned OFF";
+            
+            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Remote session activation"
+                                                                 message:message
+                                                                delegate:self
+                                                       cancelButtonTitle:@"Ok"
+                                                       otherButtonTitles:nil];
+            [alertView show];
+        }
+        break;
+            
+        case DEMO_CHECK_AVAILABILITY:
+        {
+            [[ContactsManager sharedContactsManager] checkAvailability];
+        }
+        break;
+            
+        case DEMO_FACE_DETECTION_MODE:
+        {
+            ((OpenPeer*)[OpenPeer sharedOpenPeer]).isFaceDetectionModeOn = ![[OpenPeer sharedOpenPeer] isFaceDetectionModeOn];
+            
+            NSString* message = [[OpenPeer sharedOpenPeer] isFaceDetectionModeOn] ? @"Face detection mode is turned ON. Please, select contact from the list. Session will be created and face detection activated. As soon face is detected, video call will be started." : @"Face detection mode is turned OFF";
+            
+            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Face detection"
+                                                                 message:message
+                                                                delegate:self
+                                                       cancelButtonTitle:@"Ok"
+                                                       otherButtonTitles:nil];
+            [alertView show];
+        }
+        break;
+            
+        case DEMO_CALL_REDIAL:
+            ((OpenPeer*)[OpenPeer sharedOpenPeer]).isRedialModeOn = ![[OpenPeer sharedOpenPeer] isRedialModeOn];
+            break;
+        
+        default:
+            
+        break;
+    }
+
+}
+
+- (void) prepareForViewCallSession:(Session*) session withVideo:(BOOL) withVideo
+{
+    ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:[[session conversationThread] getThreadId]];
+    [sessionViewContorller prepareForCall:YES withVideo:withVideo];
 }
 @end

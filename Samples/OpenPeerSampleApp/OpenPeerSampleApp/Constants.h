@@ -58,3 +58,17 @@ extern NSString* const profileXmlTagPublicPeerFile;
 extern NSString* const profileXmlTagSocialId;
 extern NSString* const profileXmlAttributeId;
 extern NSString* const profileXmlTagUserID;
+
+//Message types
+extern NSString* const messageTypeText;
+extern NSString* const messageTypeSystem;
+
+//System message tags
+extern NSString * const TagEvent;
+extern NSString * const TagId;
+extern NSString * const TagText;
+
+extern NSString * const systemMessageRequest;
+
+//Notifications
+extern NSString * const notificationRemoteSessionModeChanged;

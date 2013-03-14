@@ -32,17 +32,30 @@
 #import "ContactsTableViewController.h"
 #import "ContactsManager.h"
 #import "SessionManager.h"
+
 #import "Contact.h"
+#import "Constants.h"
 #import <OpenpeerSDK/HOPContact.h>
 #import "OpenPeer.h"
 #import "ActivityIndicatorViewController.h"
 #import "MainViewController.h"
 
+#define REMOTE_SESSION_ALERT_TAG 1
 @interface ContactsTableViewController ()
 
+- (void) prepareTableForRemoteSessionMode;
+
+@property (nonatomic,retain) NSMutableArray* listOfSelectedContacts;
 @end
 
 @implementation ContactsTableViewController
+
+ - (NSMutableArray*) listOfSelectedContacts
+{
+    if (!_listOfSelectedContacts)
+        _listOfSelectedContacts = [[NSMutableArray alloc] init];
+    return _listOfSelectedContacts;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -52,11 +65,17 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [self removeObserver:self forKeyPath:notificationRemoteSessionModeChanged];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.navigationController.navigationBar.hidden = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareTableForRemoteSessionMode) name:notificationRemoteSessionModeChanged object:nil];
     //[self.activityIndicator setHidesWhenStopped:YES];
 }
 
@@ -64,6 +83,15 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) prepareTableForRemoteSessionMode
+{
+    self.contactsTableView.allowsMultipleSelection = [[OpenPeer sharedOpenPeer] isRemoteSessionActivationModeOn];
+    if (![[OpenPeer sharedOpenPeer] isRemoteSessionActivationModeOn])
+    {
+        [self.listOfSelectedContacts removeAllObjects];
+    }
 }
 
 - (void) onContactsLoadingStarted
@@ -74,6 +102,11 @@
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting contacts from social provider ..." inView:self.view];
 }
 
+- (void) onContactsLookupCheckStarted
+{
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Checking contacts against lookup server ..." inView:self.view];
+}
+
 - (void) onContactsPeerFilesLoadingStarted
 {
     //[self.activityIndicator startAnimating];
@@ -82,6 +115,17 @@
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting peer files for contacts ..." inView:self.view];
 }
 - (void) onContactsLoaded
+{
+    [self.contactsTableView reloadData];
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
+}
+
+- (void) onCheckingAvailability
+{
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Checking contacts availability ..." inView:self.view];
+}
+
+- (void) onCheckingAvailabilityFinished
 {
     [self.contactsTableView reloadData];
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
@@ -121,16 +165,33 @@
     
     if (cell == nil)
     {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
+
     Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
     [cell.textLabel setText:contact.fullName];
     
-    if ([[contact.hopContact getPeerFile] length] > 0)
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if ([contact.listOfContactsInCallSession count] > 0)
+    {
+        Contact* contactInSession = [contact.listOfContactsInCallSession objectAtIndex:0];
+        [cell.detailTextLabel setText:contactInSession.fullName];
+    }
     else
+    {
+        [cell.detailTextLabel setText:@""];
+    }
+    
+    if ([[contact.hopContact getPeerFile] length] > 0)
+    {
+        cell.userInteractionEnabled = YES;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    else
+    {
+        cell.userInteractionEnabled = NO;
         cell.accessoryType = UITableViewCellAccessoryNone;
+    }
     
     //[cell.detailTextLabel setText:contact.profession];
     return cell;
@@ -143,33 +204,89 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    //if ([tableView cellForRowAtIndexPath:indexPath].accessoryType == UITableViewCellAccessoryDisclosureIndicator)
+    Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
+    if (contact)
     {
-        Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
-        if (contact)
+        //Check if app is in remote session mode
+        if (![[OpenPeer sharedOpenPeer] isRemoteSessionActivationModeOn])
         {
-    
-            Session* session = [[SessionManager sharedSessionManager] getSessionForContact:contact];
-            if (!session)
-                session = [[SessionManager sharedSessionManager] createSessionForContact:contact];
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            self.contactsTableView.allowsMultipleSelection = NO;
+            //If not, create a session for selecte contact
+            Session* session = [[SessionManager sharedSessionManager] createSessionForContact:contact];
+            //[[SessionManager sharedSessionManager] getSessionForContact:contact];
+            //if (!session)
+            //    session = [[SessionManager sharedSessionManager] createSessionForContact:contact];
             
             [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:NO];
-            //[[[OpenPeer sharedOpenPeer] mainViewController] showIncominCallForSession:session];
-//            if (session)
-//            {
-//                SessionViewController* sessionViewController = [[SessionViewController alloc] initWithSession:session];
-//                [self.navigationController pushViewController:sessionViewController animated:NO];
-//                [sessionViewController release];
-//            }
         }
-        
+        else
+        {
+            self.contactsTableView.allowsMultipleSelection = YES;
+            //If app is in remote session mode, add selected contact to list of contacts which will takr aprt in a remote session
+            //If contact is already in the list, remove it
+            if ([self.listOfSelectedContacts containsObject:contact])
+            {
+                [self.listOfSelectedContacts removeObject:contact];
+            }
+            else
+            {
+                [self.listOfSelectedContacts addObject:contact];
+            }
+            
+            //If two contacts are selected ask user to create remote session between selected contacts
+            if ([self.listOfSelectedContacts count] == 2)
+            {
+                UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Remote video session."
+                                                                     message:@"Do you want to create a remote session?"
+                                                                    delegate:self
+                                                           cancelButtonTitle:@"No"
+                                                           otherButtonTitles:@"Yes",nil];
+                alertView.tag = REMOTE_SESSION_ALERT_TAG;
+                [alertView show];
+                                           
+            }
+            else if ([self.listOfSelectedContacts count] > 2)
+            {
+                [self.listOfSelectedContacts removeLastObject];
+                [tableView deselectRowAtIndexPath:indexPath animated:NO];
+                UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Remote video session."
+                                                                     message:@"You cannot select more than two contacts!"
+                                                                    delegate:self
+                                                           cancelButtonTitle:@"Ok"
+                                                           otherButtonTitles:nil];
+                alertView.tag = 0;
+                [alertView show];
+                return;
+            }
+        }
     }
+    
+    if (!self.contactsTableView.allowsMultipleSelection)
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
-- (void)dealloc {
-
-    [super dealloc];
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_IOS(3_0)
+{
+    Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
+    if (contact)
+    {
+        if ([self.listOfSelectedContacts containsObject:contact])
+        {
+            [self.listOfSelectedContacts removeObject:contact];
+        }
+    }
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == REMOTE_SESSION_ALERT_TAG)
+    {
+        if (buttonIndex == 1)
+        {
+            //If user wants to create a remote session between selected contacts, create a session for fist selected and send him a system message to create a session with other selected contact
+            [[SessionManager sharedSessionManager] createRemoteSessionForContacts:self.listOfSelectedContacts];
+        }
+    }
 }
 
 

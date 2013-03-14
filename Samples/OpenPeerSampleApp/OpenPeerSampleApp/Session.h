@@ -37,9 +37,10 @@
 
 @interface Session : NSObject
 
-@property (retain) NSMutableArray* participantsArray;
-@property (retain) HOPConversationThread* conversationThread;
-@property (retain) HOPCall* currentCall;
+@property (strong) NSMutableArray* participantsArray;
+@property (strong) HOPConversationThread* conversationThread;
+@property (strong) HOPCall* currentCall;
+@property (assign) BOOL isRedial;
 
 - (id) initWithContact:(Contact*) inContact conversationThread:(HOPConversationThread*) inConverationThread;
 - (id) initWithContacts:(NSArray*) inContacts conversationThread:(HOPConversationThread*) inConverationThread;

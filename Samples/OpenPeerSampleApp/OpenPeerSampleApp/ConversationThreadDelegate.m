@@ -60,7 +60,6 @@
             }
             
             [[SessionManager sharedSessionManager] createSessionForContacts:contacts andConversationThread:conversationThread];
-            [contacts release];
         }
     });
 }

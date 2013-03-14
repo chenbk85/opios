@@ -43,7 +43,8 @@
         self.fullName = inFullName;
         self.profession = inProfession;
         self.avatarUrl = inAvatarUrl;
-        self.identities = [[[NSMutableArray alloc] init] autorelease];
+        self.identities = [[NSMutableArray alloc] init];
+        self.listOfContactsInCallSession = [[NSMutableArray alloc] init];
         
         if ([identityContactId length] > 0)
         {
@@ -51,19 +52,9 @@
             identity.identityType = identityProvider;
             identity.identityId = identityContactId;
             [self.identities addObject:identity];
-            [identity release];
         }
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [_fullName release];
-    [_profession release];
-    [_avatarUrl release];
-    [_identities release];
-    [_hopContact release];
-    [super dealloc];
-}
 @end

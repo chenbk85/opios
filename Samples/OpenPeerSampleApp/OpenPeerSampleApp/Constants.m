@@ -59,3 +59,15 @@ NSString* const profileXmlTagPublicPeerFile = @"publicPeerFile";
 NSString* const profileXmlTagSocialId = @"socialId";
 NSString* const profileXmlAttributeId = @"id";
 NSString* const profileXmlTagUserID = @"userID";
+
+//Message types
+NSString* const messageTypeText = @"text/x-application-hookflash-message-text";
+NSString* const messageTypeSystem = @"text/x-application-hookflash-message-system";
+
+NSString * const TagEvent           = @"event";
+NSString * const TagId              = @"id";
+NSString * const TagText            = @"text";
+
+NSString * const systemMessageRequest = @"?";
+
+NSString * const notificationRemoteSessionModeChanged = @"notificationRemoteSessionModeChanged";

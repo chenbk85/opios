@@ -32,6 +32,7 @@
 #import "ActiveSessionViewController.h"
 #import "Session.h"
 #import "SessionManager.h"
+#import "OpenPeer.h"
 #import <OpenpeerSDK/HOPCall.h>
 #import <OpenpeerSDK/HOPMediaEngine.h>
 #import "Utility.h"
@@ -42,6 +43,10 @@
 @interface ActiveSessionViewController ()
 
 @property (nonatomic, assign) int messageCounter;
+@property (nonatomic, assign) CGRect originalFrame;
+@property (assign) BOOL isFaceDetectionForSessionActive;
+
+- (void) prepareForFaceDetection:(BOOL) toPrepare;
 @end
 
 @implementation ActiveSessionViewController
@@ -71,15 +76,20 @@
 {
     [super viewDidLoad];
 
+    self.originalFrame = self.videoPreviewImageView.frame;
+    
+    //Set default video orientation to be portrait
+    [[HOPMediaEngine sharedInstance] setDefaultVideoOrientation:HOPMediaEngineVideoOrientationPortrait];
+    
     //Set UIImageViews where will be shown camera preview and video
     [[HOPMediaEngine sharedInstance] setCaptureRenderView:self.videoPreviewImageView];
     [[HOPMediaEngine sharedInstance] setChannelRenderView:self.videoImageView];
-    //Set default video orientation to be portrait
-    [[HOPMediaEngine sharedInstance] setDefaultVideoOrientation:HOPMediaEngineVideoOrientationPortrait];
     
     [self.view bringSubviewToFront:self.buttonsView];
     //Prepare view controller for default state - no call
     [self prepareForCall:NO withVideo:NO];
+    
+    
     
     //In case this session is created for incoming call prepare it for
     if (self.isIncomingCall)
@@ -90,25 +100,56 @@
     }
     
 }
+-(void)viewDidAppear:(BOOL)animated
+{
+    if (([[OpenPeer sharedOpenPeer] isFaceDetectionModeOn] && !self.isFaceDetectionForSessionActive) ||  (![[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]) )
+        [self prepareForFaceDetection:[[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]];
+
+    
+    [super viewDidAppear:animated];
+}
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+- (void)viewDidDisappear:(BOOL)animated
+{
+    if ([[OpenPeer sharedOpenPeer] isFaceDetectionModeOn] && self.isFaceDetectionForSessionActive)
+        [self prepareForFaceDetection:NO];
+    
+    [super viewDidDisappear:animated];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
 
-- (void)dealloc
+
+- (void) prepareForFaceDetection:(BOOL) toPrepare
 {
-    [_videoView release];
-    [_callStatusView release];
-    [_buttonsView release];
-    [_statusLabel release];
-    [_voiceCallButton release];
-    [_videoCallButton release];
-    [_messageButton release];
-    [_incomingCallView release];
-    [_videoImageView release];
-    [_videoPreviewImageView release];
-    [super dealloc];
+    if (toPrepare)
+    {
+        self.videoView.hidden = NO;
+        self.videoPreviewImageView.hidden = NO;
+        self.videoPreviewImageView.frame = self.videoView.bounds;
+        
+        [[SessionManager sharedSessionManager] setSessionWithFaceDetectionOn:self.session];
+        [[HOPMediaEngine sharedInstance] startFaceDetectionForImageView:self.videoPreviewImageView];
+
+        self.isFaceDetectionForSessionActive = YES;
+    }
+    else
+    {
+        [[SessionManager sharedSessionManager] setSessionWithFaceDetectionOn:nil];
+        [[HOPMediaEngine sharedInstance] stopFaceDetection];
+        
+        self.videoPreviewImageView.image = nil;
+        self.videoPreviewImageView.frame = self.originalFrame;
+        self.isFaceDetectionForSessionActive = NO;
+    }
+    
 }
 
 - (IBAction)actionSendMessage:(id)sender
@@ -127,7 +168,7 @@
         //Prepare view for video call
         [self prepareForCall:YES withVideo:YES];
         //Create a video call
-        [[SessionManager sharedSessionManager] makeCallForSession:self.session includeVideo:YES];
+        [[SessionManager sharedSessionManager] makeCallForSession:self.session includeVideo:YES isRedial:NO];
     }
     else
     {
@@ -143,7 +184,7 @@
         //Prepare view for audio call
         [self prepareForCall:YES withVideo:NO];
         //Create a audio call
-        [[SessionManager sharedSessionManager] makeCallForSession:self.session includeVideo:NO];
+        [[SessionManager sharedSessionManager] makeCallForSession:self.session includeVideo:NO isRedial:NO];
     }
     else
     {
@@ -177,6 +218,7 @@
         
         if (includeVideo) //Update controller if video call is active
         {
+            [self prepareForFaceDetection:NO];
             self.videoView.hidden = NO;
             self.voiceCallButton.enabled = NO;
             self.videoCallButton.enabled = YES;
@@ -186,8 +228,10 @@
             [self.view bringSubviewToFront:self.buttonsView];
             self.videoImageView.contentMode = UIViewContentModeScaleAspectFill;
             self.videoImageView.clipsToBounds = YES;
+            self.videoImageView.image = nil;
             self.videoPreviewImageView.contentMode = UIViewContentModeScaleAspectFill;
             self.videoPreviewImageView.clipsToBounds = YES;
+            self.videoPreviewImageView.image = nil;
         }
         else //Update controller if audio call is active
         {
@@ -202,6 +246,8 @@
     }
     else //Update controller if call is not active
     {
+        self.videoImageView.image = nil;
+        self.videoPreviewImageView.image = nil;
         self.videoView.hidden = YES;
         self.callStatusView.hidden = YES;
         self.videoCallButton.enabled = YES;
@@ -210,6 +256,8 @@
         self.voiceCallButton.tag = MAKE_CALL;
         [self.voiceCallButton setTitle:@"Audio" forState:UIControlStateNormal];
         [self.videoCallButton setTitle:@"Video" forState:UIControlStateNormal];
+
+        [self prepareForFaceDetection:[[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]];
     }
 }
 
@@ -226,4 +274,12 @@
 {
     [self.statusLabel setText:[Utility getCallStateAsString:[self.session.currentCall getState]]];
 }
+
+
+- (void)viewDidUnload {
+    
+    [super viewDidUnload];
+}
+
+
 @end

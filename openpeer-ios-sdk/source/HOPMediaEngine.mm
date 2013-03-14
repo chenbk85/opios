@@ -36,8 +36,9 @@
 
 @interface HOPMediaEngine()
 
-- (id) initSingleton;
 @end
+
+
 @implementation HOPMediaEngine
 
 + (NSString*) cameraTypeToString: (HOPMediaEngineCameraTypes) type
@@ -56,12 +57,12 @@
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
     dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] initSingleton]; // or some other init method
+        _sharedObject = [[self alloc] init]; // or some other init method
     });
     return _sharedObject;
 }
 
-- (id) initSingleton
+- (id) init
 {
     self = [super init];
     if (self)
@@ -329,6 +330,96 @@
 
     return ret;
 }
+
+- (void) setContinuousVideoCapture:(BOOL) continuousVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setContinuousVideoCapture(continuousVideoCapture);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (BOOL) getContinuousVideoCapture
+{
+    BOOL ret = NO;
+    if(mediaEnginePtr)
+    {
+        ret = mediaEnginePtr->getContinuousVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
+
+- (void) setFaceDetection: (BOOL) enabled
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setFaceDetection(enabled);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (BOOL) getFaceDetection
+{
+    BOOL ret = NO;
+    if(mediaEnginePtr)
+    {
+        ret = mediaEnginePtr->getFaceDetection();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
+
+- (void) startVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->startVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+- (void) stopVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->stopVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (void) startFaceDetectionForImageView:(UIImageView*) inImageView
+{
+    [self setFaceDetection:YES];
+    [self setContinuousVideoCapture:YES];
+    [self startVideoCapture];
+}
+
+- (void) stopFaceDetection
+{
+    [self setFaceDetection:NO];
+    [self setContinuousVideoCapture:NO];
+    [self stopVideoCapture];
+}
+
 
 #pragma mark - Internal methods
 - (IMediaEnginePtr) getMediaEnginePtr

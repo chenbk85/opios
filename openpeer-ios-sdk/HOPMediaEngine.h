@@ -33,6 +33,7 @@
 #import <UIKit/UIKit.h>
 #import "HOPMediaEngineRtpRtcpStatistics.h"
 #import "HOPTypes.h"
+#import "HOPProtocols.h"
 
 
 @interface HOPMediaEngine : NSObject
@@ -165,4 +166,40 @@
  */
 - (int) getVoiceTransportStatistics: (HOPMediaEngineRtpRtcpStatistics*) stat;
 
+/**
+ Continuous capture - whether capture should be turned off when call is finished.
+ @param enabled BOOL Enabled flag
+ */
+- (void) setContinuousVideoCapture:(BOOL) continuousVideoCapture;
+
+/**
+ Retrieves continuous capture flag.
+ @return YES if continuous capture is enabled, NO if not
+ */
+- (BOOL) getContinuousVideoCapture;
+
+/**
+ Sets whether face detection is enabled. Should be set before start capture is called.
+ @param enabled BOOL Enabled flag
+ */
+- (void) setFaceDetection: (BOOL) enabled;
+
+/**
+ Retrieves status of face detection flag.
+ @return YES if face detection is enabled, NO if not
+ */
+- (BOOL) getFaceDetection;
+
+/**
+ Starts video capture. Video is rendered to Render View that is previously set.
+ */
+- (void) startVideoCapture;
+
+/**
+ Ends video capture. Method will not have effect during the call.
+ */
+- (void) stopVideoCapture;
+
+- (void) startFaceDetectionForImageView:(UIImageView*) inImageView;
+- (void) stopFaceDetection;
 @end

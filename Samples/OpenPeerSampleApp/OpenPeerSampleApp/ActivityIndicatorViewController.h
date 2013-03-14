@@ -33,8 +33,8 @@
 
 @interface ActivityIndicatorViewController : UIViewController
 
-@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
-@property (retain, nonatomic) IBOutlet UILabel *activityLabel;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, weak) IBOutlet UILabel *activityLabel;
 
 + (id) sharedActivityIndicator;
 

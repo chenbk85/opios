@@ -54,6 +54,7 @@
 
 @required
 - (void) onMediaEngineAudioRouteChanged:(HOPMediaEngineOutputAudioRoutes) audioRoute;
+- (void) onMediaEngineFaceDetected;
 
 @end
 
@@ -141,6 +142,12 @@
 - (void) onProvisioningAccountProfileChanged:(HOPProvisioningAccount*) account;
 
 - (void) onProvisioningAccountIdentityValidationResult:(HOPProvisioningAccount*) account identity:(id) identity result:(HOPProvisioningAccountIdentityValidationResultCode) result;
+
+@end
+
+@protocol HOPFaceDetectionDelegate <NSObject>
+
+- (void) onFaceDetected;
 
 @end
 #endif

@@ -157,8 +157,6 @@
     
     //Call to the SDK in order to setup delegate for the OAuth relogin process, and to initiate OAuth relogin. This method call also requires that user will provide information which is saved after the last successful login process. This information is required in order to successfuly access existing account and fetch private peer password.
     [[HOPProvisioningAccount sharedProvisioningAccount] reloginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" userID:[[OpenPeerUser sharedOpenPeerUser] userId] accountSalt:[[OpenPeerUser sharedOpenPeerUser] accountSalt] passwordNonce:[[OpenPeerUser sharedOpenPeerUser] passwordNonce] password:[[OpenPeerUser sharedOpenPeerUser] peerFilePassword] privatePeerFile:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] lastProfileUpdatedTimestamp:[[OpenPeerUser sharedOpenPeerUser] lastProfileUpdateTimestamp]  previousIdentities:[NSArray arrayWithObjects: identityInfoFB, nil ]];
-    [identityInfoLI release];
-    [identityInfoFB release];
 }
 
 /**
@@ -194,8 +192,8 @@
 
         if ([attribute isEqualToString:@"properties"])
         {
-            NSString *decodedValue = (NSString *) CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL, (CFStringRef) [value stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], CFSTR(""), kCFStringEncodingUTF8);
-            decodedValue = (NSString *) CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL, (CFStringRef) [decodedValue stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], CFSTR(""), kCFStringEncodingUTF8);
+            NSString *decodedValue = (NSString *) CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL, (CFStringRef) [value stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], CFSTR(""), kCFStringEncodingUTF8));
+            decodedValue = (NSString *) CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL, (CFStringRef) [decodedValue stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding], CFSTR(""), kCFStringEncodingUTF8));
             
             NSString *decodedAccountProperties = [Utility decodeBase64:decodedValue];
             //    result is in format: "stun=173.192.183.148&stun=173.192.183.147&stun=173.192.183.146$turn=173.192.183.146|toto|toto&turn=173.192.183.147|toto4|toto4&turn=173.192.183.148|toto|toto"
@@ -270,7 +268,6 @@
 
     //SDK call to finalize OAuth login process. After returning from webview, XML is formed and information is sent to the SDK to complete login process.
     [[HOPProvisioningAccount sharedProvisioningAccount] completeOAuthLoginProcess:[xmlWriter toString]];
-    [xmlWriter release];
 }
 
 /**

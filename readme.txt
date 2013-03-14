@@ -45,9 +45,12 @@ Required frameworks:
 CoreAudio
 CoreVideo
 CoreMedia
+CoreImage
+CoreGraphics
 AudioToolbox
 AVFoundation
 libresolve.dylib
+libxml2.dylib (only for sample app)
 
 
 Exploring the dependency libraries:
@@ -132,6 +135,14 @@ The current provisioning API supports email, phone number, LinkedIn and Facebook
 Please contact robin@hookflash.com if you have any suggestions to improve the API. Please use support@hookflash.com for any bug reports. New feature requests should be directed to erik@hookflash.com.
 
 Thank you for your interest in the Hookflash Open Peer iOS SDK.
+
+
+Changes in SDK version B2:
+
+ - Added face detection 
+ - Sample app is using ARC now.
+ - Sample app examples added: initiating remote session between two selected contacts, checking contacts availability, face detection in session, redial in case of call failure (eg. network failure)
+
 
 License:
 

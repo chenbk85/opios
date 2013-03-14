@@ -313,8 +313,7 @@
 		87272832166CBF9B0089CBB6 /* OpenPeerSampleApp */ = {
 			isa = PBXGroup;
 			children = (
-				8732605A16F0CB590099C0D3 /* MessageManager.m */,
-				8732605B16F0CB590099C0D3 /* MessageManager.h */,
+				876CBD2116F23254004D542B /* Session */,
 				87368AE0167600A900166F35 /* Model */,
 				870C5E1B1672355300A3AA4F /* Main */,
 				870C5E19167234A600A3AA4F /* Login */,
@@ -322,13 +321,6 @@
 				870C5E181672345A00A3AA4F /* Utilities */,
 				874AD9D2166CEAC50095FE33 /* Delegates */,
 				87272833166CBF9B0089CBB6 /* Supporting Files */,
-				875CD7E0167A14810037396B /* SessionManager.h */,
-				875CD7E1167A14810037396B /* SessionManager.m */,
-				875CD7E3167A14960037396B /* Session.h */,
-				875CD7E4167A14960037396B /* Session.m */,
-				87421DA0168274BB00699479 /* ActiveSessionViewController.h */,
-				87421DA1168274BB00699479 /* ActiveSessionViewController.m */,
-				87421DA2168274BB00699479 /* ActiveSessionViewController.xib */,
 			);
 			path = OpenPeerSampleApp;
 			sourceTree = "<group>";
@@ -399,6 +391,8 @@
 		87368AE0167600A900166F35 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				875CD7E3167A14960037396B /* Session.h */,
+				875CD7E4167A14960037396B /* Session.m */,
 				87368AE1167600F200166F35 /* Contact.h */,
 				87368AE2167600F200166F35 /* Contact.m */,
 			);
@@ -428,6 +422,20 @@
 				874AD9DD166CEB780095FE33 /* CallDelegate.m */,
 			);
 			name = Delegates;
+			sourceTree = "<group>";
+		};
+		876CBD2116F23254004D542B /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				8732605A16F0CB590099C0D3 /* MessageManager.m */,
+				8732605B16F0CB590099C0D3 /* MessageManager.h */,
+				875CD7E0167A14810037396B /* SessionManager.h */,
+				875CD7E1167A14810037396B /* SessionManager.m */,
+				87421DA0168274BB00699479 /* ActiveSessionViewController.h */,
+				87421DA1168274BB00699479 /* ActiveSessionViewController.m */,
+				87421DA2168274BB00699479 /* ActiveSessionViewController.xib */,
+			);
+			name = Session;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

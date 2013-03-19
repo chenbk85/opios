@@ -35,14 +35,17 @@
 
 @property (nonatomic, strong) NSString* fullName;
 @property (nonatomic, strong) NSString* userId;
-@property (nonatomic, strong) NSString* contactId;
-@property (nonatomic, strong) NSString *accountSalt;
-@property (nonatomic, strong) NSString *passwordNonce;
-@property (nonatomic, strong) NSString *peerFilePassword;
+//@property (nonatomic, strong) NSString* contactId;
+//@property (nonatomic, strong) NSString *accountSalt;
+//@property (nonatomic, strong) NSString *passwordNonce;
+//@property (nonatomic, strong) NSString *peerFilePassword;
 @property (nonatomic, strong) NSString *privatePeerFile;
-@property (nonatomic, strong) NSNumber *providerKey;
-@property (nonatomic, strong) NSString *contactProviderId;
+@property (nonatomic, strong) NSString *privatePeerFileSecret;
+//@property (nonatomic, strong) NSNumber *providerKey;
+//@property (nonatomic, strong) NSString *contactProviderId;
 @property (nonatomic) NSTimeInterval lastProfileUpdateTimestamp;
+
+@property (nonatomic, strong) NSMutableDictionary* associatedIdentities;
 
 + (id) sharedOpenPeerUser;
 

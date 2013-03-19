@@ -127,7 +127,7 @@
     Contact* contact = [[[ContactsManager sharedContactsManager] contactArray] objectAtIndex:indexPath.row];
     [cell.textLabel setText:contact.fullName];
     
-    if ([[contact.hopContact getPeerFile] length] > 0)
+    if ([[contact.hopContact savePeerFilePublic] length] > 0)
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     else
         cell.accessoryType = UITableViewCellAccessoryNone;

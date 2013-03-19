@@ -38,4 +38,5 @@
 
 
 - (void) openLoginUrl:(NSString*) url;
+- (void) passMessageToJS:(NSString*) message;
 @end

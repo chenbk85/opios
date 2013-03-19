@@ -28,7 +28,7 @@
 		8740266F1670AA52008CC0F1 /* OpenPeerUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8740266E1670AA52008CC0F1 /* OpenPeerUser.m */; };
 		87421DA3168274BB00699479 /* ActiveSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87421DA1168274BB00699479 /* ActiveSessionViewController.m */; };
 		87421DA4168274BB00699479 /* ActiveSessionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 87421DA2168274BB00699479 /* ActiveSessionViewController.xib */; };
-		874AD9D1166CE6540095FE33 /* ProvisioningAccountDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9D0166CE6540095FE33 /* ProvisioningAccountDelegate.m */; };
+		874AD9D1166CE6540095FE33 /* AccountDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9D0166CE6540095FE33 /* AccountDelegate.m */; };
 		874AD9D5166CEAFB0095FE33 /* StackDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9D4166CEAFB0095FE33 /* StackDelegate.m */; };
 		874AD9D8166CEB390095FE33 /* MediaEngineDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9D7166CEB390095FE33 /* MediaEngineDelegate.m */; };
 		874AD9DB166CEB530095FE33 /* ConversationThreadDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 874AD9DA166CEB530095FE33 /* ConversationThreadDelegate.m */; };
@@ -37,6 +37,7 @@
 		874FF90116806D0F00B0A7A0 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 874FF90016806D0F00B0A7A0 /* Constants.m */; };
 		875CD7E2167A14810037396B /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 875CD7E1167A14810037396B /* SessionManager.m */; };
 		875CD7E5167A14960037396B /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 875CD7E4167A14960037396B /* Session.m */; };
+		876CBCBB16F20A88004D542B /* IdentityDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 876CBCBA16F20A88004D542B /* IdentityDelegate.m */; };
 		878688F816E608630090A3D9 /* XMLWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 878688E116E608630090A3D9 /* XMLWriter.m */; };
 		878688F916E608630090A3D9 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 878688E516E608630090A3D9 /* SBJsonParser.m */; };
 		878688FA16E608630090A3D9 /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 878688E716E608630090A3D9 /* SBJsonStreamParser.m */; };
@@ -113,8 +114,8 @@
 		87421DA0168274BB00699479 /* ActiveSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveSessionViewController.h; sourceTree = "<group>"; };
 		87421DA1168274BB00699479 /* ActiveSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActiveSessionViewController.m; sourceTree = "<group>"; };
 		87421DA2168274BB00699479 /* ActiveSessionViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActiveSessionViewController.xib; sourceTree = "<group>"; };
-		874AD9CF166CE6540095FE33 /* ProvisioningAccountDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProvisioningAccountDelegate.h; sourceTree = "<group>"; };
-		874AD9D0166CE6540095FE33 /* ProvisioningAccountDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProvisioningAccountDelegate.m; sourceTree = "<group>"; };
+		874AD9CF166CE6540095FE33 /* AccountDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountDelegate.h; sourceTree = "<group>"; };
+		874AD9D0166CE6540095FE33 /* AccountDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountDelegate.m; sourceTree = "<group>"; };
 		874AD9D3166CEAFB0095FE33 /* StackDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackDelegate.h; sourceTree = "<group>"; };
 		874AD9D4166CEAFB0095FE33 /* StackDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StackDelegate.m; sourceTree = "<group>"; };
 		874AD9D6166CEB390095FE33 /* MediaEngineDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaEngineDelegate.h; sourceTree = "<group>"; };
@@ -140,6 +141,8 @@
 		875CD7E1167A14810037396B /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
 		875CD7E3167A14960037396B /* Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
 		875CD7E4167A14960037396B /* Session.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
+		876CBCB916F20A88004D542B /* IdentityDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdentityDelegate.h; sourceTree = "<group>"; };
+		876CBCBA16F20A88004D542B /* IdentityDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdentityDelegate.m; sourceTree = "<group>"; };
 		878688E016E608630090A3D9 /* XMLWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLWriter.h; sourceTree = "<group>"; };
 		878688E116E608630090A3D9 /* XMLWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLWriter.m; sourceTree = "<group>"; };
 		878688E316E608630090A3D9 /* SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
@@ -350,8 +353,8 @@
 		874AD9D2166CEAC50095FE33 /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
-				874AD9CF166CE6540095FE33 /* ProvisioningAccountDelegate.h */,
-				874AD9D0166CE6540095FE33 /* ProvisioningAccountDelegate.m */,
+				874AD9CF166CE6540095FE33 /* AccountDelegate.h */,
+				874AD9D0166CE6540095FE33 /* AccountDelegate.m */,
 				874AD9D3166CEAFB0095FE33 /* StackDelegate.h */,
 				874AD9D4166CEAFB0095FE33 /* StackDelegate.m */,
 				874AD9D6166CEB390095FE33 /* MediaEngineDelegate.h */,
@@ -360,6 +363,8 @@
 				874AD9DA166CEB530095FE33 /* ConversationThreadDelegate.m */,
 				874AD9DC166CEB780095FE33 /* CallDelegate.h */,
 				874AD9DD166CEB780095FE33 /* CallDelegate.m */,
+				876CBCB916F20A88004D542B /* IdentityDelegate.h */,
+				876CBCBA16F20A88004D542B /* IdentityDelegate.m */,
 			);
 			name = Delegates;
 			sourceTree = "<group>";
@@ -497,7 +502,7 @@
 				87272850166CC1810089CBB6 /* MainViewController.m in Sources */,
 				87272855166CC2640089CBB6 /* LoginViewController.m in Sources */,
 				87272859166CC45B0089CBB6 /* LoginManager.m in Sources */,
-				874AD9D1166CE6540095FE33 /* ProvisioningAccountDelegate.m in Sources */,
+				874AD9D1166CE6540095FE33 /* AccountDelegate.m in Sources */,
 				874AD9D5166CEAFB0095FE33 /* StackDelegate.m in Sources */,
 				874AD9D8166CEB390095FE33 /* MediaEngineDelegate.m in Sources */,
 				874AD9DB166CEB530095FE33 /* ConversationThreadDelegate.m in Sources */,
@@ -525,6 +530,7 @@
 				8786890016E608630090A3D9 /* SBJsonStreamWriterAccumulator.m in Sources */,
 				8786890116E608630090A3D9 /* SBJsonStreamWriterState.m in Sources */,
 				8786890216E608630090A3D9 /* SBJsonWriter.m in Sources */,
+				876CBCBB16F20A88004D542B /* IdentityDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,7 +611,7 @@
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/3rdParties/JMCAndHockey/HockeySDK-iOS\"";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -627,7 +633,10 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				WARNING_CFLAGS = "-Wno-c++11-extensions";
+				WARNING_CFLAGS = (
+					"-Wno-c++11-extensions",
+					"-Wno-arc-performSelector-leaks",
+				);
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -639,7 +648,7 @@
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/3rdParties/JMCAndHockey/HockeySDK-iOS\"";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -661,7 +670,10 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				WARNING_CFLAGS = "-Wno-c++11-extensions";
+				WARNING_CFLAGS = (
+					"-Wno-c++11-extensions",
+					"-Wno-arc-performSelector-leaks",
+				);
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

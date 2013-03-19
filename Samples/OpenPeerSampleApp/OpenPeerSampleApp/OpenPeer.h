@@ -35,8 +35,9 @@
 @class StackDelegate;
 @class MediaEngineDelegate;
 @class ConversationThreadDelegate;
-@class ProvisioningAccountDelegate;
+@class AccountDelegate;
 @class MainViewController;
+@class IdentityDelegate;
 
 @interface OpenPeer : NSObject
 
@@ -44,8 +45,9 @@
 @property (nonatomic,strong) StackDelegate *stackDelegate;
 @property (nonatomic,strong) MediaEngineDelegate *mediaEngineDelegate;
 @property (nonatomic,strong) ConversationThreadDelegate *conversationThreadDelegate;
-@property (nonatomic,strong) ProvisioningAccountDelegate *provisioningAccountDelegate;
+@property (nonatomic,strong) AccountDelegate *accountDelegate;
 @property (nonatomic,strong) MainViewController *mainViewController;
+@property (nonatomic,strong) IdentityDelegate *identityDelegate;
 
 + (id) sharedOpenPeer;
 

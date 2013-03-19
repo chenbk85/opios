@@ -37,26 +37,22 @@
 
 @interface HOPContact : NSObject
 
-
 /**
- Contact initialization method
- @param publicPeerFile NSString Public peer file of the contact that will be created (self or remote)
- @returns Ponter to the created contact object
- */
-//+ (id) contactWithPeerFile:(NSString*) publicPeerFile userId:(NSString*) inUserId contactId:(NSString*) inContactId;
-
-/**
- Contact init method used for creating HOPContact object when contact data (userId, contactId and peerFile) are stored locally
+ Contact init method used for creating HOPContact object when contact data (stableUniqueId and peerFile) are stored locally
  @param publicPeerFile NSString Public peer file of the contact that will be created (self or remote). This is passed if peer file is sored locally. Otherwise it is nil
- @param inUserId user Id string stored locally (initialy is received for identity lookup). This argument is mandatory.
- @param inContactId contact Id string stored locally (initialy is received for identity lookup). This argument is mandatory.
+ @param previousStableUniqueID user Id string stored locally (initialy is received for identity lookup). This argument is mandatory.
  @returns Ponter to the created contact object
  */
 - (id) initWithPeerFile:(NSString*) publicPeerFile previousStableUniqueID:(NSString*) previousStableUniqueID;
 
 - (id) initFromPeerURI:(NSString*) peerURI findSecret:(NSString*) findSecret previousStableUniqueID:(NSString*) previousStableUniqueID;
 
+/**
+ Returns HOPContact object for logged in user
+ @returns HOPContact object
+ */
 + (HOPContact*) getForSelf;
+
 /**
  Check if contact object is self contact
  @returns YES if contact is self, NO if contact is remote
@@ -69,7 +65,16 @@
  */
 - (NSString*) getPeerURI;
 
+/**
+ Retrieves finder secret from the contact object
+ @returns NSString representation of the finder secret
+ */
 - (NSString*) getFindSecret;
+
+/**
+ Retrieves stable unique Id for the contact
+ @returns NSString stable unique Id
+ */
 - (NSString*) getStableUniqueID;
 
 

@@ -65,7 +65,7 @@
 @protocol HOPAccountDelegate <NSObject>
 
 @required
-- (void) onAccountStateChanged:(HOPAccount*) account accountState:(HOPAccountStates) accountState;
+- (void) account:(HOPAccount*) account stateChanged:(HOPAccountStates) accountState;
 - (void) onAccountAssociatedIdentitiesChanged:(HOPAccount*) account;
 @end
 

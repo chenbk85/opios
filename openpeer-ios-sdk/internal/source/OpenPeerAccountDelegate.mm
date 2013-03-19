@@ -45,7 +45,7 @@ boost::shared_ptr<OpenPeerAccountDelegate>  OpenPeerAccountDelegate::create(id<H
 
 void OpenPeerAccountDelegate::onAccountStateChanged(IAccountPtr account,AccountStates state)
 {
-    [accountDelegate onAccountStateChanged:[HOPAccount sharedAccount] accountState:(HOPAccountStates)state];
+    [accountDelegate account:[HOPAccount sharedAccount] stateChanged:(HOPAccountStates)state];
 }
 
 void OpenPeerAccountDelegate::onAccountAssociatedIdentitiesChanged(IAccountPtr account)

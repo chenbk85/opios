@@ -36,6 +36,7 @@
 
 @interface WebLoginViewController ()
 
+ 
 @end
 
 @implementation WebLoginViewController
@@ -49,6 +50,11 @@
     return self;
 }
 
+- (id)init
+{
+    self = [self initWithNibName:@"WebLoginViewController" bundle:nil];
+    return self;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -63,12 +69,43 @@
 - (void) openLoginUrl:(NSString*) url
 {
     [self.loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
-    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Opening login page ..." inView:self.view];
+    //[[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Opening login page ..." inView:self.view];
+}
+
+- (void) passMessageToJS:(NSString*) message
+{
+    NSString* javaScript = [NSString stringWithFormat:@"JSMethod:%@",message];
+    [self.loginWebView stringByEvaluatingJavaScriptFromString:javaScript];
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSString* urlString = [[request URL] relativeString];
+    NSString *requestString = [[request URL] absoluteString];
+    if ([requestString hasPrefix:@"hookflash-js-frame:"])
+    {
+        
+        NSArray *components = [requestString componentsSeparatedByString:@":"];
+        
+        if ([components count] == 3)
+        {
+            NSString *function = (NSString*)[components objectAtIndex:1];
+            NSString *params = (NSString*)[components objectAtIndex:2];
+        
+            /*requestString = [requestString stringByReplacingOccurrencesOfString:function withString:@""];
+            requestString = [requestString stringByReplacingOccurrencesOfString:(NSString*)[components objectAtIndex:0] withString:@""];
+            requestString = [requestString stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""];
+            
+            NSString *params = [requestString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];*/
+            
+            NSString *functionNameSelector = [NSString stringWithFormat:@"%@:", function];
+            //Execute JSON parsing in function read from requestString.
+            [self performSelector:NSSelectorFromString(functionNameSelector) withObject:params];
+            return NO;
+        }
+    }
+    return YES;
+    
+    /*NSString* urlString = [[request URL] relativeString];
     if ([urlString rangeOfString:@"created"].length > 0)
     {
         [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Login ..." inView:self.view];
@@ -78,7 +115,7 @@
         
         return NO;
     }
-    return YES;
+    return YES;*/
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView

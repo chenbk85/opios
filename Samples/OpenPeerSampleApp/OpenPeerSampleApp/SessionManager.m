@@ -100,7 +100,7 @@
     ret = [[Session alloc] initWithContact:contact conversationThread:conversationThread];
     
     //Add list of all participants. Currently only one participant is added
-    if (ret && contact.hopContact && [[contact.hopContact getPeerFile] length] > 0)
+    if (ret && contact.hopContact && [[contact.hopContact savePeerFilePublic] length] > 0)
     {
         NSArray* participants = [NSArray arrayWithObject:contact.hopContact];
         [conversationThread addContacts:participants];
@@ -272,7 +272,8 @@
     //If session view controller with message sender is not yet shown, show it
     [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:[self.sessionsDictionary objectForKey:sessionId]  forIncomingCall:NO];
     //Get message sender
-    Contact* contact  = [[ContactsManager sharedContactsManager] getContactForIdentities:[message.contact getIdentities]];
+//    Contact* contact  = [[ContactsManager sharedContactsManager] getContactForIdentities:[message.contact getIdentities]];
+    Contact* contact  = [[ContactsManager sharedContactsManager] getContactForID:[message.contact getStableUniqueID]];
     NSString* from = [NSString stringWithFormat:@"Message from %@",[contact fullName] ];
     UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:from
                                                          message:message.text

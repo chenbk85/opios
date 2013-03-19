@@ -29,48 +29,9 @@
  
  */
 
-#import "LoginViewController.h"
-#import "MainViewController.h"
-#import "LoginManager.h"
+#import <Foundation/Foundation.h>
+#import "OpenpeerSDK/HOPProtocols.h"
 
-@interface LoginViewController ()
-
-@end
-
-@implementation LoginViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (IBAction)actionLoginWithFacebook:(id)sender
-{
-//    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeFacebookID];
-    [[LoginManager sharedLoginManager] startLoginUsingIdentityURI:@"identity://facebook.com/"];
-}
-
-- (IBAction)actionLoginWithLinkedIn:(id)sender
-{
-    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeLinkedInID];
-}
-
+@interface AccountDelegate : NSObject<HOPAccountDelegate>
 
 @end

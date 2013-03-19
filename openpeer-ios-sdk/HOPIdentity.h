@@ -61,5 +61,6 @@
 - (void) notifyBrowserWindowVisible;
 - (void) notifyLoginCompleteBrowserWindowRedirection;
 - (NSString*) getNextMessageForInnerBrowerWindowFrame;
+- (void) handleMessageFromInnerBrowserWindowFrame:(NSString*) message;
 - (void) cancel;
 @end

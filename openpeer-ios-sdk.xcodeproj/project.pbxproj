@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		872725C3166636F50089CBB6 /* HOPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 872725C1166636F50089CBB6 /* HOPMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		87325EF316F07D550099C0D3 /* HOPAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = 8740FFD316E88A37008016C0 /* HOPAccount.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		87325EF416F07D550099C0D3 /* HOPIdentityLookup.h in Headers */ = {isa = PBXBuildFile; fileRef = 87A5B20816EDE656007E825A /* HOPIdentityLookup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		87325EF516F07D550099C0D3 /* HOPContactPeerFilePublicLookup.h in Headers */ = {isa = PBXBuildFile; fileRef = 87A5B20A16EE0B42007E825A /* HOPContactPeerFilePublicLookup.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87343EDC165A50D60070E6E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87343EDB165A50D60070E6E0 /* UIKit.framework */; };
 		8792E86C16519CFF00DEAC58 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8792E86B16519CFF00DEAC58 /* Foundation.framework */; };
 		8792E9C51651A8DA00DEAC58 /* libboost_date_time.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8792E9C11651A8DA00DEAC58 /* libboost_date_time.a */; };
@@ -64,6 +67,7 @@
 		87B013F91661557C00E8938B /* HOPTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 872E40771653CFE2006ECA60 /* HOPTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87B013FF1661557C00E8938B /* HOPMediaEngineRtpRtcpStatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 87343FE9165E4B0C0070E6E0 /* HOPMediaEngineRtpRtcpStatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87B014001661557C00E8938B /* HOPIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 87FA4CE0165F891A00F7D973 /* HOPIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		87D66B6016EFC3660017EF98 /* HOPLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 87DFA51D16E7576900C77326 /* HOPLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87F9073C16EF465300B0D22C /* libaec_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3C16E68F0600A2FE5E /* libaec_ios.a */; };
 		87F9073D16EF465300B0D22C /* libaecm_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A3E16E68F0600A2FE5E /* libaecm_ios.a */; };
 		87F9073E16EF465300B0D22C /* libagc_ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87028A4016E68F0600A2FE5E /* libagc_ios.a */; };
@@ -990,11 +994,15 @@
 				87B013F01661557C00E8938B /* HOPStack.h in Headers */,
 				87B013F21661557C00E8938B /* HOPContact.h in Headers */,
 				87B013F31661557C00E8938B /* HOPCall.h in Headers */,
+				87325EF316F07D550099C0D3 /* HOPAccount.h in Headers */,
+				87325EF416F07D550099C0D3 /* HOPIdentityLookup.h in Headers */,
+				87325EF516F07D550099C0D3 /* HOPContactPeerFilePublicLookup.h in Headers */,
 				87B013F51661557C00E8938B /* HOPConversationThread.h in Headers */,
 				87B013F61661557C00E8938B /* HOPMediaEngine.h in Headers */,
 				87B013F81661557C00E8938B /* HOPProtocols.h in Headers */,
 				87B013F91661557C00E8938B /* HOPTypes.h in Headers */,
 				87B013FF1661557C00E8938B /* HOPMediaEngineRtpRtcpStatistics.h in Headers */,
+				87D66B6016EFC3660017EF98 /* HOPLogger.h in Headers */,
 				872725C3166636F50089CBB6 /* HOPMessage.h in Headers */,
 				87B014001661557C00E8938B /* HOPIdentity.h in Headers */,
 				87A5B1DE16EDE5F9007E825A /* HOPAccount_Internal.h in Headers */,

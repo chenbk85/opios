@@ -43,7 +43,7 @@ using namespace hookflash::core;
     boost::shared_ptr<OpenPeerIdentityDelegate> openPeerIdentityDelegatePtr;
 }
 
-- (id) initWithIdentityPtr:(IIdentityPtr) inIdentityPtr;
+- (id) initWithIdentityPtr:(IIdentityPtr) inIdentityPtr openPeerIdentityDelegate:(boost::shared_ptr<OpenPeerIdentityDelegate>) inOpenPeerIdentityDelegate;
 - (void) setLocalDelegate:(id<HOPIdentityDelegate>) inIdentityDelegate;
 - (IIdentityPtr) getIdentityPtr;
 

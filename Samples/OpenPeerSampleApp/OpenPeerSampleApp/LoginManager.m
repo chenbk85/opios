@@ -41,8 +41,8 @@
 //Managers
 #import "ContactsManager.h"
 //SDK
-#import "OpenPeerSDK/HOPProvisioningAccount.h"
-#import "OpenPeerSDK/HOPIdentityInfo.h"
+#import "OpenPeerSDK/HOPAccount.h"
+#import "OpenPeerSDK/HOPIdentity.h"
 #import "OpenPeerSDK/HOPTypes.h"
 //Delegates
 #import "StackDelegate.h"
@@ -50,6 +50,7 @@
 #import "MainViewController.h"
 #import "LoginViewController.h"
 #import "ActivityIndicatorViewController.h"
+#import "WebLoginViewController.h"
 
 @interface LoginManager ()
 
@@ -87,6 +88,17 @@
     return self;
 }
 
+- (WebLoginViewController *)webLoginViewController
+{
+    if (!_webLoginViewController)
+    {
+        _webLoginViewController = [[WebLoginViewController alloc] init];
+        if (_webLoginViewController)
+            _webLoginViewController.view.hidden = YES;
+    }
+    
+    return _webLoginViewController;
+}
 /**
  This method will show login window in case user data does not exists on device, or start relogin automatically if information are available.
  @return Singleton object of the Contacts Manager.
@@ -94,7 +106,7 @@
 - (void) login
 {
     //If peer file doesn't exists, show login view, otherwise start relogin
-    if ([[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] length] == 0)
+    if ([[[OpenPeerUser sharedOpenPeerUser] associatedIdentities] count] == 0)
     {
         [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
     }
@@ -102,6 +114,11 @@
     {
         [self startRelogin];
     }
+}
+
+- (void) loginUsingDomain:(NSString*) identityProviderDomain
+{
+    
 }
 
 /**
@@ -120,11 +137,19 @@
     [[[ContactsManager sharedContactsManager] contactsDictionaryByProvider] removeAllObjects];
     
     //Call to the SDK in order to shutdown Open Peer engine.
-    [[HOPProvisioningAccount sharedProvisioningAccount] shutdown];
+    [[HOPAccount sharedAccount] shutdown];
     
     //Return to the login page.
     [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
     
+}
+
+- (void) startLoginUsingIdentityURI:(NSString*) identityURI
+{
+    NSString* identityProviderDomain = @"unstable.hookflash.me";
+
+    HOPIdentity* hopIdentity = [HOPIdentity loginWithDelegate:(id<HOPIdentityDelegate>)[[OpenPeer sharedOpenPeer] identityDelegate] redirectAfterLoginCompleteURL:@"LoginFinished" identityURIOridentityBaseURI:identityURI identityProviderDomain:identityProviderDomain];
+    [((OpenPeerUser*)[OpenPeerUser sharedOpenPeerUser]).associatedIdentities setObject:hopIdentity forKey:identityURI];
 }
 
 /**
@@ -136,7 +161,7 @@
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting login url ..." inView:[[[[OpenPeer sharedOpenPeer] mainViewController] loginViewController] view]];
     
     //Call to the SDK in order to setup delegate for the OAuth Login process, and to initiate first time OAuth login.
-    [[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" oauthIdentityType:socialProvider];
+    //[[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" oauthIdentityType:socialProvider];
     
     //[[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" oauthIdentityType:HOPProvisioningAccountIdentityTypeFacebookID];
 }
@@ -149,6 +174,8 @@
     NSLog(@"Relogin started");
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Relogin ..." inView:[[[OpenPeer sharedOpenPeer] mainViewController] view]];
     
+    [[HOPAccount sharedAccount] reloginWithAccountDelegate:(id<HOPAccountDelegate>) [[OpenPeer sharedOpenPeer] accountDelegate] conversationThreadDelegate:(id<HOPConversationThreadDelegate>)[[OpenPeer sharedOpenPeer] conversationThreadDelegate]  callDelegate:(id<HOPCallDelegate>)[[OpenPeer sharedOpenPeer] callDelegate] peerFilePrivate:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile]  peerFilePrivateSecret:[[OpenPeerUser sharedOpenPeerUser] privatePeerFileSecret]];
+    /*
     //Information about login identity.
     HOPIdentityInfo* identityInfoLI = [[HOPIdentityInfo alloc] init];
     identityInfoLI.type = HOPProvisioningAccountIdentityTypeLinkedInID;
@@ -156,25 +183,49 @@
     identityInfoFB.type = HOPProvisioningAccountIdentityTypeFacebookID;
     
     //Call to the SDK in order to setup delegate for the OAuth relogin process, and to initiate OAuth relogin. This method call also requires that user will provide information which is saved after the last successful login process. This information is required in order to successfuly access existing account and fetch private peer password.
-    [[HOPProvisioningAccount sharedProvisioningAccount] reloginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" userID:[[OpenPeerUser sharedOpenPeerUser] userId] accountSalt:[[OpenPeerUser sharedOpenPeerUser] accountSalt] passwordNonce:[[OpenPeerUser sharedOpenPeerUser] passwordNonce] password:[[OpenPeerUser sharedOpenPeerUser] peerFilePassword] privatePeerFile:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] lastProfileUpdatedTimestamp:[[OpenPeerUser sharedOpenPeerUser] lastProfileUpdateTimestamp]  previousIdentities:[NSArray arrayWithObjects: identityInfoFB, nil ]];
+    [[HOPProvisioningAccount sharedProvisioningAccount] reloginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" userID:[[OpenPeerUser sharedOpenPeerUser] userId] accountSalt:[[OpenPeerUser sharedOpenPeerUser] accountSalt] passwordNonce:[[OpenPeerUser sharedOpenPeerUser] passwordNonce] password:[[OpenPeerUser sharedOpenPeerUser] peerFilePassword] privatePeerFile:[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] lastProfileUpdatedTimestamp:[[OpenPeerUser sharedOpenPeerUser] lastProfileUpdateTimestamp]  previousIdentities:[NSArray arrayWithObjects: identityInfoFB, nil ]];*/
 }
 
 /**
  Handles core event that login URL is available.
  @param url NSString Login URL.
  */
-- (void) onLoginSocialUrlReceived:(NSString*) url
+- (void) onLoginUrlReceived:(NSString*) url
 {
-    //Login url is received. Remove activity indicator
-    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
-    [[[OpenPeer sharedOpenPeer] mainViewController] showWebLoginView:url];
+    if ([url length] > 0)
+        [self.webLoginViewController openLoginUrl:url];
+    
+//    //Login url is received. Remove activity indicator
+//    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
+//    [[[OpenPeer sharedOpenPeer] mainViewController] showWebLoginView:url];
     
 }
 
+- (void) makeLoginWebViewVisible:(BOOL) isVisible
+{
+    self.webLoginViewController.view.hidden = !isVisible;
+}
+
+- (void) onIdentityLoginFinished:(HOPIdentity*) identity
+{
+    [[HOPAccount sharedAccount] loginWithAccountDelegate:(id<HOPAccountDelegate>) [[OpenPeer sharedOpenPeer] accountDelegate] conversationThreadDelegate:(id<HOPConversationThreadDelegate>)[[OpenPeer sharedOpenPeer] conversationThreadDelegate]  callDelegate:(id<HOPCallDelegate>)[[OpenPeer sharedOpenPeer] callDelegate] peerContactServiceDomain:[identity getIdentityProviderDomain] identity:identity];
+}
+
+- (void) onIdentityassociationFinished:(HOPIdentity*) identity
+{
+    NSArray* associatedIdentities = [NSArray arrayWithObject:identity];
+    [[HOPAccount sharedAccount] associateIdentities:associatedIdentities identitiesToRemove:nil];
+}
+
+- (void) sendMessageToJS:(NSString*) message
+{
+    [self.webLoginViewController passMessageToJS:message];
+}
 /**
  Handles web view event when OAuth procedure is completed within web view.
  @param url NSString Login URL.
  */
+/*
 - (void) onCredentialProviderResponseReceived:(NSString*) url
 {
     XMLWriter *xmlWriter = [[XMLWriter alloc] init];
@@ -269,7 +320,7 @@
     //SDK call to finalize OAuth login process. After returning from webview, XML is formed and information is sent to the SDK to complete login process.
     [[HOPProvisioningAccount sharedProvisioningAccount] completeOAuthLoginProcess:[xmlWriter toString]];
 }
-
+*/
 /**
  Handles SDK event after login is successful.
  */

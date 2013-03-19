@@ -32,15 +32,27 @@
 #import <Foundation/Foundation.h>
 #import <OpenpeerSDK/HOPTypes.h>
 
+@class WebLoginViewController;
+@class HOPIdentity;
+
 @interface LoginManager : NSObject
+
+@property (nonatomic, strong) WebLoginViewController *webLoginViewController;
 
 + (id) sharedLoginManager;
 
+- (void) startLoginUsingIdentityURI:(NSString*) identityURI;
 - (void) startLoginWithSocialProvider:(HOPProvisioningAccountIdentityTypes) socialProvider;
 - (void) login;
+- (void) loginUsingDomain:(NSString*) identityProviderDomain;
 - (void) logout;
 
-- (void) onLoginSocialUrlReceived:(NSString*) url;
+- (void) onLoginUrlReceived:(NSString*) url;
+- (void) makeLoginWebViewVisible:(BOOL) isVisible;
+- (void) onIdentityLoginFinished:(HOPIdentity*) identity;
+- (void) onIdentityassociationFinished:(HOPIdentity*) identity;
+
+- (void) sendMessageToJS:(NSString*) message;
 - (void) onCredentialProviderResponseReceived:(NSString*) url;
 - (void) onUserLoggedIn;
 

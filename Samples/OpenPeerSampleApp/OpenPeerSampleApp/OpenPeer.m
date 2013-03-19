@@ -34,6 +34,7 @@
 #import "Utility.h"
 //SDK
 #import "OpenpeerSDK/HOPStack.h"
+#import "OpenpeerSDK/HOPLogger.h"
 //Managers
 #import "LoginManager.h"
 //Delegates
@@ -41,7 +42,8 @@
 #import "MediaEngineDelegate.h"
 #import "ConversationThreadDelegate.h"
 #import "CallDelegate.h"
-#import "ProvisioningAccountDelegate.h"
+#import "AccountDelegate.h"
+#import "IdentityDelegate.h"
 //View controllers
 #import "MainViewController.h"
 
@@ -84,13 +86,10 @@
     [self createDelegates];
 
     //Init openpeer stack and set created delegates
-    BOOL prepared = [[HOPStack sharedStack] initStackDelegate:self.stackDelegate mediaEngineDelegate:self.mediaEngineDelegate conversationThreadDelegate:self.conversationThreadDelegate callDelegate:self.callDelegate userAgent:[Utility getUserAgentName] deviceOs:[Utility getDeviceOs] platform:[Utility getPlatform]];
+    [[HOPStack sharedStack] setupWithStackDelegate:self.stackDelegate mediaEngineDelegate:self.mediaEngineDelegate deviceID:@"ID" userAgent:[Utility getUserAgentName] deviceOs:[Utility getDeviceOs] system:[Utility getPlatform]];
     
-    //If openpeer stack is created, start with login procedure and display login view
-    if (prepared)
-    {
-        [[LoginManager sharedLoginManager] login];
-    }
+    //Start with login procedure and display login view
+    [[LoginManager sharedLoginManager] login];
 }
 
 /**
@@ -102,7 +101,8 @@
     self.mediaEngineDelegate = [[MediaEngineDelegate alloc] init];
     self.conversationThreadDelegate = [[ConversationThreadDelegate alloc] init];
     self.callDelegate = [[CallDelegate alloc] init];
-    self.provisioningAccountDelegate = [[ProvisioningAccountDelegate alloc] init];
+    self.accountDelegate = [[AccountDelegate alloc] init];
+    self.identityDelegate = [[IdentityDelegate alloc] init];
 }
 
 /**
@@ -111,16 +111,16 @@
 - (void) startLogger
 {
     //For each system you can choose log level from HOPClientLogLevelNone (turned off) to HOPClientLogLevelTrace (most detail).
-    [HOPStack setLogLevel:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"hookflash_gui" level:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"hookflash" level:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"hookflash_services" level:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"zsLib" level:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"hookflash_services_http" level:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"hookflash_stack_message" level:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"hookflash_stack" level:HOPClientLogLevelNone];
-    [HOPStack setLogLevelbyName:@"hookflash_webrtc" level:HOPClientLogLevelNone];
+    [HOPLogger setLogLevel:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_gui" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_services" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"zsLib" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_services_http" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_stack_message" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_stack" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_webrtc" level:HOPLoggerLevelNone];
     //Srart logger without colorized output
-    [HOPStack installStdOutLogger:NO];
+    [HOPLogger installStdOutLogger:NO];
 }
 @end

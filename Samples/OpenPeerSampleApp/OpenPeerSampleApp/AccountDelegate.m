@@ -29,9 +29,49 @@
  
  */
 
-#import <Foundation/Foundation.h>
-#import "OpenpeerSDK/HOPProtocols.h"
+#import "UIKit/UIKit.h"
+#import "AccountDelegate.h"
+#import "OpenpeerSDK/HOPAccount.h"
+#import "LoginManager.h"
+#import "OpenPeer.h"
+#import "MainViewController.h"
 
-@interface ProvisioningAccountDelegate : NSObject<HOPProvisioningAccountDelegate>
+@implementation AccountDelegate
+
+//Provisioning account delegate implementation.
+
+//This method handles account state changes from SDK.
+
+- (void)onAccountStateChanged:(HOPAccount *)account accountState:(HOPAccountStates)accountState
+{
+    dispatch_async(dispatch_get_main_queue(), ^
+    {
+        switch (accountState)
+        {
+            case HOPAccountStatePending:
+                break;
+                
+            case HOPAccountStateReady:
+                [[LoginManager sharedLoginManager] onUserLoggedIn];
+                break;
+                
+            case HOPAccountStateShuttingDown:
+                break;
+                
+            case HOPAccountStateShutdown:
+                [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
+                break;
+                
+            default:
+                break;
+        }
+    });
+}
+
+- (void)onAccountAssociatedIdentitiesChanged:(HOPAccount *)account
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+    });
+}
 
 @end

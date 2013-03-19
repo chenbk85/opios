@@ -42,7 +42,9 @@ extern NSString * const archiveContactId;
 extern NSString * const archiveAccountSalt;
 extern NSString * const archivePasswordNonce;
 extern NSString * const archivePrivatePeerFile;
+extern NSString * const archivePrivatePeerFileSecret;
 extern NSString * const archivePeerFilePassword;
+extern NSString * const archiveAssociatedIdentities;
 extern NSString * const archiveLastProfileUpdateTimestamp;
 
 //Contact Profile xml tags

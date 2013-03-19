@@ -33,6 +33,7 @@
 #import "HOPContact.h"
 #import "HOPAccount_Internal.h"
 #import <hookflash/core/IContact.h>
+#import <hookflash/core/IAccount.h>
 #import <hookflash/core/IHelper.h>
 #import "HOPContact_Internal.h"
 #import "OpenPeerStorageManager.h"
@@ -109,9 +110,12 @@
 {
     HOPContact* ret = nil;
     
-    IContactPtr selfContact = IContact::getForSelf([[HOPAccount sharedAccount] getAccountPtr]);
+    boost::shared_ptr<hookflash::core::IAccount> tttt = [[HOPAccount sharedAccount] getAccountPtr];
+    //hookflash::core::IContact::getForSelf(tttt);
+    //hookflash::core::IContact::getForSelf(boost::shared_ptr<hookflash::core::IAccount>);
+    //IContactPtr selfContact = IContact::getForSelf([[HOPAccount sharedAccount] getAccountPtr]);
     
-    ret = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithCString:selfContact->getStableUniqueID() encoding:NSUTF8StringEncoding]];
+    //ret = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithCString:selfContact->getStableUniqueID() encoding:NSUTF8StringEncoding]];
     
     return ret;
 }

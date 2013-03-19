@@ -55,7 +55,7 @@
     
     IIdentityPtr identity = IIdentity::login(identityDelegatePtr, [redirectAfterLoginCompleteURL UTF8String], [identityURIOridentityBaseURI UTF8String], [identityProviderDomain UTF8String]);
     
-    ret = [[self alloc] initWithIdentityPtr:identity];
+    ret = [[self alloc] initWithIdentityPtr:identity openPeerIdentityDelegate:identityDelegatePtr];
     
     return ret;
 }
@@ -81,7 +81,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     return ret;
 }
@@ -95,7 +95,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
 }
 
@@ -109,7 +109,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     return ret;
 }
@@ -123,7 +123,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     return ret;
 }
@@ -137,7 +137,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     return ret;
 }
@@ -151,7 +151,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     return ret;
 }
@@ -165,7 +165,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     return ret;
 }
@@ -180,7 +180,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     
     return ret;
@@ -194,7 +194,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
 }
 
@@ -206,7 +206,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
 }
 - (NSString*) getNextMessageForInnerBrowerWindowFrame
@@ -219,9 +219,21 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
     return ret;
+}
+
+- (void) handleMessageFromInnerBrowserWindowFrame:(NSString*) message
+{
+    if(identityPtr)
+    {
+        identityPtr->handleMessageFromInnerBrowserWindowFrame(IHelper::createFromString([message UTF8String]));
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
+    }
 }
 - (void) cancel
 {
@@ -231,7 +243,7 @@
     }
     else
     {
-        [NSException raise:NSInvalidArgumentException format:@"Invalid identity pointer!"];
+        [NSException raise:NSInvalidArgumentException format:@"Invalid core identity object!"];
     }
 }
 
@@ -247,18 +259,19 @@
     if (identityPtr)
         ret = [NSString stringWithUTF8String: IIdentity::toDebugString(identityPtr,NO)];
     else
-        ret = NSLocalizedString(@"Core identity object is not created.", @"Core account object is not created.");
+        ret = NSLocalizedString(@"Core identity object is not created.", @"Core identity object is not created.");
     
     return ret;
 }
 
 #pragma mark - Internal methods
-- (id) initWithIdentityPtr:(IIdentityPtr) inIdentityPtr
+- (id) initWithIdentityPtr:(IIdentityPtr) inIdentityPtr openPeerIdentityDelegate:(boost::shared_ptr<OpenPeerIdentityDelegate>) inOpenPeerIdentityDelegate
 {
     self = [super init];
     if (self)
     {
         identityPtr = inIdentityPtr;
+        openPeerIdentityDelegatePtr = inOpenPeerIdentityDelegate;
     }
     return self;
 }

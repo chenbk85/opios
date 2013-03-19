@@ -199,7 +199,8 @@ using namespace hookflash::core;
         SecureByteBlockPtr secure = accountPtr->getPeerFilePrivateSecret();
         if (secure)
         {
-            ret = [NSString stringWithUTF8String: IHelper::convertToString(*secure)];
+            //SecureByteBlock secureByteBlock = secure.;
+            //ret = [NSString stringWithUTF8String: IHelper::convertToString(secureByteBlock)];
         }
     }
     else

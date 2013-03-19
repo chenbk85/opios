@@ -36,12 +36,12 @@
 #import "OpenPeerUser.h"
 #import "Contact.h"
 #import "SBJsonParser.h"
-#import <OpenpeerSDK/HOPProvisioningAccount.h>
-#import <OpenpeerSDK/HOPProvisioningAccountIdentityLookupQuery.h>
+//#import <OpenpeerSDK/HOPProvisioningAccount.h>
+#import <OpenpeerSDK/HOPIdentityLookup.h>
 #import <OpenpeerSDK/HOPIdentity.h>
 #import <OpenpeerSDK/HOPContact.h>
-#import <OpenpeerSDK/HOPLookupProfileInfo.h>
-#import <OpenpeerSDK/HOPProvisioningAccountPeerFileLookupQuery.h>
+//#import <OpenpeerSDK/HOPLookupProfileInfo.h>
+#import <OpenpeerSDK/HOPContactPeerFilePublicLookup.h>
 
 @interface ContactsManager ()
 {
@@ -92,6 +92,7 @@
         
         self.contactArray = [[NSMutableArray alloc] init];
         self.contactsDictionaryByProvider = [[NSMutableDictionary alloc] init];
+        self.contactsDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -147,7 +148,7 @@
  Parse JSON to get the profile for logged user.
  @param input NSString JSON input for processing.
  */
-- (void)proccessMyProfile:(NSString*)input
+/*- (void)proccessMyProfile:(NSString*)input
 {
     SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
     NSError *error = nil;
@@ -177,7 +178,7 @@
     }
     
     [self.linkedinContactsWebView performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:jsMethodName waitUntilDone:NO];
-}
+}*/
 
 /**
  Process connections.
@@ -227,7 +228,7 @@
  Check contact identites against openpeer database.
  @param contacts NSArray List of contacts.
  */
-- (void)contactsLookupQuery:(NSArray *)contacts
+/*- (void)contactsLookupQuery:(NSArray *)contacts
 {
     NSMutableArray* identities = [[NSMutableArray alloc] init];
     
@@ -243,13 +244,13 @@
     }
     
     [[HOPProvisioningAccount sharedProvisioningAccount] identityLookup:self identities:identities];
-}
+}*/
 
 /**
  Does JSON response parsing to get user facebook profile.
  @param input NSString JSON input for processing.
  */
-- (void)proccessMyFBProfile:(NSString*)input
+/*- (void)proccessMyFBProfile:(NSString*)input
 {
     SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
     NSError *error = nil;
@@ -270,7 +271,7 @@
         if ([cotnactProviderId length] > 0)
             [[OpenPeerUser sharedOpenPeerUser] setContactProviderId:cotnactProviderId];
     }
-}
+}*/
 
 /**
  Does JSON response parsing to get the list of facebook contacts 
@@ -324,7 +325,7 @@
  Send request to get the peer files for specified list of contacts
  @param contacts NSArray List of contacts.
  */
-- (void)peerFileLookupQuery:(NSArray *)contacts
+/*- (void)peerFileLookupQuery:(NSArray *)contacts
 {
     NSMutableArray* hopContacts = [[NSMutableArray alloc] init];
     
@@ -337,7 +338,7 @@
     
     //Ask for peer files for passed contacts
     [[HOPProvisioningAccount sharedProvisioningAccount] peerFileLookup:self contacts:hopContacts];
-}
+}*/
 
 /**
  Retrieves contact for passed list of identities.
@@ -357,8 +358,13 @@
     return contact;
 }
 
+- (Contact*) getContactForID:(NSString*) uniqueID
+{
+    Contact* contact = [self.contactsDictionary objectForKey:uniqueID];
+    return contact;
+}
 #pragma mark - HOPProvisioningAccountIdentityLookupQueryDelegate
-- (void) onAccountIdentityLookupQueryComplete:(HOPProvisioningAccountIdentityLookupQuery*) query
+/*- (void) onAccountIdentityLookupQueryComplete:(HOPProvisioningAccountIdentityLookupQuery*) query
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if([query isComplete] && [query didSucceed])
@@ -374,7 +380,7 @@
             [self peerFileLookupQuery:self.contactArray];
         }
     });
-}
+}*/
 
 
 #pragma mark - HOPProvisioningAccountPeerFileLookupQueryDelegate

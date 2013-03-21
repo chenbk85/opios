@@ -69,6 +69,24 @@
 - (void) setDefaultVideoOrientation: (HOPMediaEngineVideoOrientations) orientation;
 
 /**
+ Retrieves default orientation that is used when defice is in face up / face down position.
+ @return Default video orientation
+ */
+- (HOPMediaEngineVideoOrientations) getDefaultVideoOrientation;
+
+/**
+ Sets orientation that is used when recording is active. Video orientation is locked during video recording. Must be set before video recording is started.
+ @param orientation Default video orientation
+ */
+- (void) setRecordVideoOrientation: (HOPMediaEngineVideoOrientations) orientation;
+
+/**
+ Retrieves orientation that is used when recording is active.
+ @return Video orientation used during video recording
+ */
+- (HOPMediaEngineVideoOrientations) getRecordVideoOrientation;
+
+/**
  Sets window for rendering local capture video.
  @param renderView UIImageView Window where local capture video will be rendered
  */
@@ -199,6 +217,16 @@
  Ends video capture. Method will not have effect during the call.
  */
 - (void) stopVideoCapture;
+
+/**
+ Starts video capture recording. This method must be called after Video Capture has been started.
+ */
+- (void) startRecordVideoCapture: (NSString*) fileName;
+
+/**
+ Ends video capture recordng. Video capture recording must be started before this method call.
+ */
+- (void) stopRecordVideoCapture;
 
 - (void) startFaceDetectionForImageView:(UIImageView*) inImageView;
 - (void) stopFaceDetection;

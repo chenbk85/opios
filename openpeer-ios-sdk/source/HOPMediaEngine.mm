@@ -93,6 +93,45 @@
         [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
     }
 }
+- (HOPMediaEngineVideoOrientations) getDefaultVideoOrientation
+{
+    HOPMediaEngineVideoOrientations ret = HOPMediaEngineVideoOrientationLandscapeLeft;
+  
+    if(mediaEnginePtr)
+    {
+        ret = (HOPMediaEngineVideoOrientations)mediaEnginePtr->getDefaultVideoOrientation();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
+- (void) setRecordVideoOrientation: (HOPMediaEngineVideoOrientations) orientation
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setRecordVideoOrientation((IMediaEngine::VideoOrientations)orientation);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+- (HOPMediaEngineVideoOrientations) getRecordVideoOrientation
+{
+    HOPMediaEngineVideoOrientations ret = HOPMediaEngineVideoOrientationLandscapeLeft;
+  
+    if(mediaEnginePtr)
+    {
+        ret = (HOPMediaEngineVideoOrientations)mediaEnginePtr->getRecordVideoOrientation();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
 - (void) setCaptureRenderView: (UIImageView*) renderView
 {
     if(mediaEnginePtr)
@@ -155,11 +194,11 @@
 }
 
 
-- (void) setRecordFile: (NSString*) fileName
+- (void) setVoiceRecordFile: (NSString*) fileName
 {
     if(mediaEnginePtr)
     {
-        mediaEnginePtr->setRecordFile([fileName UTF8String]);
+        mediaEnginePtr->setVoiceRecordFile([fileName UTF8String]);
     }
     else
     {
@@ -168,13 +207,13 @@
 }
 
 
-- (NSString*) getRecordFile
+- (NSString*) getVoiceRecordFile
 {
     NSString* ret = nil;
     
     if(mediaEnginePtr)
     {
-        ret = [NSString stringWithUTF8String: mediaEnginePtr->getRecordFile()];
+        ret = [NSString stringWithUTF8String: mediaEnginePtr->getVoiceRecordFile()];
     }
     else
     {
@@ -399,6 +438,29 @@
     if(mediaEnginePtr)
     {
         mediaEnginePtr->stopVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (void) startRecordVideoCapture: (NSString*) fileName;
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->startRecordVideoCapture([fileName UTF8String]);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+- (void) stopRecordVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->stopRecordVideoCapture();
     }
     else
     {

@@ -445,11 +445,11 @@
     }
 }
 
-- (void) startRecordVideoCapture: (NSString*) fileName;
+- (void) startRecordVideoCapture: (NSString*) fileName saveToLibrary: (BOOL) saveToLibrary;
 {
     if(mediaEnginePtr)
     {
-        mediaEnginePtr->startRecordVideoCapture([fileName UTF8String]);
+        mediaEnginePtr->startRecordVideoCapture([fileName UTF8String], saveToLibrary);
     }
     else
     {

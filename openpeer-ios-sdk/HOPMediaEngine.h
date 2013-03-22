@@ -220,8 +220,12 @@
 
 /**
  Starts video capture recording. This method must be called after Video Capture has been started.
+ @param fileName NSString Recording file name. If saveToLibrary is 'true' only file name, without path, 
+ sholud be provided. If saveToLibrary is 'false' full recording path should be specified.
+ @param saveToLibrary BOOL If 'true' recorded video will be saved to photo album, otherwise the movie will be 
+ saved to specified path.
  */
-- (void) startRecordVideoCapture: (NSString*) fileName;
+- (void) startRecordVideoCapture: (NSString*) fileName saveToLibrary: (BOOL) saveToLibrary;
 
 /**
  Ends video capture recordng. Video capture recording must be started before this method call.

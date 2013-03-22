@@ -55,6 +55,7 @@
 @required
 - (void) onMediaEngineAudioRouteChanged:(HOPMediaEngineOutputAudioRoutes) audioRoute;
 - (void) onMediaEngineFaceDetected;
+- (void) onMediaEngineVideoCaptureRecordStopped;
 
 @end
 

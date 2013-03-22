@@ -64,6 +64,7 @@
 		87F24B62167003F400A5389F /* ContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 87F24B61167003F300A5389F /* ContactsManager.m */; };
 		87F24B691670048000A5389F /* ContactsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87F24B671670047A00A5389F /* ContactsTableViewController.m */; };
 		87F24B6A1670048000A5389F /* ContactsTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 87F24B681670047D00A5389F /* ContactsTableViewController.xib */; };
+		E25B0D8C16FCC41000D832DB /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E25B0D8B16FCC41000D832DB /* AssetsLibrary.framework */; };
 		E2EABE3C16FB71F0001CDBC0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2EABE3B16FB71F0001CDBC0 /* MobileCoreServices.framework */; };
 /* End PBXBuildFile section */
 
@@ -185,6 +186,7 @@
 		87F24B661670047A00A5389F /* ContactsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsTableViewController.h; sourceTree = "<group>"; };
 		87F24B671670047A00A5389F /* ContactsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsTableViewController.m; sourceTree = "<group>"; };
 		87F24B681670047D00A5389F /* ContactsTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContactsTableViewController.xib; sourceTree = "<group>"; };
+		E25B0D8B16FCC41000D832DB /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		E2EABE3B16FB71F0001CDBC0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -193,6 +195,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E25B0D8C16FCC41000D832DB /* AssetsLibrary.framework in Frameworks */,
 				E2EABE3C16FB71F0001CDBC0 /* MobileCoreServices.framework in Frameworks */,
 				8732608A16F0CD020099C0D3 /* CoreImage.framework in Frameworks */,
 				8732605E16F0CC040099C0D3 /* libxml2.dylib in Frameworks */,
@@ -293,6 +296,7 @@
 		8727282B166CBF9B0089CBB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E25B0D8B16FCC41000D832DB /* AssetsLibrary.framework */,
 				8732605D16F0CC040099C0D3 /* libxml2.dylib */,
 				E2EABE3B16FB71F0001CDBC0 /* MobileCoreServices.framework */,
 				8732608916F0CD020099C0D3 /* CoreImage.framework */,

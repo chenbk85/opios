@@ -47,4 +47,10 @@
         [[SessionManager sharedSessionManager] onFaceDetected];
     });
 }
+
+- (void) onMediaEngineVideoCaptureRecordStopped
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+    });
+}
 @end

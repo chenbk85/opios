@@ -68,3 +68,8 @@ void OpenPeerMediaEngineDelegate::onMediaEngineFaceDetected()
 {
     [mediaEngineDelegate onMediaEngineFaceDetected];
 }
+
+void OpenPeerMediaEngineDelegate::onMediaEngineVideoCaptureRecordStopped()
+{
+    [mediaEngineDelegate onMediaEngineVideoCaptureRecordStopped];
+}

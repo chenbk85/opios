@@ -117,16 +117,16 @@
 - (void) setNsEnabled: (BOOL) enabled;
 
 /**
- Sets recording file name.
+ Sets voice recording file name.
  @param fileName NSString Recording file name
  */
-- (void) setRecordFile: (NSString*) fileName;
+- (void) setVoiceRecordFile: (NSString*) fileName;
 
 /**
- Retrieves recording file name.
+ Retrieves voice recording file name.
  @return Retrieves recording file name
  */
-- (NSString*) getRecordFile;
+- (NSString*) getVoiceRecordFile;
 
 /**
  Turns mute ON/OFF.

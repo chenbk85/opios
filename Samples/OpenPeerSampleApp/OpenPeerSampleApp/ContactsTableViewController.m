@@ -76,7 +76,6 @@
     
     self.navigationController.navigationBar.hidden = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prepareTableForRemoteSessionMode) name:notificationRemoteSessionModeChanged object:nil];
-    //[self.activityIndicator setHidesWhenStopped:YES];
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,9 +95,6 @@
 
 - (void) onContactsLoadingStarted
 {    
-    //[self.activityIndicator startAnimating];
-    //[self showActivityIndicator:YES withText:@"Getting contacts from the LinkedIn ..."];
-    //[[[OpenPeer sharedOpenPeer] mainViewController] showActivityIndicator:YES withText:@"Getting contacts from social provider ..."];
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting contacts from social provider ..." inView:self.view];
 }
 
@@ -109,9 +105,6 @@
 
 - (void) onContactsPeerFilesLoadingStarted
 {
-    //[self.activityIndicator startAnimating];
-    //[self showActivityIndicator:YES withText:@"Getting peer files for contacts ..."];
-    //[[[OpenPeer sharedOpenPeer] mainViewController] showActivityIndicator:YES withText:@"Getting peer files for contacts ..."];
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting peer files for contacts ..." inView:self.view];
 }
 - (void) onContactsLoaded
@@ -214,9 +207,6 @@
             self.contactsTableView.allowsMultipleSelection = NO;
             //If not, create a session for selecte contact
             Session* session = [[SessionManager sharedSessionManager] createSessionForContact:contact];
-            //[[SessionManager sharedSessionManager] getSessionForContact:contact];
-            //if (!session)
-            //    session = [[SessionManager sharedSessionManager] createSessionForContact:contact];
             
             [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:NO];
         }

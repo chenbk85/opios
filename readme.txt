@@ -49,6 +49,8 @@ CoreImage
 CoreGraphics
 AudioToolbox
 AVFoundation
+AssetsLibrary
+MobileCoreServices
 libresolve.dylib
 libxml2.dylib (only for sample app)
 

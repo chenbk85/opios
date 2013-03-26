@@ -32,9 +32,9 @@
 #import <UIKit/UIKit.h>
 
 @interface WebLoginViewController : UIViewController
-@property (retain, nonatomic) IBOutlet UIWebView *loginWebView;
-@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
-@property (retain, nonatomic) IBOutlet UILabel *activityLabel;
+@property (weak, nonatomic) IBOutlet UIWebView *loginWebView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (weak, nonatomic) IBOutlet UILabel *activityLabel;
 
 
 - (void) openLoginUrl:(NSString*) url;

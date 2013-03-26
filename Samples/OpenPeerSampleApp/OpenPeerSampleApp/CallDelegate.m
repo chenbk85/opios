@@ -65,6 +65,8 @@
                             sessionViewController = [[[[OpenPeer sharedOpenPeer] mainViewController] sessionViewControllersDictionary] objectForKey:sessionId];
                         //[sessionViewController prepareForIncomingCall];
                     }
+                    //Remove recording button and stop recording if it is placed
+                    [sessionViewController stopVideoRecording:YES hideRecordButton:YES];
                     [sessionViewController updateCallState];
                 }
                 break;
@@ -94,6 +96,8 @@
             case HOPCallStateOpen:                  //Receives both parties. Call is established
                 [sessionViewController updateCallState];
                 [sessionViewController prepareForCall:YES withVideo:[call hasVideo]];
+                //At that moment is it possible to do recording so show recording button
+                [sessionViewController stopVideoRecording:YES hideRecordButton:![call hasVideo]];
                 break;
                 
             case HOPCallStateActive:                //Currently not in use
@@ -116,9 +120,11 @@
             case HOPCallStateClosed:                //Receives both parties
                 [sessionViewController updateCallState];
                 [sessionViewController prepareForCall:NO withVideo:NO];
+                //Enable video recording if face detection is on
+                [sessionViewController stopVideoRecording:YES hideRecordButton:![[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]];
                 [[SessionManager sharedSessionManager] onCallEnded:session];
                 
-                /*[[SessionManager sharedSessionManager] setLastEndedCallSession: session];
+                [[SessionManager sharedSessionManager] setLastEndedCallSession: session];
                 if (![[call getCaller] isSelf])
                 {
                     if ([call getClosedReason] == HOPCallClosedReasonNone || [call getClosedReason] == HOPCallClosedReasonRequestTerminated || [call getClosedReason] == HOPCallClosedReasonTemporarilyUnavailable)
@@ -134,7 +140,7 @@
                 else
                 {
                     session.isRedial = NO;
-                }*/
+                }
                 break;
                 
             case HOPCallStateNone:

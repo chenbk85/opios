@@ -445,4 +445,22 @@
 {
 
 }
+
+- (void) startVideoRecording
+{
+    NSLog(@"Video recording stopped.");
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"dd-MM-yyyy-HH-mm"];
+    
+    NSString* filename = [NSString stringWithFormat:@"OpenPeer_%@.mp4",[formatter stringFromDate:[NSDate date]]];
+    [[HOPMediaEngine sharedInstance] setRecordVideoOrientation:HOPMediaEngineVideoOrientationPortrait];
+    //For saving video file in application boundle, provide file path an set saveToLibrary to NO. In case just file name is provided and saveToLibrary is set to YES, video file will be saved in ios media library
+    [[HOPMediaEngine sharedInstance] startRecordVideoCapture:filename saveToLibrary:YES];
+}
+- (void) stopVideoRecording
+{
+    NSLog(@"Video recording stopped.");
+    //Stop video recording
+    [[HOPMediaEngine sharedInstance] stopRecordVideoCapture];
+}
 @end

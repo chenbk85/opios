@@ -67,4 +67,7 @@
 
 - (void) onCallEnded:(Session*) inSession;
 - (void) onFaceDetected;
+
+- (void) startVideoRecording;
+- (void) stopVideoRecording;
 @end

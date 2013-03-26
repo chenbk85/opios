@@ -47,6 +47,7 @@
 @property (assign) BOOL isFaceDetectionForSessionActive;
 
 - (void) prepareForFaceDetection:(BOOL) toPrepare;
+
 @end
 
 @implementation ActiveSessionViewController
@@ -75,7 +76,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     self.originalFrame = self.videoPreviewImageView.frame;
     
     //Set default video orientation to be portrait
@@ -89,8 +90,6 @@
     //Prepare view controller for default state - no call
     [self prepareForCall:NO withVideo:NO];
     
-    
-    
     //In case this session is created for incoming call prepare it for
     if (self.isIncomingCall)
     {
@@ -103,8 +102,13 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     if (([[OpenPeer sharedOpenPeer] isFaceDetectionModeOn] && !self.isFaceDetectionForSessionActive) ||  (![[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]) )
+    {
         [self prepareForFaceDetection:[[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]];
-
+        
+    }   
+    
+    //In case face detection is turned on/off show or remove record button
+    [self stopVideoRecording:YES hideRecordButton:![[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]];
     
     [super viewDidAppear:animated];
 }
@@ -126,6 +130,22 @@
     [super didReceiveMemoryWarning];
 }
 
+- (IBAction)actionRecordVideo:(id)sender
+{
+    //If recording button is selected, start recording
+    if (!self.recordingButton.selected)
+    {
+        [[SessionManager sharedSessionManager] startVideoRecording];
+        
+        self.recordingButton.selected = YES;
+    }
+    else
+    {
+        //Stop video recording
+        [self stopVideoRecording:YES hideRecordButton:NO];
+    }
+}
+
 
 - (void) prepareForFaceDetection:(BOOL) toPrepare
 {
@@ -133,11 +153,12 @@
     {
         self.videoView.hidden = NO;
         self.videoPreviewImageView.hidden = NO;
+        self.videoPreviewImageView.clipsToBounds = YES;
         self.videoPreviewImageView.frame = self.videoView.bounds;
         
         [[SessionManager sharedSessionManager] setSessionWithFaceDetectionOn:self.session];
         [[HOPMediaEngine sharedInstance] startFaceDetectionForImageView:self.videoPreviewImageView];
-
+        
         self.isFaceDetectionForSessionActive = YES;
     }
     else
@@ -207,7 +228,7 @@
 
 - (void)prepareForCall:(BOOL)isCallSession withVideo:(BOOL)includeVideo
 {
-    //Hide incoming view 
+    //Hide incoming view
     self.incomingCallView.hidden = YES;
     //Show control buttons (Audio, Video, Message)
     self.buttonsView.hidden = NO;
@@ -256,7 +277,7 @@
         self.voiceCallButton.tag = MAKE_CALL;
         [self.voiceCallButton setTitle:@"Audio" forState:UIControlStateNormal];
         [self.videoCallButton setTitle:@"Video" forState:UIControlStateNormal];
-
+        
         [self prepareForFaceDetection:[[OpenPeer sharedOpenPeer] isFaceDetectionModeOn]];
     }
 }
@@ -278,8 +299,20 @@
 
 - (void)viewDidUnload {
     
+    [self setRecordingButton:nil];
     [super viewDidUnload];
 }
 
+- (void) stopVideoRecording:(BOOL) stopRecording hideRecordButton:(BOOL) hideButton
+{
+    if (stopRecording && self.recordingButton.selected)
+    {
+        //Stop video recording
+        [[SessionManager sharedSessionManager] stopVideoRecording];
+        self.recordingButton.selected = NO;
+    }
+    
+    self.recordingButton.hidden = hideButton;
+}
 
 @end

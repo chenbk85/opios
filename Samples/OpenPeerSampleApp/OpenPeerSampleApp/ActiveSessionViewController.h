@@ -36,19 +36,20 @@
 
 @property (nonatomic, retain) Session* session;
 
-@property (retain, nonatomic) IBOutlet UIView *videoView;
-@property (retain, nonatomic) IBOutlet UIView *callStatusView;
-@property (retain, nonatomic) IBOutlet UIView *buttonsView;
-@property (retain, nonatomic) IBOutlet UIView *incomingCallView;
-@property (retain, nonatomic) IBOutlet UIImageView *videoImageView;
-@property (retain, nonatomic) IBOutlet UIImageView *videoPreviewImageView;
+@property (weak, nonatomic) IBOutlet UIView *videoView;
+@property (weak, nonatomic) IBOutlet UIView *callStatusView;
+@property (weak, nonatomic) IBOutlet UIView *buttonsView;
+@property (weak, nonatomic) IBOutlet UIView *incomingCallView;
+@property (weak, nonatomic) IBOutlet UIImageView *videoImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *videoPreviewImageView;
 
 
-@property (retain, nonatomic) IBOutlet UILabel *statusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 
-@property (retain, nonatomic) IBOutlet UIButton *voiceCallButton;
-@property (retain, nonatomic) IBOutlet UIButton *videoCallButton;
-@property (retain, nonatomic) IBOutlet UIButton *messageButton;
+@property (weak, nonatomic) IBOutlet UIButton *voiceCallButton;
+@property (weak, nonatomic) IBOutlet UIButton *videoCallButton;
+@property (weak, nonatomic) IBOutlet UIButton *messageButton;
+@property (weak, nonatomic) IBOutlet UIButton *recordingButton;
 
 @property (assign) BOOL isIncomingCall;
 
@@ -59,8 +60,11 @@
 - (IBAction)actionVoiceCall:(id)sender;
 - (IBAction)actionDeclineCall:(id)sender;
 - (IBAction)actionAcceptCall:(id)sender;
+- (IBAction)actionRecordVideo:(id)sender;
 
 - (void) prepareForCall:(BOOL) isCallSession withVideo:(BOOL) includeVideo;
 - (void) prepareForIncomingCall;
 - (void) updateCallState;
+
+- (void) stopVideoRecording:(BOOL) stopRecording hideRecordButton:(BOOL) hideButton;
 @end

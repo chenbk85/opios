@@ -1,4 +1,3 @@
-
 Thank you for downloading Hookflash's Open Peer iOS SDK.
 
 This release is a preliminary 1.0 release of the SDK and Hookflash will be publishing updates to the SDK in time, including various sample applications. For this release, no sample is yet provided.
@@ -144,7 +143,7 @@ Changes in SDK version B2:
  - Added face detection 
  - Sample app is using ARC now.
  - Sample app examples added: initiating remote session between two selected contacts, checking contacts availability, face detection in session, redial in case of call failure (eg. network failure)
-
+ - Added video recording
 
 License:
 

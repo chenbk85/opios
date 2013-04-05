@@ -64,3 +64,12 @@ void OpenPeerMediaEngineDelegate::onMediaEngineAudioRouteChanged(IMediaEngine::O
     [mediaEngineDelegate onMediaEngineAudioRouteChanged:(HOPMediaEngineOutputAudioRoutes) audioRoute];
 }
 
+void OpenPeerMediaEngineDelegate::onMediaEngineFaceDetected()
+{
+    [mediaEngineDelegate onMediaEngineFaceDetected];
+}
+
+void OpenPeerMediaEngineDelegate::onMediaEngineVideoCaptureRecordStopped()
+{
+    [mediaEngineDelegate onMediaEngineVideoCaptureRecordStopped];
+}

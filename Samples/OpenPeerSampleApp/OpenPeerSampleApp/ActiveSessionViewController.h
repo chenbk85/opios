@@ -49,6 +49,7 @@
 @property (nonatomic, weak) IBOutlet UIButton *voiceCallButton;
 @property (nonatomic, weak) IBOutlet UIButton *videoCallButton;
 @property (nonatomic, weak) IBOutlet UIButton *messageButton;
+@property (weak, nonatomic) IBOutlet UIButton *recordingButton;
 
 @property (assign) BOOL isIncomingCall;
 
@@ -59,8 +60,11 @@
 - (IBAction)actionVoiceCall:(id)sender;
 - (IBAction)actionDeclineCall:(id)sender;
 - (IBAction)actionAcceptCall:(id)sender;
+- (IBAction)actionRecordVideo:(id)sender;
 
 - (void) prepareForCall:(BOOL) isCallSession withVideo:(BOOL) includeVideo;
 - (void) prepareForIncomingCall;
 - (void) updateCallState;
+
+- (void) stopVideoRecording:(BOOL) stopRecording hideRecordButton:(BOOL) hideButton;
 @end

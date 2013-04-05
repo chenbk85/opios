@@ -30,11 +30,27 @@
  */
 
 #import "MediaEngineDelegate.h"
+#import "SessionManager.h"
 
 @implementation MediaEngineDelegate
 
 - (void) onMediaEngineAudioRouteChanged:(HOPMediaEngineOutputAudioRoutes) audioRoute
 {
+    dispatch_async(dispatch_get_main_queue(), ^{
+    });
+}
+
+- (void) onMediaEngineFaceDetected
+{
+    dispatch_async(dispatch_get_main_queue(), ^
+                   {
+                       [[SessionManager sharedSessionManager] onFaceDetected];
+                   });
+}
+
+- (void) onMediaEngineVideoCaptureRecordStopped
+{
+    NSLog(@"Video file saved.");
     dispatch_async(dispatch_get_main_queue(), ^{
     });
 }

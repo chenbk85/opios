@@ -49,6 +49,10 @@
 @property (nonatomic,strong) MainViewController *mainViewController;
 @property (nonatomic,strong) IdentityDelegate *identityDelegate;
 
+@property (nonatomic) BOOL isRemoteSessionActivationModeOn;
+@property (nonatomic) BOOL isFaceDetectionModeOn;
+@property (nonatomic) BOOL isRedialModeOn;
+
 + (id) sharedOpenPeer;
 
 - (void) prepareWithMainViewController:(MainViewController*) inMainViewController;

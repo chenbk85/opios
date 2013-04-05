@@ -45,6 +45,7 @@
         self.profession = inProfession;
         self.avatarUrl = inAvatarUrl;
         self.identities = [[NSMutableArray alloc] init];
+        self.listOfContactsInCallSession = [[NSMutableArray alloc] init];
         
         if ([identityContactId length] > 0)
         {

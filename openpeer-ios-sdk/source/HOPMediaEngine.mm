@@ -38,7 +38,6 @@ using namespace hookflash::core;
 
 @interface HOPMediaEngine()
 
-- (id) initSingleton;
 @end
 @implementation HOPMediaEngine
 
@@ -58,12 +57,12 @@ using namespace hookflash::core;
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
     dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] initSingleton]; // or some other init method
+        _sharedObject = [[self alloc] init]; // or some other init method
     });
     return _sharedObject;
 }
 
-- (id) initSingleton
+- (id) init
 {
     self = [super init];
     if (self)
@@ -94,6 +93,46 @@ using namespace hookflash::core;
         [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
     }
 }
+- (HOPMediaEngineVideoOrientations) getDefaultVideoOrientation
+{
+    HOPMediaEngineVideoOrientations ret = HOPMediaEngineVideoOrientationLandscapeLeft;
+    
+    if(mediaEnginePtr)
+    {
+        ret = (HOPMediaEngineVideoOrientations)mediaEnginePtr->getDefaultVideoOrientation();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
+- (void) setRecordVideoOrientation: (HOPMediaEngineVideoOrientations) orientation
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setRecordVideoOrientation((IMediaEngine::VideoOrientations)orientation);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+- (HOPMediaEngineVideoOrientations) getRecordVideoOrientation
+{
+    HOPMediaEngineVideoOrientations ret = HOPMediaEngineVideoOrientationLandscapeLeft;
+    
+    if(mediaEnginePtr)
+    {
+        ret = (HOPMediaEngineVideoOrientations)mediaEnginePtr->getRecordVideoOrientation();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
+
 - (void) setCaptureRenderView: (UIImageView*) renderView
 {
     if(mediaEnginePtr)
@@ -156,11 +195,11 @@ using namespace hookflash::core;
 }
 
 
-- (void) setRecordFile: (NSString*) fileName
+- (void) setVoiceRecordFile: (NSString*) fileName
 {
     if(mediaEnginePtr)
     {
-        mediaEnginePtr->setRecordFile([fileName UTF8String]);
+        mediaEnginePtr->setVoiceRecordFile([fileName UTF8String]);
     }
     else
     {
@@ -169,13 +208,13 @@ using namespace hookflash::core;
 }
 
 
-- (NSString*) getRecordFile
+- (NSString*) getVoiceRecordFile
 {
     NSString* ret = nil;
     
     if(mediaEnginePtr)
     {
-        ret = [NSString stringWithUTF8String: mediaEnginePtr->getRecordFile()];
+        ret = [NSString stringWithUTF8String: mediaEnginePtr->getVoiceRecordFile()];
     }
     else
     {
@@ -330,6 +369,118 @@ using namespace hookflash::core;
     }
 
     return ret;
+}
+
+- (void) setContinuousVideoCapture:(BOOL) continuousVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setContinuousVideoCapture(continuousVideoCapture);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (BOOL) getContinuousVideoCapture
+{
+    BOOL ret = NO;
+    if(mediaEnginePtr)
+    {
+        ret = mediaEnginePtr->getContinuousVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
+
+- (void) setFaceDetection: (BOOL) enabled
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->setFaceDetection(enabled);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (BOOL) getFaceDetection
+{
+    BOOL ret = NO;
+    if(mediaEnginePtr)
+    {
+        ret = mediaEnginePtr->getFaceDetection();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+    return ret;
+}
+
+- (void) startVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->startVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+- (void) stopVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->stopVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (void) startRecordVideoCapture: (NSString*) fileName saveToLibrary: (BOOL) saveToLibrary;
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->startRecordVideoCapture([fileName UTF8String], saveToLibrary);
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+- (void) stopRecordVideoCapture
+{
+    if(mediaEnginePtr)
+    {
+        mediaEnginePtr->stopRecordVideoCapture();
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid Media engine pointer!"];
+    }
+}
+
+- (void) startFaceDetectionForImageView:(UIImageView*) inImageView
+{
+    [self setFaceDetection:YES];
+    [self setContinuousVideoCapture:YES];
+    [self startVideoCapture];
+}
+
+- (void) stopFaceDetection
+{
+    [self setFaceDetection:NO];
+    [self setContinuousVideoCapture:NO];
+    [self stopVideoCapture];
 }
 
 #pragma mark - Internal methods

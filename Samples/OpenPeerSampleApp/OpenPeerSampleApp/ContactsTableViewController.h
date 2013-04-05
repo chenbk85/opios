@@ -39,5 +39,5 @@
 - (void) onContactsLoadingStarted;
 - (void) onContactsPeerFilesLoadingStarted;
 - (void) onContactsLoaded;
-
+- (void) onContactsLookupCheckStarted;
 @end

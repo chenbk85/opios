@@ -37,13 +37,19 @@
 @class WebLoginViewController;
 @class ContactsTableViewController;
 
+typedef enum
+{
+    DEMO_REMOTE_SESSION_INIT,
+    DEMO_CHECK_AVAILABILITY,
+    DEMO_FACE_DETECTION_MODE,
+    DEMO_CALL_REDIAL
+} DemoOptions;
 
-@interface MainViewController : UIViewController
+@interface MainViewController : UIViewController<UIActionSheetDelegate>
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, weak) IBOutlet UILabel *activityLabel;
 @property (nonatomic, weak) IBOutlet UIView *activityView;
-
 
 @property (nonatomic, strong) LoginViewController *loginViewController;
 @property (nonatomic, strong) WebLoginViewController *webLoginViewController;
@@ -61,4 +67,6 @@
 - (void) removeSessionViewControllerForSession:(NSString*) sessionId;
 
 - (void) showIncominCallForSession:(Session*) session;
+
+- (void) prepareForViewCallSession:(Session*) session withVideo:(BOOL) withVideo;
 @end

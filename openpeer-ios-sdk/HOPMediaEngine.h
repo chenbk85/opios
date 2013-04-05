@@ -33,7 +33,7 @@
 #import <UIKit/UIKit.h>
 #import "HOPMediaEngineRtpRtcpStatistics.h"
 #import "HOPTypes.h"
-
+#import "HOPProtocols.h"
 
 @interface HOPMediaEngine : NSObject
 
@@ -68,6 +68,24 @@
 - (void) setDefaultVideoOrientation: (HOPMediaEngineVideoOrientations) orientation;
 
 /**
+ Retrieves default orientation that is used when defice is in face up / face down position.
+ @return Default video orientation
+ */
+- (HOPMediaEngineVideoOrientations) getDefaultVideoOrientation;
+
+/**
+ Sets orientation that is used when recording is active. Video orientation is locked during video recording. Must be set before video recording is started.
+ @param orientation Default video orientation
+ */
+- (void) setRecordVideoOrientation: (HOPMediaEngineVideoOrientations) orientation;
+
+/**
+ Retrieves orientation that is used when recording is active.
+ @return Video orientation used during video recording
+ */
+- (HOPMediaEngineVideoOrientations) getRecordVideoOrientation;
+
+/**
  Sets window for rendering local capture video.
  @param renderView UIImageView Window where local capture video will be rendered
  */
@@ -96,6 +114,18 @@
  @param enabled BOOL Enabled flag
  */
 - (void) setNsEnabled: (BOOL) enabled;
+
+/**
+ Sets voice recording file name.
+ @param fileName NSString Recording file name
+ */
+- (void) setVoiceRecordFile: (NSString*) fileName;
+
+/**
+ Retrieves voice recording file name.
+ @return Retrieves recording file name
+ */
+- (NSString*) getVoiceRecordFile;
 
 /**
  Sets recording file name.
@@ -165,4 +195,54 @@
  */
 - (int) getVoiceTransportStatistics: (HOPMediaEngineRtpRtcpStatistics*) stat;
 
+/**
+ Continuous capture - whether capture should be turned off when call is finished.
+ @param enabled BOOL Enabled flag
+ */
+- (void) setContinuousVideoCapture:(BOOL) continuousVideoCapture;
+
+/**
+ Retrieves continuous capture flag.
+ @return YES if continuous capture is enabled, NO if not
+ */
+- (BOOL) getContinuousVideoCapture;
+
+/**
+ Sets whether face detection is enabled. Should be set before start capture is called.
+ @param enabled BOOL Enabled flag
+ */
+- (void) setFaceDetection: (BOOL) enabled;
+
+/**
+ Retrieves status of face detection flag.
+ @return YES if face detection is enabled, NO if not
+ */
+- (BOOL) getFaceDetection;
+
+/**
+ Starts video capture. Video is rendered to Render View that is previously set.
+ */
+- (void) startVideoCapture;
+
+/**
+ Ends video capture. Method will not have effect during the call.
+ */
+- (void) stopVideoCapture;
+
+/**
+ Starts video capture recording. This method must be called after Video Capture has been started.
+ @param fileName NSString Recording file name. If saveToLibrary is 'true' only file name, without path,
+ sholud be provided. If saveToLibrary is 'false' full recording path should be specified.
+ @param saveToLibrary BOOL If 'true' recorded video will be saved to photo album, otherwise the movie will be
+ saved to specified path.
+ */
+- (void) startRecordVideoCapture: (NSString*) fileName saveToLibrary: (BOOL) saveToLibrary;
+
+/**
+ Ends video capture recordng. Video capture recording must be started before this method call.
+ */
+- (void) stopRecordVideoCapture;
+
+- (void) startFaceDetectionForImageView:(UIImageView*) inImageView;
+- (void) stopFaceDetection;
 @end

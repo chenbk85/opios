@@ -47,6 +47,7 @@
 @property (nonatomic, assign) long lastProfileUpdateTimestamp;
 
 @property (strong) NSMutableArray* identities;
+@property (strong) NSMutableArray* listOfContactsInCallSession;
 
 - (id) initWithFullName:(NSString*) inFullName profession:(NSString*) inProfession avatarUrl:(NSString*) inAvatarUrl identityProvider:(HOPProvisioningAccountIdentityTypes) identityProvider identityContactId:(NSString*) identityContactId;
 @end

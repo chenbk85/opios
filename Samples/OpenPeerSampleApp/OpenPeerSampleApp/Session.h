@@ -40,6 +40,7 @@
 @property (strong) NSMutableArray* participantsArray;
 @property (strong) HOPConversationThread* conversationThread;
 @property (strong) HOPCall* currentCall;
+@property (assign) BOOL isRedial;
 
 - (id) initWithContact:(Contact*) inContact conversationThread:(HOPConversationThread*) inConverationThread;
 - (id) initWithContacts:(NSArray*) inContacts conversationThread:(HOPConversationThread*) inConverationThread;

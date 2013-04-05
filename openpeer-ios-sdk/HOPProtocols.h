@@ -56,7 +56,8 @@
 
 @required
 - (void) onMediaEngineAudioRouteChanged:(HOPMediaEngineOutputAudioRoutes) audioRoute;
-
+- (void) onMediaEngineFaceDetected;
+- (void) onMediaEngineVideoCaptureRecordStopped;
 @end
 
 #pragma mark - Provisioning account for future use delegate

@@ -50,4 +50,7 @@
 
 - (Contact*) getContactForIdentities:(NSArray*) identities;
 - (Contact*) getContactForID:(NSString*) uniqueID;
+
+- (void) checkAvailability;
+- (void) onCheckAvailabilityResponseReceivedForContact:(Contact*) contact withListOfUserIds:(NSString*) userIds;
 @end

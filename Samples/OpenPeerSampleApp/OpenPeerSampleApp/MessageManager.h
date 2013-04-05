@@ -31,46 +31,27 @@
 
 #import <Foundation/Foundation.h>
 
-//Provisioning URI
-extern NSString* const provisioningURI;
+@class HOPMessage;
+@class Session;
 
-extern NSString * const keyOpenPeerUser;
+typedef enum
+{
+    SystemMessage_EstablishSessionBetweenTwoPeers,
+    SystemMessage_IsContactAvailable,
+    SystemMessage_IsContactAvailable_Response,
+    SystemMessage_CallAgain
+}SystemMessageTypes;
 
-//User defaults keys
-extern NSString * const archiveUserId;
-extern NSString * const archiveContactId;
-extern NSString * const archiveAccountSalt;
-extern NSString * const archivePasswordNonce;
-extern NSString * const archivePrivatePeerFile;
-extern NSString * const archivePrivatePeerFileSecret;
-extern NSString * const archivePeerFilePassword;
-extern NSString * const archiveAssociatedIdentities;
-extern NSString * const archiveLastProfileUpdateTimestamp;
+@interface MessageManager : NSObject
 
-//Contact Profile xml tags
-extern NSString* const profileXmlTagProfile;
-extern NSString* const profileXmlTagName;
-extern NSString* const profileXmlTagIdentities;
-extern NSString* const profileXmlTagIdentityBundle;
-extern NSString* const profileXmlTagIdentity;
-extern NSString* const profileXmlTagSignature;
-extern NSString* const profileXmlTagAvatar;
-extern NSString* const profileXmlTagContactID;
-extern NSString* const profileXmlTagPublicPeerFile;
-extern NSString* const profileXmlTagSocialId;
-extern NSString* const profileXmlAttributeId;
-extern NSString* const profileXmlTagUserID;
++ (id) sharedMessageManager;
 
-//Message types
-extern NSString* const messageTypeText;
-extern NSString* const messageTypeSystem;
+- (HOPMessage*) createSystemMessageWithType:(SystemMessageTypes) type andText:(NSString*) text;
+- (void) sendSystemMessageToInitSessionBetweenPeers:(NSArray*) peers forSession:(Session*) inSession;
+- (void) sendSystemMessageToCallAgainForSession:(Session*) inSession;
+- (void) sendSystemMessageToCheckAvailabilityForSession:(Session*) inSession;
 
-//System message tags
-extern NSString * const TagEvent;
-extern NSString * const TagId;
-extern NSString * const TagText;
+- (void) sendSystemMessageToCheckAvailabilityResponseForSession:(Session*) inSession message:(NSString*) message;
 
-extern NSString * const systemMessageRequest;
-
-//Notifications
-extern NSString * const notificationRemoteSessionModeChanged;
+- (void) parseSystemMessage:(HOPMessage*) inMessage forSession:(Session*) inSession;
+@end

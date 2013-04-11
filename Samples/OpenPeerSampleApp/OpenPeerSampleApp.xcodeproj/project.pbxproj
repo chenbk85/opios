@@ -23,7 +23,6 @@
 		87272855166CC2640089CBB6 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87272853166CC2630089CBB6 /* LoginViewController.m */; };
 		87272856166CC2640089CBB6 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 87272854166CC2640089CBB6 /* LoginViewController.xib */; };
 		87272859166CC45B0089CBB6 /* LoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 87272858166CC45B0089CBB6 /* LoginManager.m */; };
-		872729CD166CDE820089CBB6 /* OpenpeerSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 872729CC166CDE820089CBB6 /* OpenpeerSDK.framework */; };
 		87368AE3167600F200166F35 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 87368AE2167600F200166F35 /* Contact.m */; };
 		8740266F1670AA52008CC0F1 /* OpenPeerUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8740266E1670AA52008CC0F1 /* OpenPeerUser.m */; };
 		87421DA3168274BB00699479 /* ActiveSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87421DA1168274BB00699479 /* ActiveSessionViewController.m */; };
@@ -67,6 +66,7 @@
 		87FF988E170EDB5D0017C627 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87FF988D170EDB5C0017C627 /* AssetsLibrary.framework */; };
 		87FF9890170EDB6D0017C627 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87FF988F170EDB6C0017C627 /* MobileCoreServices.framework */; };
 		87FF9892170EDB7D0017C627 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87FF9891170EDB7D0017C627 /* CoreImage.framework */; };
+		B28206E0171636E1000D5D3C /* libOpenpeerSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 874AD9CB166CE1EE0095FE33 /* libOpenpeerSDK.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,7 +111,6 @@
 		87272854166CC2640089CBB6 /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 		87272857166CC45A0089CBB6 /* LoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginManager.h; sourceTree = "<group>"; };
 		87272858166CC45B0089CBB6 /* LoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginManager.m; sourceTree = "<group>"; };
-		872729CC166CDE820089CBB6 /* OpenpeerSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenpeerSDK.framework; path = "../../build/Debug-iphoneos/OpenpeerSDK.framework"; sourceTree = "<group>"; };
 		872729CF166CDF530089CBB6 /* openpeer-ios-sdk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "openpeer-ios-sdk.xcodeproj"; path = "../../openpeer-ios-sdk.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		87368AE1167600F200166F35 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
 		87368AE2167600F200166F35 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
@@ -198,6 +197,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B28206E0171636E1000D5D3C /* libOpenpeerSDK.a in Frameworks */,
 				87FF9892170EDB7D0017C627 /* CoreImage.framework in Frameworks */,
 				87FF9890170EDB6D0017C627 /* MobileCoreServices.framework in Frameworks */,
 				87FF988E170EDB5D0017C627 /* AssetsLibrary.framework in Frameworks */,
@@ -211,7 +211,6 @@
 				8727282D166CBF9B0089CBB6 /* UIKit.framework in Frameworks */,
 				8727282F166CBF9B0089CBB6 /* Foundation.framework in Frameworks */,
 				87272831166CBF9B0089CBB6 /* CoreGraphics.framework in Frameworks */,
-				872729CD166CDE820089CBB6 /* OpenpeerSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,9 +280,6 @@
 		8727281D166CBF9B0089CBB6 = {
 			isa = PBXGroup;
 			children = (
-				87FF9891170EDB7D0017C627 /* CoreImage.framework */,
-				87FF988F170EDB6C0017C627 /* MobileCoreServices.framework */,
-				87FF988D170EDB5C0017C627 /* AssetsLibrary.framework */,
 				87FF9861170EDAF00017C627 /* libxml2.dylib */,
 				872729CF166CDF530089CBB6 /* openpeer-ios-sdk.xcodeproj */,
 				87272832166CBF9B0089CBB6 /* OpenPeerSampleApp */,
@@ -308,12 +304,14 @@
 				874ADDCB166E2B7B0095FE33 /* libboost_regex.a */,
 				874ADDCC166E2B7B0095FE33 /* libboost_thread.a */,
 				874ADDCD166E2B7C0095FE33 /* libcurl.a */,
+				87FF9891170EDB7D0017C627 /* CoreImage.framework */,
+				87FF988F170EDB6C0017C627 /* MobileCoreServices.framework */,
+				87FF988D170EDB5C0017C627 /* AssetsLibrary.framework */,
 				874ADDBC166E14440095FE33 /* CoreMedia.framework */,
 				874ADDBA166E14000095FE33 /* AudioToolbox.framework */,
 				874ADDB8166E13970095FE33 /* AVFoundation.framework */,
 				874ADDB6166E13910095FE33 /* CoreVideo.framework */,
 				874ADDB4166E138A0095FE33 /* CoreAudio.framework */,
-				872729CC166CDE820089CBB6 /* OpenpeerSDK.framework */,
 				8727282C166CBF9B0089CBB6 /* UIKit.framework */,
 				8727282E166CBF9B0089CBB6 /* Foundation.framework */,
 				87272830166CBF9B0089CBB6 /* CoreGraphics.framework */,
@@ -665,7 +663,11 @@
 				HEADER_SEARCH_PATHS = "\"$(SDK_DIR)\"/usr/include/libxml2";
 				INFOPLIST_FILE = "OpenPeerSampleApp/OpenPeerSampleApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"",
+					"\"$(SRCROOT)/../../../op/hookflash-libs/webRTC/xcodebuild/Debug-iphoneos\"",
+					"\"$(SRCROOT)/../../../../../Library/Developer/Xcode/DerivedData/OpenPeerSampleApp-cftdsctvkylhnlevptuuuinhsuix/Build/Products/Debug-iphoneos\"",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -702,7 +704,11 @@
 				HEADER_SEARCH_PATHS = "\"$(SDK_DIR)\"/usr/include/libxml2";
 				INFOPLIST_FILE = "OpenPeerSampleApp/OpenPeerSampleApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../OP/hookflash-staging/iPhoneOS/lib\"",
+					"\"$(SRCROOT)/../../../op/hookflash-libs/webRTC/xcodebuild/Debug-iphoneos\"",
+					"\"$(SRCROOT)/../../../../../Library/Developer/Xcode/DerivedData/OpenPeerSampleApp-cftdsctvkylhnlevptuuuinhsuix/Build/Products/Debug-iphoneos\"",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

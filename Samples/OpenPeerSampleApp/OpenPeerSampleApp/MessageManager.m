@@ -37,6 +37,9 @@
 #import "Session.h"
 #import "Contact.h"
 #import "Utility.h"
+#import "Message.h"
+#import "OpenPeer.h"
+#import "MainViewController.h"
 
 #import "XMLWriter.h"
 #import "RXMLElement.h"
@@ -170,6 +173,51 @@
                     break;
             }
         }
+    }
+}
+
+
+- (void) sendMessage:(NSString*) message forSession:(Session*) inSession
+{
+    NSLog(@"Send message");
+    
+    //Currently it is not available group chat, so we can have only one message recipients
+    HOPContact* contact = [[[inSession participantsArray] objectAtIndex:0] hopContact];
+    //Create a message object
+    HOPMessage* hopMessage = [[HOPMessage alloc] initWithMessageId:[Utility getGUIDstring] andMessage:message andContact:contact andMessageType:messageTypeText andMessageDate:[NSDate date]];
+    //Send message
+    [inSession.conversationThread sendMessage:hopMessage];
+    
+    Message* messageObj = [[Message alloc] initWithMessageText:message senderContact:nil];
+    [inSession.messageArray addObject:messageObj];
+}
+
+/**
+ Handles received message. For text message just display alert view, and for the system message perform appropriate action.
+ @param message HOPMessage Message
+ @param sessionId NSString Session id of session for which message is received.
+ */
+- (void) onMessageReceived:(HOPMessage*) message forSessionId:(NSString*) sessionId
+{
+    NSLog(@"Message received");
+    
+    if ([sessionId length] == 0)
+        return;
+    
+    Session* session = [[SessionManager sharedSessionManager] getSessionForSessionId:sessionId];
+    
+    if ([message.type isEqualToString:messageTypeText])
+    {
+        Contact* contact  = [[ContactsManager sharedContactsManager] getContactForID:[message.contact getStableUniqueID]];
+        Message* messageObj = [[Message alloc] initWithMessageText:message.text senderContact:contact];
+        [session.messageArray addObject:messageObj];
+        //If session view controller with message sender is not yet shown, show it
+        [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:NO forIncomingMessage:YES];
+        
+    }
+    else
+    {
+        [self parseSystemMessage:message forSession:session];
     }
 }
 @end

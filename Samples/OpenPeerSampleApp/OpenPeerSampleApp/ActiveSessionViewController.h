@@ -32,6 +32,8 @@
 #import <UIKit/UIKit.h>
 
 @class Session;
+@class ChatViewController;
+
 @interface ActiveSessionViewController : UIViewController
 
 @property (nonatomic, strong) Session* session;
@@ -50,6 +52,8 @@
 @property (nonatomic, weak) IBOutlet UIButton *videoCallButton;
 @property (nonatomic, weak) IBOutlet UIButton *messageButton;
 @property (weak, nonatomic) IBOutlet UIButton *recordingButton;
+
+@property (strong, nonatomic) ChatViewController *chatViewController;
 
 @property (assign) BOOL isIncomingCall;
 

@@ -1,6 +1,6 @@
 /*
  
- Copyright (c) 2012, SMB Phone Inc.
+ Copyright (c) 2013, SMB Phone Inc.
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -29,31 +29,20 @@
  
  */
 
-#import <Foundation/Foundation.h>
+#import "Message.h"
 
-@class HOPMessage;
-@class Session;
+@implementation Message
 
-typedef enum
+- (id) initWithMessageText:(NSString*) messageText senderContact:(Contact*) senderContact
 {
-    SystemMessage_EstablishSessionBetweenTwoPeers,
-    SystemMessage_IsContactAvailable,
-    SystemMessage_IsContactAvailable_Response,
-    SystemMessage_CallAgain
-}SystemMessageTypes;
-
-@interface MessageManager : NSObject
-
-+ (id) sharedMessageManager;
-
-- (HOPMessage*) createSystemMessageWithType:(SystemMessageTypes) type andText:(NSString*) text;
-- (void) sendSystemMessageToInitSessionBetweenPeers:(NSArray*) peers forSession:(Session*) inSession;
-- (void) sendSystemMessageToCallAgainForSession:(Session*) inSession;
-- (void) sendSystemMessageToCheckAvailabilityForSession:(Session*) inSession;
-
-- (void) sendSystemMessageToCheckAvailabilityResponseForSession:(Session*) inSession message:(NSString*) message;
-
-- (void) parseSystemMessage:(HOPMessage*) inMessage forSession:(Session*) inSession;
-- (void) sendMessage:(NSString*) message forSession:(Session*) inSession;
-- (void) onMessageReceived:(HOPMessage*) message forSessionId:(NSString*) sessionId;
+    self = [super init];
+    
+    if (self)
+    {
+        self.message = messageText;
+        self.contact = senderContact;
+        self.date = [NSDate date];
+    }
+    return self;
+}
 @end

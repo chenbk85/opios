@@ -166,7 +166,7 @@
                 if (session)
                 {
                     //If session is created sucessfully, start a video call
-                    [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:NO];
+                    [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:session forIncomingCall:NO  forIncomingMessage:NO];
                     
                     [self makeCallForSession:session includeVideo:YES isRedial:NO];
                 }
@@ -216,6 +216,11 @@
             return session;
     }
     return nil;
+}
+
+- (Session*) getSessionForSessionId:(NSString*) sessionId
+{
+    return [self.sessionsDictionary objectForKey:sessionId];
 }
 
 - (void)endSession:(Session *)session
@@ -331,57 +336,10 @@
     return ret;
 }
 
-/**
- Sends message for session.
- @param message NSString Message text
- @param inSession Session session.
- */
-- (void) sendMessage:(NSString*) message forSession:(Session*) inSession
-{
-    NSLog(@"Send message");
-    
-    //Currently it is not available group chat, so we can have only one message recipients
-    HOPContact* contact = [[[inSession participantsArray] objectAtIndex:0] hopContact];
-    //Create a message object
-    HOPMessage* hopMessage = [[HOPMessage alloc] initWithMessageId:[Utility getGUIDstring] andMessage:message andContact:contact andMessageType:messageTypeText andMessageDate:[NSDate date]];
-    //Send message
-    [inSession.conversationThread sendMessage:hopMessage];
-}
 
 /**
- Handles received message. For text message just display alert view, and for the system message perform appropriate action.
- @param message HOPMessage Message
- @param sessionId NSString Session id of session for which message is received.
- */
-- (void) onMessageReceived:(HOPMessage*) message forSessionId:(NSString*) sessionId
-{
-    NSLog(@"Message received");
-    
-    if ([message.type isEqualToString:messageTypeText])
-    {
-        //If session view controller with message sender is not yet shown, show it
-        [[[OpenPeer sharedOpenPeer] mainViewController] showSessionViewControllerForSession:[self.sessionsDictionary objectForKey:sessionId]  forIncomingCall:NO];
-        //Get message sender
-        Contact* contact  = [[ContactsManager sharedContactsManager] getContactForID:[message.contact getStableUniqueID]];
-        NSString* from = [[NSString alloc] initWithFormat:@"Message from %@",[contact fullName]];
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:from
-                                                            message:message.text
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Ok"
-                                                  otherButtonTitles:nil];
-        [alertView show];
-    }
-    else
-    {
-        Session* session = [self.sessionsDictionary objectForKey:sessionId];
-        if (session)
-            [[MessageManager sharedMessageManager] parseSystemMessage:message forSession:session];
-    }
-}
-/**
- Sends message for session.
- @param message HOPMessage Message
- @param sessionId NSString Session id.
+ Handle availability check request
+ @param inSession HOPMessage Session with contact whose availability is being checked
  */
 - (void) onAvailabilityCheckReceivedForSession:(Session*) inSession
 {
@@ -464,4 +422,8 @@
     [[HOPMediaEngine sharedInstance] stopRecordVideoCapture];
 }
 
+- (BOOL) isCallInProgress
+{
+    return self.sessionWithActiveCall != nil;
+}
 @end

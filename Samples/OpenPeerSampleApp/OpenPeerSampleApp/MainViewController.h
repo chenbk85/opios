@@ -45,6 +45,22 @@ typedef enum
     DEMO_CALL_REDIAL
 } DemoOptions;
 
+typedef  enum
+{
+    NEW_SESSION,
+    NEW_SESSION_WITH_CALL,
+    NEW_SESSION_WITH_CHAT,
+    NEW_SESSION_REFRESH_CHAT,
+    NEW_SESSION_SWITCH,
+    EXISTING_SESSION,
+    EXISITNG_SESSION_SWITCH,
+    EXISTING_SESSION_REFRESH_CHAT,
+    EXISTING_SESSION_REFRESH_NOT_VISIBLE_CHAT,
+    EXISTIG_SESSION_SHOW_CHAT,
+    
+    ERROR_CALL_ALREADY_IN_PROGRESS = 100
+}SessionTransitionStates;
+
 @interface MainViewController : UIViewController<UIActionSheetDelegate>
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
@@ -62,11 +78,8 @@ typedef enum
 - (void) showWebLoginView:(NSString*) url;
 - (void) showContactsTable;
 
-//- (void) showSessionViewControllerForSession:(Session*) session;
-- (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall;
+- (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall forIncomingMessage:(BOOL) incomingMessage;
 - (void) removeSessionViewControllerForSession:(NSString*) sessionId;
 
 - (void) showIncominCallForSession:(Session*) session;
-
-- (void) prepareForViewCallSession:(Session*) session withVideo:(BOOL) withVideo;
 @end

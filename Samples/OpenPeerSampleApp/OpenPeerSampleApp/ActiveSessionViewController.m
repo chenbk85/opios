@@ -32,7 +32,9 @@
 #import "ActiveSessionViewController.h"
 #import "Session.h"
 #import "SessionManager.h"
+#import "MessageManager.h"
 #import "OpenPeer.h"
+#import "ChatViewController.h"
 #import <OpenpeerSDK/HOPCall.h>
 #import <OpenpeerSDK/HOPMediaEngine.h>
 #import "Utility.h"
@@ -71,6 +73,17 @@
         
     }
     return self;
+}
+
+- (ChatViewController*) chatViewController
+{
+    if (!_chatViewController)
+    {
+        _chatViewController = [[ChatViewController alloc] initWithNibName:@"ChatViewController" bundle:nil];
+        _chatViewController.session = self.session;
+    }
+    
+    return _chatViewController;
 }
 
 - (void)viewDidLoad
@@ -177,11 +190,7 @@
 
 - (IBAction)actionSendMessage:(id)sender
 {
-    //Create a message and send it
-    [[SessionManager sharedSessionManager] sendMessage:[NSString stringWithFormat:@"This is a test message %d.",self.messageCounter] forSession:self.session];
-    
-    //Increase counter just to distinguish new message from previous
-    self.messageCounter++;
+    [self.navigationController pushViewController:self.chatViewController animated:YES];
 }
 
 - (IBAction)actionVideoCall:(id)sender

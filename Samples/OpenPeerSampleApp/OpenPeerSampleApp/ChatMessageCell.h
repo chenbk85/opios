@@ -1,6 +1,6 @@
 /*
  
- Copyright (c) 2012, SMB Phone Inc.
+ Copyright (c) 2013, SMB Phone Inc.
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -29,44 +29,20 @@
  
  */
 
-#import <Foundation/Foundation.h>
-#import <OpenpeerSDK/HOPProtocols.h>
+#import <UIKit/UIKit.h>
 
-@class Contact;
-@class Session;
-@class HOPConversationThread;
-@class HOPMessage;
 
-@interface SessionManager : NSObject
+@class Message;
+@interface ChatMessageCell : UITableViewCell
 
-@property (strong) NSMutableDictionary* sessionsDictionary;
-@property (assign) Session* lastEndedCallSession;
-@property (nonatomic, assign) Session* sessionWithFaceDetectionOn;
+@property (nonatomic, strong) UILabel *messageLabel;
+@property (nonatomic) BOOL hasSendingIndicator;
 
-+ (id) sharedSessionManager;
+- (void) setMessage:(Message*) message;
++(CGSize)calcMessageHeight:(NSString *)message forScreenWidth:(float)width;
 
-- (Session*) createSessionForContact:(Contact*) contact;
-- (Session*) createSessionForContacts:(NSArray*) contacts andConversationThread:(HOPConversationThread*) inConversationThread;
-- (Session*) createSessionInitiatedFromSession:(Session*) inSession forContactUserIds:(NSString*) userIds;
-- (Session*) createRemoteSessionForContacts:(NSArray*) participants;
-- (Session*) getSessionForContact:(Contact*) contact;
-- (Session*) getSessionForSessionId:(NSString*) sessionId;
-- (void) endSession:(Session*) session;
 
-- (void) makeCallForSession:(Session*) inSession includeVideo:(BOOL) includeVideo isRedial:(BOOL) isRedial;
-- (void) answerCallForSession:(Session*) inSession;
-- (void) endCallForSession:(Session*) inSession;
+-(void)setUnicodeChars:(NSString *)str;
 
-- (void) handleIncomingCall:(HOPCall*) call forSession:(Session*) inSession;
 
-- (void) onAvailabilityCheckReceivedForSession:(Session*) inSession;
-- (void) redialCallForSession:(Session*) inSession;
-
-- (void) onCallEnded:(Session*) inSession;
-- (void) onFaceDetected;
-
-- (void) startVideoRecording;
-- (void) stopVideoRecording;
-
-- (BOOL) isCallInProgress;
 @end

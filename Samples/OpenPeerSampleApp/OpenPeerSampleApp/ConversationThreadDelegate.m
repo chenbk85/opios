@@ -32,6 +32,8 @@
 #import "ConversationThreadDelegate.h"
 #import "SessionManager.h"
 #import "ContactsManager.h"
+#import "MessageManager.h"
+
 #import <OpenpeerSDK/HOPConversationThread.h>
 #import <OpenpeerSDK/HOPContact.h>
 
@@ -79,7 +81,7 @@
         HOPMessage* message = [conversationThread getMessageForID:messageID];
         if (message)
         {
-            [[SessionManager sharedSessionManager] onMessageReceived:message forSessionId:[conversationThread getThreadId]];
+            [[MessageManager sharedMessageManager] onMessageReceived:message forSessionId:[conversationThread getThreadId]];
         }
     });
 }

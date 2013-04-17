@@ -49,12 +49,14 @@
 #import "ContactsTableViewController.h"
 #import "ActiveSessionViewController.h"
 #import "MainViewController.h"
+#import "ChatViewController.h"
 
 //Private methods
 @interface MainViewController ()
 
 - (void) removeAllSubViews;
-
+- (SessionTransitionStates) determineViewControllerTransitionStateForSession:(NSString*) sessionId forIncomingCall:(BOOL) incomingCall forIncomingMessage:(BOOL) incomingMessage;
+- (void) showNotificationForContactName:(NSString*) contactName;
 @end
 
 @implementation MainViewController
@@ -179,31 +181,162 @@
  Show session view.
  @param session Session which needs to be displyed
  @param incomingCall BOOL - Yes if it is session with incoming call, otherwise NO
+ @param incomingMessage BOOL - Yes if it is session with incoming message, otherwise NO
  */
-- (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall
+- (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall forIncomingMessage:(BOOL) incomingMessage
 {
+    ActiveSessionViewController* sessionViewContorller = nil;
     NSString* sessionId = [[session conversationThread] getThreadId];
     
-    //If session view controller is laredy created for this session get it from dictionary 
-    ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:sessionId];
+    SessionTransitionStates transition = [self determineViewControllerTransitionStateForSession:sessionId forIncomingCall:incomingCall forIncomingMessage:incomingMessage];
     
-    //If session view controller doesn't exist, create a new one
-    if (!sessionViewContorller)
+    NSString* title = [[[session participantsArray] objectAtIndex:0] fullName];
+    
+    switch (transition)
     {
-        sessionViewContorller = [[ActiveSessionViewController alloc] initWithSession:session];
-        [self.sessionViewControllersDictionary setObject:sessionViewContorller forKey:sessionId];
-    }
-    
-    sessionViewContorller.isIncomingCall = incomingCall;
-    
-    //Set title, and push session view conntroller
-    if (sessionViewContorller.parentViewController == nil)
-    {
-        NSString* title = [[[session participantsArray] objectAtIndex:0] fullName];
-        [self.contactsNavigationController pushViewController:sessionViewContorller animated:NO];
-        [self.contactsNavigationController.navigationBar.topItem setTitle:title];
+        case NEW_SESSION_SWITCH:
+        {
+            [self.contactsNavigationController popToRootViewControllerAnimated:NO];
+        }
+        case NEW_SESSION:
+        case NEW_SESSION_WITH_CALL:
+            sessionViewContorller = [[ActiveSessionViewController alloc] initWithSession:session];
+            [self.sessionViewControllersDictionary setObject:sessionViewContorller forKey:sessionId];
+            
+            [self.contactsNavigationController pushViewController:sessionViewContorller animated:YES];
+            [self.contactsNavigationController.navigationBar.topItem setTitle:title];
+            break;
+            
+        case NEW_SESSION_WITH_CHAT:
+            sessionViewContorller = [[ActiveSessionViewController alloc] initWithSession:session];
+            [self.sessionViewControllersDictionary setObject:sessionViewContorller forKey:sessionId];
+            
+            [self.contactsNavigationController pushViewController:sessionViewContorller animated:NO];
+            [self.contactsNavigationController.navigationBar.topItem setTitle:title];
+            
+            [self.contactsNavigationController pushViewController:sessionViewContorller.chatViewController animated:YES];
+            
+            //[sessionViewContorller.chatViewController refreshViewWithData];
+            break;
+            
+        case NEW_SESSION_REFRESH_CHAT:
+        {
+            sessionViewContorller = [[ActiveSessionViewController alloc] initWithSession:session];
+            [self.sessionViewControllersDictionary setObject:sessionViewContorller forKey:sessionId];
+            [sessionViewContorller.chatViewController refreshViewWithData];
+            
+            [self showNotificationForContactName:title];
+        }
+            break;
+            
+        case EXISITNG_SESSION_SWITCH:
+            sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:sessionId];
+            [self.contactsNavigationController popToRootViewControllerAnimated:NO];
+            [self.contactsNavigationController pushViewController:sessionViewContorller animated:YES];
+            [self.contactsNavigationController.navigationBar.topItem setTitle:title];
+            break;
+            
+        case EXISTING_SESSION_REFRESH_NOT_VISIBLE_CHAT:
+            [self showNotificationForContactName:title];
+        case EXISTING_SESSION_REFRESH_CHAT:
+            sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:sessionId];
+            [sessionViewContorller.chatViewController refreshViewWithData];
+            break;
+            
+        case EXISTIG_SESSION_SHOW_CHAT:
+            sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:sessionId];
+            if (self.contactsNavigationController.visibleViewController != sessionViewContorller)
+            {
+                [self.contactsNavigationController popToRootViewControllerAnimated:NO];
+                [self.contactsNavigationController pushViewController:sessionViewContorller animated:NO];
+            }
+            [self.contactsNavigationController pushViewController:sessionViewContorller.chatViewController animated:YES];
+            break;
+            
+        case ERROR_CALL_ALREADY_IN_PROGRESS:
+            
+            break;
+            
+        case EXISTING_SESSION:
+        default:
+            break;
     }
 }
+
+- (SessionTransitionStates) determineViewControllerTransitionStateForSession:(NSString*) sessionId forIncomingCall:(BOOL) incomingCall forIncomingMessage:(BOOL) incomingMessage
+{
+    //If session view controller is laredy created for this session get it from dictionary
+    ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:sessionId];
+    
+    if (!sessionViewContorller)
+    {
+        if (incomingCall)
+        {
+            if ([[SessionManager sharedSessionManager] isCallInProgress])
+                return ERROR_CALL_ALREADY_IN_PROGRESS; //Cannot have two active calls at once
+            else
+            {
+                if (self.contactsNavigationController.visibleViewController && self.contactsNavigationController.visibleViewController != self.contactsTableViewController)
+                    return NEW_SESSION_SWITCH; //Incoming call has priority over chat session, so switch from currently active session to new with incoming call
+                else
+                    return NEW_SESSION_WITH_CALL; //Create and show a new session with incomming call
+            }
+            
+        }
+        else if (incomingMessage)
+        {
+            if (self.contactsNavigationController.visibleViewController && self.contactsNavigationController.visibleViewController != self.contactsTableViewController)
+                return NEW_SESSION_REFRESH_CHAT; //Create a new session and update chat, but don't switch from existing session
+            else
+                return NEW_SESSION_WITH_CHAT; //Create and show a new session with incomming message
+        }
+        else
+            return NEW_SESSION; //Create and show a new session
+        
+    }
+    else
+    {
+        if (incomingCall)
+        {
+            if ([[SessionManager sharedSessionManager] isCallInProgress])
+                return ERROR_CALL_ALREADY_IN_PROGRESS; //Cannot have two active calls at once
+            else
+            {
+                if (self.contactsNavigationController.visibleViewController == sessionViewContorller)
+                    return EXISTING_SESSION; //Incoming call for currenlty displayed session so don't change anything
+                else
+                    return EXISITNG_SESSION_SWITCH; //Incoming call for session that is not displayed at the moment so swith to that session
+            }
+        }
+        else if (incomingMessage)
+        {
+            if (self.contactsNavigationController.visibleViewController == sessionViewContorller)
+            {
+                if ([[SessionManager sharedSessionManager] isCallInProgress])
+                    return EXISTING_SESSION_REFRESH_CHAT; //Incoming message for session with active call. Just refresh list of messages but don't display chat view
+                else
+                    return EXISTIG_SESSION_SHOW_CHAT; //Show chat for currently displayed session
+            }
+            else if (self.contactsNavigationController.visibleViewController == sessionViewContorller.chatViewController)
+            {
+                return EXISTING_SESSION_REFRESH_CHAT; //Already displayed chat view, so just refresh messages
+            }
+            else if (self.contactsNavigationController.visibleViewController == self.contactsTableViewController)
+            {
+                return EXISTIG_SESSION_SHOW_CHAT; //Move from the contacts list to the chat view for session
+            }
+            else
+            {
+                return EXISTING_SESSION_REFRESH_NOT_VISIBLE_CHAT; //Move from the contacts list to the chat view for session
+            }
+        }
+        else
+        {
+            return EXISITNG_SESSION_SWITCH; //Switch to exisitng session
+        }
+    }
+}
+
 
 /**
  Remove specific session view controller from the dictionary.
@@ -281,9 +414,21 @@
     
 }
 
-- (void) prepareForViewCallSession:(Session*) session withVideo:(BOOL) withVideo
+- (void) showNotificationForContactName:(NSString*) contactName
 {
-    ActiveSessionViewController* sessionViewContorller = [self.sessionViewControllersDictionary objectForKey:[[session conversationThread] getThreadId]];
-    [sessionViewContorller prepareForCall:YES withVideo:withVideo];
+    UILabel* labelNotification = [[UILabel alloc] initWithFrame:CGRectMake(5.0, 20.0, self.view.frame.size.width - 10.0, 40.0)];
+    labelNotification.text = [NSString stringWithFormat:@"New message from %@",contactName];
+    labelNotification.textAlignment = NSTextAlignmentCenter;
+    labelNotification.textColor = [UIColor whiteColor];
+    labelNotification.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.7];
+    [self.contactsNavigationController.visibleViewController.view addSubview:labelNotification];
+    
+    [UIView animateWithDuration:0.5 delay:2.0 options:0 animations:^{
+        // Animate the alpha value of your imageView from 1.0 to 0.0 here
+        labelNotification.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        // Once the animation is completed and the alpha has gone to 0.0, hide the view for good
+        [labelNotification removeFromSuperview];
+    }];
 }
 @end

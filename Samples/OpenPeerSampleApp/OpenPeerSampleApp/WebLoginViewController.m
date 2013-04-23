@@ -33,10 +33,11 @@
 #import "LoginManager.h"
 #import "OpenPeer.h"
 #import "ActivityIndicatorViewController.h"
+#import "Constants.h"
 
 @interface WebLoginViewController ()
 
- 
+@property (nonatomic) BOOL outerFrameInitialised;
 @end
 
 @implementation WebLoginViewController
@@ -45,7 +46,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        self.outerFrameInitialised = NO;
     }
     return self;
 }
@@ -75,16 +76,17 @@
 - (void) passMessageToJS:(NSString*) message
 {
     NSString* javaScript = [NSString stringWithFormat:@"JSMethod:%@",message];
-    [self.loginWebView stringByEvaluatingJavaScriptFromString:javaScript];
+    [self.loginWebView stringByEvaluatingJavaScriptFromString:message];
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    
     NSString *requestString = [[request URL] absoluteString];
     if ([requestString hasPrefix:@"hookflash-js-frame:"])
     {
-        
-        NSArray *components = [requestString componentsSeparatedByString:@":"];
+        NSString *encodedString=[requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSArray *components = [requestString componentsSeparatedByString:@"::"];
         
         if ([components count] == 3)
         {
@@ -99,7 +101,7 @@
             
             NSString *functionNameSelector = [NSString stringWithFormat:@"%@:", function];
             //Execute JSON parsing in function read from requestString.
-            [self performSelector:NSSelectorFromString(functionNameSelector) withObject:params];
+            [[LoginManager sharedLoginManager] performSelector:NSSelectorFromString(functionNameSelector) withObject:params];
             return NO;
         }
     }
@@ -127,6 +129,25 @@
 {
     //Login page is opened, so remove the activity indicator
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
+    
+    NSString *requestString = [[[webView request] URL] absoluteString];
+    if (!self.outerFrameInitialised && [requestString isEqualToString:outerFrameURL])
+    {
+        self.outerFrameInitialised = YES;
+        [[LoginManager sharedLoginManager] onOuterFrameLoaded];
+    }
+    //Call delegate that will inform that loading of outer frame is finished and to initiate inner frame
+    //NSString* jsMethod = [NSString stringWithFormat:@"initInnerFrame(%@)",]
+    //[self.loginWebView stringByEvaluatingJavaScriptFromString:<#(NSString *)#>]
 }
 
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    NSLog(@"UIWebView _ERROR_ : %@",[error localizedDescription]);
+}
+
+- (void) clientNotify:(NSString*) message
+{
+
+}
 @end

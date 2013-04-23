@@ -56,6 +56,7 @@
 
 - (id) initSingleton;
 
+@property (nonatomic, weak) HOPIdentity* loginIdentity;
 @end
 
 
@@ -190,8 +191,10 @@
  Handles core event that login URL is available.
  @param url NSString Login URL.
  */
-- (void) onLoginUrlReceived:(NSString*) url
+- (void) onLoginUrlReceived:(NSString*) url forIdentity:(HOPIdentity*) identity
 {
+    self.loginIdentity = identity;
+    
     if ([url length] > 0)
         [self.webLoginViewController openLoginUrl:url];
     
@@ -201,6 +204,13 @@
     
 }
 
+- (void) onOuterFrameLoaded
+{
+//    NSString* innerFRame = @"http://example-unstable.hookflash.me/inner.html";
+//    NSString* innerFRame2 = [self.loginIdentity getIdentityLoginURL];
+    NSString* jsMethod = [NSString stringWithFormat:@"initInnerFrame(\'%@\')",[self.loginIdentity getIdentityLoginURL]];
+    [self.webLoginViewController passMessageToJS:jsMethod];;
+}
 - (void) makeLoginWebViewVisible:(BOOL) isVisible
 {
     self.webLoginViewController.view.hidden = !isVisible;
@@ -334,5 +344,10 @@
 
     //Start loading contacts.
     [[ContactsManager sharedContactsManager] loadContacts];
+}
+
+- (void) notifyClient:(NSString*) message
+{
+    [self.loginIdentity handleMessageFromInnerBrowserWindowFrame:message];
 }
 @end

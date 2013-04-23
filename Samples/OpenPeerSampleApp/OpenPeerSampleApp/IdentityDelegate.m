@@ -9,6 +9,7 @@
 #import "IdentityDelegate.h"
 #import <OpenpeerSDK/HOPIdentity.h>
 #import "LoginManager.h"
+#import "Constants.h"
 
 @implementation IdentityDelegate
 
@@ -26,7 +27,8 @@
             
         case HOPIdentityStateWaitingToLoadBrowserWindow:
             //[[LoginManager sharedLoginManager] onLoginUrlReceived:[identity getIdentityLoginURL]];
-            [[LoginManager sharedLoginManager] onLoginUrlReceived:@"app.unstable.hookflash.me"];
+            //[[LoginManager sharedLoginManager] onLoginUrlReceived:@"app.unstable.hookflash.me"];
+            [[LoginManager sharedLoginManager] onLoginUrlReceived:outerFrameURL forIdentity:identity];
             break;
             
         case HOPIdentityStateWaitingToMakeBrowserWindowVisible:

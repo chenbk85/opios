@@ -47,7 +47,9 @@
 - (void) loginUsingDomain:(NSString*) identityProviderDomain;
 - (void) logout;
 
-- (void) onLoginUrlReceived:(NSString*) url;
+- (void) onLoginUrlReceived:(NSString*) url forIdentity:(HOPIdentity*) identity;
+- (void) onOuterFrameLoaded;
+
 - (void) makeLoginWebViewVisible:(BOOL) isVisible;
 - (void) onIdentityLoginFinished:(HOPIdentity*) identity;
 - (void) onIdentityassociationFinished:(HOPIdentity*) identity;
@@ -56,4 +58,5 @@
 - (void) onCredentialProviderResponseReceived:(NSString*) url;
 - (void) onUserLoggedIn;
 
+- (void) notifyClient:(NSString*) message;
 @end

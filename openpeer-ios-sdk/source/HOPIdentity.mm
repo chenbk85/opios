@@ -34,6 +34,7 @@
 #import <hookflash/core/IIdentity.h>
 #import <hookflash/core/IHelper.h>
 
+#import "OpenPeerStorageManager.h"
 #import "OpenPeerIdentityDelegate.h"
 @implementation HOPIdentityState
 
@@ -56,7 +57,7 @@
     IIdentityPtr identity = IIdentity::login(identityDelegatePtr, [redirectAfterLoginCompleteURL UTF8String], [identityURIOridentityBaseURI UTF8String], [identityProviderDomain UTF8String]);
     
     ret = [[self alloc] initWithIdentityPtr:identity openPeerIdentityDelegate:identityDelegatePtr];
-    
+    [[OpenPeerStorageManager sharedStorageManager] setIdentity:ret forId:identityURIOridentityBaseURI];
     return ret;
 }
 

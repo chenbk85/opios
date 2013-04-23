@@ -33,6 +33,7 @@
 
 //Provisioning URI
 NSString* const provisioningURI = @"provisioning-stable-dev.hookflash.me";
+NSString* const outerFrameURL = @"http://app-unstable.hookflash.me/outer.html";
 
 NSString * const keyOpenPeerUser = @"keyOpenPeerUser";
 

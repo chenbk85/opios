@@ -110,7 +110,7 @@
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoadingStarted];
     
     //NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@", @"provisioning-stable-dev.hookflash.me", @"/api_web_res/liconnections.html"];
-    NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@", @"provisioning-stable-dev.hookflash.me", @"/api_web_res/fbconnections.html"];
+    NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@", @"example-unstable.hookflash.me", @"/fbconnections.html"];
     
     NSURL *url = [NSURL URLWithString:urlAddress];
     
@@ -248,25 +248,25 @@
  Does JSON response parsing to get user facebook profile.
  @param input NSString JSON input for processing.
  */
-/*- (void)proccessMyFBProfile:(NSString*)input
+- (void)proccessMyFBProfile:(NSString*)input
 {
- SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
- NSDictionary *result = [jsonParser objectWithString:input];
- 
- NSString *fullName = [[result objectForKey:keyJSONContactFullName] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
- if ([fullName length] > 0)
- [[OpenPeerUser sharedOpenPeerUser] setFullName:fullName];
+    SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
+    NSDictionary *result = [jsonParser objectWithString:input];
+    
+    NSString *fullName = [[result objectForKey:keyJSONContactFullName] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    if ([fullName length] > 0)
+        [[OpenPeerUser sharedOpenPeerUser] setFullName:fullName];
  
  //Provider key for Facebook
- NSNumber* providerKey = [NSNumber numberWithInt:HOPProvisioningAccountIdentityTypeFacebookID];
- if (providerKey)
- [[OpenPeerUser sharedOpenPeerUser] setProviderKey:providerKey];
+ // NSNumber* providerKey = [NSNumber numberWithInt:HOPProvisioningAccountIdentityTypeFacebookID];
+ //if (providerKey)
+     //[[OpenPeerUser sharedOpenPeerUser] setProviderKey:providerKey];
  
  //User facebook id
- NSString* cotnactProviderId = [result objectForKey:keyJSONContactId];
- if ([cotnactProviderId length] > 0)
- [[OpenPeerUser sharedOpenPeerUser] setContactProviderId:cotnactProviderId];
-}*/
+ //NSString* cotnactProviderId = [result objectForKey:keyJSONContactId];
+    //if ([cotnactProviderId length] > 0)
+     //[[OpenPeerUser sharedOpenPeerUser] setContactProviderId:cotnactProviderId];
+}
 
 /**
  Does JSON response parsing to get the list of facebook contacts
@@ -309,8 +309,9 @@
     
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
     
-    [self contactsLookupQuery:self.contactArray];
-    [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLookupCheckStarted];
+    //HOP_TODO: Do contact lookup
+    //[self contactsLookupQuery:self.contactArray];
+    //[[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLookupCheckStarted];
 }
 
 /**

@@ -85,8 +85,8 @@
             self.privatePeerFile = [aDecoder decodeObjectForKey:archivePrivatePeerFile];
             self.privatePeerFileSecret = [aDecoder decodeObjectForKey:archivePrivatePeerFile];
             //self.peerFilePassword = [aDecoder decodeObjectForKey:archivePeerFilePassword];
-            NSDictionary* identities = [aDecoder decodeObjectForKey:archiveAssociatedIdentities];
-            self.associatedIdentities = [NSMutableDictionary dictionaryWithDictionary:identities];
+            //NSDictionary* identities = [aDecoder decodeObjectForKey:archiveAssociatedIdentities];
+            //self.associatedIdentities = [NSMutableDictionary dictionaryWithDictionary:identities];
             self.lastProfileUpdateTimestamp = [aDecoder decodeDoubleForKey:archiveLastProfileUpdateTimestamp];
             
             [aDecoder finishDecoding];
@@ -125,7 +125,7 @@
     [aCoder encodeObject:self.privatePeerFile forKey:archivePrivatePeerFile];
     [aCoder encodeObject:self.privatePeerFileSecret forKey:archivePrivatePeerFileSecret];
     //[aCoder encodeObject:self.peerFilePassword forKey:archivePeerFilePassword];
-    [aCoder encodeObject:self.associatedIdentities forKey:archiveAssociatedIdentities];
+    //[aCoder encodeObject:self.associatedIdentities forKey:archiveAssociatedIdentities];
     //[aCoder encodeDouble:self.lastProfileUpdateTimestamp forKey:archiveLastProfileUpdateTimestamp];
     
     [aCoder finishEncoding];

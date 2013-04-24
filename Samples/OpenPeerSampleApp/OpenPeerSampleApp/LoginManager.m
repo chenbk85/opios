@@ -211,9 +211,24 @@
     NSString* jsMethod = [NSString stringWithFormat:@"initInnerFrame(\'%@\')",[self.loginIdentity getIdentityLoginURL]];
     [self.webLoginViewController passMessageToJS:jsMethod];;
 }
+
+- (void) onMessageForJS: (NSString*) message
+{
+  //    NSString* innerFRame = @"http://example-unstable.hookflash.me/inner.html";
+  //    NSString* innerFRame2 = [self.loginIdentity getIdentityLoginURL];
+  NSString* jsMethod = [NSString stringWithFormat:@"sendNotifyBundleToInnerFrame(\'%@\')", message];
+  [self.webLoginViewController passMessageToJS:jsMethod];;
+}
+
 - (void) makeLoginWebViewVisible:(BOOL) isVisible
 {
     self.webLoginViewController.view.hidden = !isVisible;
+    if (!self.webLoginViewController.view.superview)
+    {
+        [[[OpenPeer sharedOpenPeer] mainViewController] showWebLoginView:self.webLoginViewController];
+        [self.webLoginViewController.view setFrame:[[OpenPeer sharedOpenPeer] mainViewController].view.bounds];
+        //[[[OpenPeer sharedOpenPeer] mainViewController].view addSubview:self.webLoginViewController.view];
+    }
 }
 
 - (void) onIdentityLoginFinished:(HOPIdentity*) identity

@@ -130,16 +130,12 @@
  Show web view with opened login page.
  @param url NSString Login page url.
 */
-- (void) showWebLoginView:(NSString*) url
+- (void) showWebLoginView:(WebLoginViewController*) webLoginViewController
 {
-    if (!self.webLoginViewController)
-        self.webLoginViewController = [[WebLoginViewController alloc] initWithNibName:@"WebLoginViewController" bundle:nil];
-    
-    if (url)
+    if (webLoginViewController)
     {
         [self removeAllSubViews];
-        [self.view addSubview:self.webLoginViewController.view];
-        [self.webLoginViewController openLoginUrl:url];
+        [self.view addSubview:webLoginViewController.view];
     }
 }
 

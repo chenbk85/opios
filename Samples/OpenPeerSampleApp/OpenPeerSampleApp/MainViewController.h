@@ -68,14 +68,13 @@ typedef  enum
 @property (nonatomic, weak) IBOutlet UIView *activityView;
 
 @property (nonatomic, strong) LoginViewController *loginViewController;
-@property (nonatomic, strong) WebLoginViewController *webLoginViewController;
 @property (nonatomic, strong) ContactsTableViewController *contactsTableViewController;
 @property (nonatomic, strong) UINavigationController *contactsNavigationController;
 
 @property (nonatomic, strong) NSMutableDictionary *sessionViewControllersDictionary;
 
 - (void) showLoginView;
-- (void) showWebLoginView:(NSString*) url;
+- (void) showWebLoginView:(WebLoginViewController*) webLoginViewController;
 - (void) showContactsTable;
 
 - (void) showSessionViewControllerForSession:(Session*) session forIncomingCall:(BOOL) incomingCall forIncomingMessage:(BOOL) incomingMessage;

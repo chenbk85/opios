@@ -75,7 +75,7 @@
 
 - (void) passMessageToJS:(NSString*) message
 {
-    NSString* javaScript = [NSString stringWithFormat:@"JSMethod:%@",message];
+    //NSString* javaScript = [NSString stringWithFormat:@"JSMethod:%@",message];
     [self.loginWebView stringByEvaluatingJavaScriptFromString:message];
 }
 
@@ -85,7 +85,7 @@
     NSString *requestString = [[request URL] absoluteString];
     if ([requestString hasPrefix:@"hookflash-js-frame:"])
     {
-        NSString *encodedString=[requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        //NSString *encodedString=[requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         NSArray *components = [requestString componentsSeparatedByString:@"::"];
         
         if ([components count] == 3)
@@ -98,6 +98,12 @@
             requestString = [requestString stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""];
             
             NSString *params = [requestString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];*/
+          
+          requestString = [requestString stringByReplacingOccurrencesOfString:function withString:@""];
+          requestString = [requestString stringByReplacingOccurrencesOfString:(NSString*)[components objectAtIndex:0] withString:@""];
+          requestString = [requestString stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
+          
+           params = [requestString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             
             NSString *functionNameSelector = [NSString stringWithFormat:@"%@:", function];
             //Execute JSON parsing in function read from requestString.
@@ -106,7 +112,7 @@
         }
     }
     return YES;
-    
+  
     /*NSString* urlString = [[request URL] relativeString];
     if ([urlString rangeOfString:@"created"].length > 0)
     {

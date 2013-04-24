@@ -58,7 +58,8 @@
 
 - (void)onIdentityPendingMessageForInnerBrowserWindowFrame:(HOPIdentity *)identity
 {
-    NSString* messageForJS = [identity getNextMessageForInnerBrowerWindowFrame];
+    //NSString* messageForJS = [identity getNextMessageForInnerBrowerWindowFrame];
+    [[LoginManager sharedLoginManager] onMessageForJS:[identity getNextMessageForInnerBrowerWindowFrame]];
 }
 
 @end

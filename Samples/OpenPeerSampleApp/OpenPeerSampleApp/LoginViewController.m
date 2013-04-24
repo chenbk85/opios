@@ -32,6 +32,7 @@
 #import "LoginViewController.h"
 #import "MainViewController.h"
 #import "LoginManager.h"
+#import "Constants.h"
 
 @interface LoginViewController ()
 
@@ -64,7 +65,7 @@
 - (IBAction)actionLoginWithFacebook:(id)sender
 {
 //    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeFacebookID];
-    [[LoginManager sharedLoginManager] startLoginUsingIdentityURI:@"identity://facebook.com/"];
+    [[LoginManager sharedLoginManager] startLoginUsingIdentityURI:identityBaseURI];
 }
 
 - (IBAction)actionLoginWithLinkedIn:(id)sender

@@ -107,6 +107,7 @@
  */
 - (void) saveUserData
 {
+    return;
     self.userId = [[HOPAccount sharedAccount] getUserID];
     //self.contactId = [[HOPProvisioningAccount sharedProvisioningAccount] getContactID];
     //self.accountSalt = [[HOPProvisioningAccount sharedProvisioningAccount] getAccountSalt];

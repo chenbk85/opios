@@ -152,8 +152,8 @@
     HOPIdentity* hopIdentity = [HOPIdentity loginWithDelegate:(id<HOPIdentityDelegate>)[[OpenPeer sharedOpenPeer] identityDelegate] redirectAfterLoginCompleteURL:afterLoginCompleteURL identityURIOridentityBaseURI:identityURI identityProviderDomain:identityProviderDomain];
     [((OpenPeerUser*)[OpenPeerUser sharedOpenPeerUser]).associatedIdentities setObject:hopIdentity forKey:identityURI];
     
-    if (hopIdentity)
-    [[HOPAccount sharedAccount] loginWithAccountDelegate:(id<HOPAccountDelegate>)[[OpenPeer sharedOpenPeer] accountDelegate] conversationThreadDelegate:(id<HOPConversationThreadDelegate>) [[OpenPeer sharedOpenPeer] conversationThreadDelegate]  callDelegate:(id<HOPCallDelegate>) [[OpenPeer sharedOpenPeer] callDelegate]  peerContactServiceDomain:identityProviderDomain identity:hopIdentity];
+    //if (hopIdentity)
+        //[[HOPAccount sharedAccount] loginWithAccountDelegate:(id<HOPAccountDelegate>)[[OpenPeer sharedOpenPeer] accountDelegate] conversationThreadDelegate:(id<HOPConversationThreadDelegate>) [[OpenPeer sharedOpenPeer] conversationThreadDelegate]  callDelegate:(id<HOPCallDelegate>) [[OpenPeer sharedOpenPeer] callDelegate]  peerContactServiceDomain:identityProviderDomain identity:hopIdentity];
 }
 
 /**

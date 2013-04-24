@@ -40,6 +40,8 @@
 using namespace hookflash;
 using namespace hookflash::core;
 
+@class HOPIdentity;
+
 /**
  Wrapper Class that creates delegate object used in core.
  */
@@ -58,4 +60,7 @@ public:
     
     virtual void onIdentityStateChanged(IIdentityPtr identity,IdentityStates state);
     virtual void onIdentityPendingMessageForInnerBrowserWindowFrame(IIdentityPtr identity);
+    
+private:
+    HOPIdentity* getHOPIdentity(IIdentityPtr identity);
 };

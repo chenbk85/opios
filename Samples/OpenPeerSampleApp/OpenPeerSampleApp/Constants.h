@@ -36,6 +36,7 @@ extern NSString* const provisioningURI;
 extern NSString* const outerFrameURL;
 extern NSString* const afterLoginCompleteURL;
 extern NSString* const identityProviderDomain;
+extern NSString* const identityBaseURI;
 
 extern NSString * const keyOpenPeerUser;
 

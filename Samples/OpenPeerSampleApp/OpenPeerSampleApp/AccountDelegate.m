@@ -42,7 +42,8 @@
 
 //This method handles account state changes from SDK.
 
-- (void)onAccountStateChanged:(HOPAccount *)account accountState:(HOPAccountStates)accountState
+//- (void)onAccountStateChanged:(HOPAccount *)account accountState:(HOPAccountStates)accountState
+- (void) account:(HOPAccount*) account stateChanged:(HOPAccountStates) accountState
 {
     dispatch_async(dispatch_get_main_queue(), ^
     {

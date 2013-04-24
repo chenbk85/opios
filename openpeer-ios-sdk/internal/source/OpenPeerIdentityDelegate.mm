@@ -47,16 +47,34 @@ boost::shared_ptr<OpenPeerIdentityDelegate>  OpenPeerIdentityDelegate::create(id
 
 void OpenPeerIdentityDelegate::onIdentityStateChanged(IIdentityPtr identity,IdentityStates state)
 {
-    NSString* identityId = [NSString stringWithCString:identity->getIdentityURI() encoding:NSUTF8StringEncoding];
-    HOPIdentity* hopIdentity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:identityId];
+    // NSString* identityId = [NSString stringWithCString:identity->getIdentityURI() encoding:NSUTF8StringEncoding];
+    HOPIdentity* hopIdentity = this->getHOPIdentity(identity);//[[OpenPeerStorageManager sharedStorageManager] getIdentityForId:identityId];
     
     [identityDelegate identity:hopIdentity stateChanged:(HOPIdentityStates) state];
 }
 
 void OpenPeerIdentityDelegate::onIdentityPendingMessageForInnerBrowserWindowFrame(IIdentityPtr identity)
 {
+    //NSString* identityId = [NSString stringWithCString:identity->getIdentityURI() encoding:NSUTF8StringEncoding];
+    HOPIdentity* hopIdentity = this->getHOPIdentity(identity);//[[OpenPeerStorageManager sharedStorageManager] getIdentityForId:identityId];
+    
+    [identityDelegate onIdentityPendingMessageForInnerBrowserWindowFrame:hopIdentity];
+}
+
+HOPIdentity* OpenPeerIdentityDelegate::getHOPIdentity(IIdentityPtr identity)
+{
     NSString* identityId = [NSString stringWithCString:identity->getIdentityURI() encoding:NSUTF8StringEncoding];
     HOPIdentity* hopIdentity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:identityId];
     
-    [identityDelegate onIdentityPendingMessageForInnerBrowserWindowFrame:hopIdentity];
+    //This is temporary hack till 
+    if (!hopIdentity)
+    {
+        if (![identityId isEqualToString:@"identity://facebook.com/"])
+        {
+            hopIdentity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:@"identity://facebook.com/"];
+            if (hopIdentity)
+                [[OpenPeerStorageManager sharedStorageManager] setIdentity:hopIdentity forId:identityId];
+        }
+    }
+    return hopIdentity;
 }

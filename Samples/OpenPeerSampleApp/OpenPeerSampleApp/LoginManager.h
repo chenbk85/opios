@@ -50,6 +50,7 @@
 - (void) onLoginUrlReceived:(NSString*) url forIdentity:(HOPIdentity*) identity;
 - (void) onOuterFrameLoaded;
 - (void) onMessageForJS:(NSString*) message;
+- (void) onLoginRedirectURLReceived;
 
 - (void) makeLoginWebViewVisible:(BOOL) isVisible;
 - (void) onIdentityLoginFinished:(HOPIdentity*) identity;

@@ -79,6 +79,7 @@
     [self.loginWebView stringByEvaluatingJavaScriptFromString:message];
 }
 
+
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     
@@ -108,6 +109,14 @@
             NSString *functionNameSelector = [NSString stringWithFormat:@"%@:", function];
             //Execute JSON parsing in function read from requestString.
             [[LoginManager sharedLoginManager] performSelector:NSSelectorFromString(functionNameSelector) withObject:params];
+            return NO;
+        }
+    }
+    else
+    {
+        if ([requestString rangeOfString:afterLoginCompleteURL].length > 0)
+        {
+            [[LoginManager sharedLoginManager] onLoginRedirectURLReceived];
             return NO;
         }
     }

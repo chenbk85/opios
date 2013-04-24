@@ -149,7 +149,7 @@
 {
     NSString* identityProviderDomain = @"unstable.hookflash.me";
 
-    HOPIdentity* hopIdentity = [HOPIdentity loginWithDelegate:(id<HOPIdentityDelegate>)[[OpenPeer sharedOpenPeer] identityDelegate] redirectAfterLoginCompleteURL:@"LoginFinished" identityURIOridentityBaseURI:identityURI identityProviderDomain:identityProviderDomain];
+    HOPIdentity* hopIdentity = [HOPIdentity loginWithDelegate:(id<HOPIdentityDelegate>)[[OpenPeer sharedOpenPeer] identityDelegate] redirectAfterLoginCompleteURL:afterLoginCompleteURL identityURIOridentityBaseURI:identityURI identityProviderDomain:identityProviderDomain];
     [((OpenPeerUser*)[OpenPeerUser sharedOpenPeerUser]).associatedIdentities setObject:hopIdentity forKey:identityURI];
 }
 
@@ -220,6 +220,10 @@
   [self.webLoginViewController passMessageToJS:jsMethod];;
 }
 
+- (void) onLoginRedirectURLReceived
+{
+    [self.loginIdentity notifyLoginCompleteBrowserWindowRedirection];
+}
 - (void) makeLoginWebViewVisible:(BOOL) isVisible
 {
     self.webLoginViewController.view.hidden = !isVisible;

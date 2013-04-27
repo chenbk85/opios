@@ -34,6 +34,7 @@
 #import "OpenPeer.h"
 #import "ActivityIndicatorViewController.h"
 #import "Constants.h"
+#import "Utility.h"
 
 @interface WebLoginViewController ()
 
@@ -79,38 +80,22 @@
     [self.loginWebView stringByEvaluatingJavaScriptFromString:message];
 }
 
-
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    
     NSString *requestString = [[request URL] absoluteString];
-    if ([requestString hasPrefix:@"hookflash-js-frame:"])
+    
+    if ([requestString hasPrefix:@"https://datapass.hookflash.me/?method="] || [requestString hasPrefix:@"http://datapass.hookflash.me/?method="])
     {
-        //NSString *encodedString=[requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSArray *components = [requestString componentsSeparatedByString:@"::"];
-        
-        if ([components count] == 3)
-        {
-            NSString *function = (NSString*)[components objectAtIndex:1];
-            NSString *params = (NSString*)[components objectAtIndex:2];
-        
-            /*requestString = [requestString stringByReplacingOccurrencesOfString:function withString:@""];
-            requestString = [requestString stringByReplacingOccurrencesOfString:(NSString*)[components objectAtIndex:0] withString:@""];
-            requestString = [requestString stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""];
+        NSString *function = [Utility getFunctionNameForRequest:requestString];//(NSString*)[components objectAtIndex:1];
+        NSString *params = [Utility getParametersNameForRequest:requestString];//(NSString*)[components objectAtIndex:2];
+
+        params = [params stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             
-            NSString *params = [requestString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];*/
-          
-          requestString = [requestString stringByReplacingOccurrencesOfString:function withString:@""];
-          requestString = [requestString stringByReplacingOccurrencesOfString:(NSString*)[components objectAtIndex:0] withString:@""];
-          requestString = [requestString stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
-          
-           params = [requestString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            
-            NSString *functionNameSelector = [NSString stringWithFormat:@"%@:", function];
-            //Execute JSON parsing in function read from requestString.
+        NSString *functionNameSelector = [NSString stringWithFormat:@"%@:", function];
+        //Execute JSON parsing in function read from requestString.
+        if ([[LoginManager sharedLoginManager] respondsToSelector:NSSelectorFromString(functionNameSelector)])
             [[LoginManager sharedLoginManager] performSelector:NSSelectorFromString(functionNameSelector) withObject:params];
-            return NO;
-        }
+        return NO;
     }
     else
     {
@@ -121,18 +106,6 @@
         }
     }
     return YES;
-  
-    /*NSString* urlString = [[request URL] relativeString];
-    if ([urlString rangeOfString:@"created"].length > 0)
-    {
-        [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Login ..." inView:self.view];
-        urlString = [urlString substringFromIndex:[urlString rangeOfString:@"created"].location];
-        
-        [[LoginManager sharedLoginManager] onCredentialProviderResponseReceived:urlString];
-        
-        return NO;
-    }
-    return YES;*/
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView

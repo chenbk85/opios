@@ -32,6 +32,7 @@
 
 
 #import "HOPIdentityLookup_Internal.h"
+#import "HOPIdentityLookupInfo_Internal.h"
 #import <hookflash/core/IIdentityLookup.h>
 #import "OpenPeerStorageManager.h"
 #import "HOPAccount_Internal.h"
@@ -50,8 +51,10 @@
         IdentityURIList identityURIList;
         [self setLocalDelegates:inDelegate];
         if ([inIdentityURIList length] > 0)
-            [self convertString:inIdentityURIList toIdentityURIList:&identityURIList];
-        IIdentityLookup::create([[HOPAccount sharedAccount] getAccountPtr], openPeerIdentityLookupDelegatePtr, identityURIList);
+            [self convertString:inIdentityURIList toIdentityURIList:identityURIList];
+        identityLookupPtr = IIdentityLookup::create([[HOPAccount sharedAccount] getAccountPtr], openPeerIdentityLookupDelegatePtr, identityURIList);
+        if (identityLookupPtr)
+            [[OpenPeerStorageManager sharedStorageManager] setIdentityLookup:self forPUID:identityLookupPtr->getID()];
     }
     return self;
 }
@@ -107,7 +110,30 @@
 
 - (NSArray*) getIdentities
 {
-    return [[OpenPeerStorageManager sharedStorageManager] getIdentities];
+    NSMutableArray* ret = nil;
+    if(identityLookupPtr)
+    {
+        IdentityLookupInfoListPtr identityLookupInfoListPtr = identityLookupPtr->getIdentities();
+        if (identityLookupInfoListPtr)
+        {
+            ret = [[NSMutableArray alloc] init];
+            for (IdentityLookupInfoList::iterator identityLookupInfo = identityLookupInfoListPtr->begin(); identityLookupInfo != identityLookupInfoListPtr->end(); ++identityLookupInfo)
+            {
+                IdentityLookupInfo identityInfo = *identityLookupInfo;
+                if (identityInfo.hasData())
+                {
+                    HOPIdentityLookupInfo* hopIdentityLookupInfo = [[HOPIdentityLookupInfo alloc] initWithIdentityLookupInfo:identityInfo];
+                    if (hopIdentityLookupInfo)
+                        [ret addObject:hopIdentityLookupInfo];
+                }
+            }
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid identity lookup object!"];
+    }
+    return ret;
 }
 
 - (NSString *)description
@@ -128,14 +154,14 @@
     openPeerIdentityLookupDelegatePtr = OpenPeerIdentityLookupDelegate::create(inIdentityLookupDelegate);
 }
 
-- (void) convertString:(NSString*) indentityURIListStr toIdentityURIList:(IdentityURIList*) outIdentityURIList
+- (void) convertString:(NSString*) indentityURIListStr toIdentityURIList:(IdentityURIList&) outIdentityURIList
 {
     NSArray* uris = [indentityURIListStr componentsSeparatedByString:@","];
     
     for (NSString* uri in uris)
     {
         IdentityURI identityURI = [uri UTF8String];
-        outIdentityURIList->push_back(identityURI);
+        outIdentityURIList.push_back(identityURI);
     }
 }
 

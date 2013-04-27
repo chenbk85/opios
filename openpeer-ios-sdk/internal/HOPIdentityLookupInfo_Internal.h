@@ -1,6 +1,6 @@
 /*
  
- Copyright (c) 2012, SMB Phone Inc.
+ Copyright (c) 2013, SMB Phone Inc.
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -29,34 +29,14 @@
  
  */
 
-#import <Foundation/Foundation.h>
 
-@class CallDelegate;
-@class StackDelegate;
-@class MediaEngineDelegate;
-@class ConversationThreadDelegate;
-@class AccountDelegate;
-@class MainViewController;
-@class IdentityDelegate;
-@class IdentityLookupDelegate;
+#import <hookflash/core/types.h>
+#import "HOPIdentityLookupInfo.h"
 
-@interface OpenPeer : NSObject
+using namespace hookflash;
+using namespace hookflash::core;
 
-@property (nonatomic,strong) CallDelegate *callDelegate;
-@property (nonatomic,strong) StackDelegate *stackDelegate;
-@property (nonatomic,strong) MediaEngineDelegate *mediaEngineDelegate;
-@property (nonatomic,strong) ConversationThreadDelegate *conversationThreadDelegate;
-@property (nonatomic,strong) AccountDelegate *accountDelegate;
-@property (nonatomic,strong) MainViewController *mainViewController;
-@property (nonatomic,strong) IdentityDelegate *identityDelegate;
-@property (nonatomic,strong) IdentityLookupDelegate *identityLookupDelegate;
+@interface HOPIdentityLookupInfo ()
 
-@property (nonatomic) BOOL isRemoteSessionActivationModeOn;
-@property (nonatomic) BOOL isFaceDetectionModeOn;
-@property (nonatomic) BOOL isRedialModeOn;
-
-+ (id) sharedOpenPeer;
-
-- (void) prepareWithMainViewController:(MainViewController*) inMainViewController;
-- (void) startLogger;
+- (id) initWithIdentityLookupInfo:(IdentityLookupInfo) inIdentityLookupInfo;
 @end

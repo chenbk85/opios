@@ -38,9 +38,11 @@
 #import "OpenPeer.h"
 #import "OpenPeerUser.h"
 #import "Contact.h"
+#import "Constants.h"
 #import "SBJsonParser.h"
 //#import <OpenpeerSDK/HOPProvisioningAccount.h>
 #import <OpenpeerSDK/HOPIdentityLookup.h>
+#import <OpenpeerSDK/HOPIdentityLookupInfo.h>
 #import <OpenpeerSDK/HOPIdentity.h>
 #import <OpenpeerSDK/HOPContact.h>
 //#import <OpenpeerSDK/HOPLookupProfileInfo.h>
@@ -219,30 +221,41 @@
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
     
     [self contactsLookupQuery:self.contactArray];
-    [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLookupCheckStarted];
+    //[[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLookupCheckStarted];
 }
 
 /**
  Check contact identites against openpeer database.
  @param contacts NSArray List of contacts.
  */
-/*- (void)contactsLookupQuery:(NSArray *)contacts
+- (void)contactsLookupQuery:(NSArray *)contacts
 {
-    NSMutableArray* identities = [[NSMutableArray alloc] init];
+    NSString* identities = @"";
     
     
     for (Contact* contact in self.contactArray)
     {
-        //Add all associated contact identities
-        for (HOPIdentity* identity in contact.identities)
+        if ([contact.identities count] > 0)
         {
-            [identities addObject:identity];
+            NSString* contactIdentity = [identityBaseURI stringByAppendingString:((HOPIdentity*)[contact.identities objectAtIndex:0]).identityId];
+            if ([contactIdentity length] > 0)
+            {
+                if ([identities length] == 0)
+                    identities = [identities stringByAppendingString:contactIdentity];
+                else
+                {
+                    NSString* temp = [NSString stringWithFormat:@",%@",contactIdentity];
+                    identities = [identities stringByAppendingString:temp];
+                }
+            }
         }
-        
     }
     
-    [[HOPProvisioningAccount sharedProvisioningAccount] identityLookup:self identities:identities];
-}*/
+    if ([identities length] > 0)
+    {
+        HOPIdentityLookup* lookup = [[HOPIdentityLookup alloc] initWithDelegate:[[OpenPeer sharedOpenPeer] identityLookupDelegate] identityURIList:identities];
+    }
+}
 
 /**
  Does JSON response parsing to get user facebook profile.
@@ -310,7 +323,7 @@
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
     
     //HOP_TODO: Do contact lookup
-    //[self contactsLookupQuery:self.contactArray];
+    [self contactsLookupQuery:self.contactArray];
     //[[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLookupCheckStarted];
 }
 
@@ -404,6 +417,22 @@
     }
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
 }
+
+-(void)updateContactsWithDataFromLookup:(HOPIdentityLookup *)identityLookup
+{
+    HOPIdentityLookupResult* result = [identityLookup getLookupResult];
+    if ([result wasSuccessful])
+    {
+        NSArray* identities= [identityLookup getIdentities];
+        for (HOPIdentityLookupInfo* identityInfo in identities)
+        {
+            if ([identityInfo hasData])
+            {
+            }
+        }
+    }
+}
+
 #pragma mark - HOPProvisioningAccountIdentityLookupQueryDelegate
 /*- (void) onAccountIdentityLookupQueryComplete:(HOPProvisioningAccountIdentityLookupQuery*) query
 {

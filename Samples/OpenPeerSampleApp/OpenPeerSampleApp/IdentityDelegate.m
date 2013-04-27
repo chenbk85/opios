@@ -15,6 +15,7 @@
 
 - (void)identity:(HOPIdentity *)identity stateChanged:(HOPIdentityStates)state
 {
+    NSLog(@"Identity Login state: %@",[HOPIdentity toStringIdentityState:state]);
     switch (state)
     {
         case HOPIdentityStatePending:
@@ -43,10 +44,11 @@
         case HOPIdentityStateWaitingAssociation:
             //[[LoginManager sharedLoginManager] onIdentityassociationFinished:identity];
             [[LoginManager sharedLoginManager] onIdentityLoginFinished:identity];
+            [[LoginManager sharedLoginManager] onUserLoggedIn];
             break;
             
         case HOPIdentityStateReady:
-            [[LoginManager sharedLoginManager] onIdentityLoginFinished:identity];
+            [[LoginManager sharedLoginManager] onUserLoggedIn];
             break;
             
         case HOPIdentityStateShutdown:

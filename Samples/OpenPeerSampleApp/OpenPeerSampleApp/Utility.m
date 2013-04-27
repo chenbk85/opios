@@ -321,4 +321,39 @@ static const short _base64DecodingTable[256] = {
     }
     return res;
 }
+
++ (NSString*) getFunctionNameForRequest:(NSString*) requestString
+{
+    NSString* ret = @"";
+    
+    if ([requestString hasPrefix:@"https://datapass.hookflash.me/?method="])
+        ret = [requestString substringFromIndex:[@"https://datapass.hookflash.me/?method=" length]];
+    else if ([requestString hasPrefix:@"http://datapass.hookflash.me/?method="])
+        ret = [requestString substringFromIndex:[@"http://datapass.hookflash.me/?method=" length]];
+    
+    NSArray *components = [ret componentsSeparatedByString:@";"];
+    
+    if ([components count] > 0)
+        ret = [components objectAtIndex:0];
+    return ret;
+}
+
++ (NSString*) getParametersNameForRequest:(NSString*) requestString
+{
+    NSString* ret = @"";
+    
+    NSArray *components = [requestString componentsSeparatedByString:@";"];
+    
+    if ([components count] == 2)
+    {
+        
+        NSString *params = (NSString*)[components objectAtIndex:1];
+        if ([params hasPrefix:@"data="])
+        {
+            ret = [params substringFromIndex:[@"data=" length]];
+        }
+    }
+    
+    return ret;
+}
 @end

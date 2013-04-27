@@ -32,7 +32,7 @@
 
 #import "OpenPeerIdentityLookupDelegate.h"
 #import "HOPIdentityLookup_Internal.h"
-
+#import "OpenPeerStorageManager.h"
 
 OpenPeerIdentityLookupDelegate::OpenPeerIdentityLookupDelegate(id<HOPIdentityLookupDelegate> inIdentityLookupDelegate)
 {
@@ -46,5 +46,6 @@ boost::shared_ptr<OpenPeerIdentityLookupDelegate> OpenPeerIdentityLookupDelegate
 
 void OpenPeerIdentityLookupDelegate::onIdentityLookupCompleted(IIdentityLookupPtr lookup)
 {
-    
+    HOPIdentityLookup* identityLookup = [[OpenPeerStorageManager sharedStorageManager] getIdentityLookupForPUID:lookup->getID()];
+    [identityLookupDelegate onIdentityLookupCompleted:identityLookup];
 }

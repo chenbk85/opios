@@ -44,6 +44,7 @@
 #import "CallDelegate.h"
 #import "AccountDelegate.h"
 #import "IdentityDelegate.h"
+#import "IdentityLookupDelegate.h"
 //View controllers
 #import "MainViewController.h"
 
@@ -103,6 +104,7 @@
     self.callDelegate = [[CallDelegate alloc] init];
     self.accountDelegate = [[AccountDelegate alloc] init];
     self.identityDelegate = [[IdentityDelegate alloc] init];
+    self.identityLookupDelegate = [[IdentityLookupDelegate alloc] init];
 }
 
 /**

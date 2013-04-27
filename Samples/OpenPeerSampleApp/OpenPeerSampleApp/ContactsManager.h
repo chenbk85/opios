@@ -33,6 +33,7 @@
 #import <OpenpeerSDK/HOPProtocols.h>
 
 @class Contact;
+@class HOPIdentityLookup;
 
 @interface ContactsManager : NSObject<UIWebViewDelegate,HOPProvisioningAccountIdentityLookupQueryDelegate,HOPProvisioningAccountPeerFileLookupQueryDelegate>
 
@@ -53,4 +54,6 @@
 
 - (void) checkAvailability;
 - (void) onCheckAvailabilityResponseReceivedForContact:(Contact*) contact withListOfUserIds:(NSString*) userIds;
+
+- (void) updateContactsWithDataFromLookup:(HOPIdentityLookup*) identityLookup;
 @end

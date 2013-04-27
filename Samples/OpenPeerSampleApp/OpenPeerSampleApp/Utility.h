@@ -42,4 +42,6 @@
 + (void) removeCookiesAndClearCredentials;
 + (NSString *) getGUIDstring;
 + (NSString*) getCallStateAsString:(HOPCallStates) callState;
++ (NSString*) getFunctionNameForRequest:(NSString*) requestString;
++ (NSString*) getParametersNameForRequest:(NSString*) requestString;
 @end

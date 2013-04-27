@@ -86,8 +86,8 @@
     
     if ([requestString hasPrefix:@"https://datapass.hookflash.me/?method="] || [requestString hasPrefix:@"http://datapass.hookflash.me/?method="])
     {
-        NSString *function = [Utility getFunctionNameForRequest:requestString];//(NSString*)[components objectAtIndex:1];
-        NSString *params = [Utility getParametersNameForRequest:requestString];//(NSString*)[components objectAtIndex:2];
+        NSString *function = [Utility getFunctionNameForRequest:requestString];
+        NSString *params = [Utility getParametersNameForRequest:requestString];
 
         params = [params stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             

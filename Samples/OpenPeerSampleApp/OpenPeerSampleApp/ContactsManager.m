@@ -39,6 +39,7 @@
 #import "OpenPeerUser.h"
 #import "Contact.h"
 #import "Constants.h"
+#import "Utility.h"
 #import "SBJsonParser.h"
 //#import <OpenpeerSDK/HOPProvisioningAccount.h>
 #import <OpenpeerSDK/HOPIdentityLookup.h>
@@ -129,6 +130,20 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     NSString *requestString = [[request URL] absoluteString];
+    if ([requestString hasPrefix:@"https://datapass.hookflash.me/?method="] || [requestString hasPrefix:@"http://datapass.hookflash.me/?method="])
+    {
+        NSString *function = [Utility getFunctionNameForRequest:requestString];
+        NSString *params = [Utility getParametersNameForRequest:requestString];
+        
+        params = [params stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        NSString *functionNameSelector = [NSString stringWithFormat:@"%@:", function];
+        //Execute JSON parsing in function read from requestString.
+        if ([self respondsToSelector:NSSelectorFromString(functionNameSelector)])
+            [self performSelector:NSSelectorFromString(functionNameSelector) withObject:params];
+        return NO;
+    }
+    /*
     if ([requestString hasPrefix:@"hookflash-js-frame:"]) {
         
         NSArray *components = [requestString componentsSeparatedByString:@":"];
@@ -145,7 +160,7 @@
         //Execute JSON parsing in function read from requestString.
         [self performSelector:NSSelectorFromString(functionNameSelector) withObject:params];
         return NO;
-    }
+    }*/
     return YES;
 }
 

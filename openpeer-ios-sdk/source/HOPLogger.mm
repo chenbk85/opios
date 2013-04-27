@@ -129,7 +129,7 @@ using namespace hookflash::core;
 
 + (void) installWindowsDebuggerLogger
 {
-    ILogger::installWindowsDebuggerLogger();
+    ILogger::installDebuggerLogger();
 }
 
 + (void) installCustomLogger: (id<HOPStackDelegate>) delegate

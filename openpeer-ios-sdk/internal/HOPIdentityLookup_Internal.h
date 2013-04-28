@@ -45,6 +45,6 @@ using namespace hookflash::core;
 }
 
 - (void) setLocalDelegates:(id<HOPIdentityLookupDelegate>) inIdentityLookupDelegate;
-- (void) convertString:(NSString*) indentityURIListStr toIdentityURIList:(IdentityURIListPtr) outIdentityURIList;
+- (void) convertString:(NSString*) indentityURIListStr toIdentityURIList:(IdentityURIList) outIdentityURIList;
 - (IIdentityLookupPtr) getIdentityLookupPtr;
 @end

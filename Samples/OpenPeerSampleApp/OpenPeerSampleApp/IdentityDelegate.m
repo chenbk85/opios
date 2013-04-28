@@ -44,7 +44,7 @@
         case HOPIdentityStateWaitingAssociation:
             //[[LoginManager sharedLoginManager] onIdentityassociationFinished:identity];
             [[LoginManager sharedLoginManager] onIdentityLoginFinished:identity];
-            [[LoginManager sharedLoginManager] onUserLoggedIn];
+            //[[LoginManager sharedLoginManager] onUserLoggedIn];
             break;
             
         case HOPIdentityStateReady:

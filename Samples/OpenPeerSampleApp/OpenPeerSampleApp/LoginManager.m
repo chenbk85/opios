@@ -107,7 +107,7 @@
 - (void) login
 {
     //If peer file doesn't exists, show login view, otherwise start relogin
-    if ([[[OpenPeerUser sharedOpenPeerUser] associatedIdentities] count] == 0)
+    if ([[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] length] == 0)
     {
         [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
     }

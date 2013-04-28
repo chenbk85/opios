@@ -40,7 +40,7 @@
 //@property (nonatomic, strong) NSString *passwordNonce;
 //@property (nonatomic, strong) NSString *peerFilePassword;
 @property (nonatomic, strong) NSString *privatePeerFile;
-@property (nonatomic, strong) NSString *privatePeerFileSecret;
+@property (nonatomic, strong) NSData *privatePeerFileSecret;
 //@property (nonatomic, strong) NSNumber *providerKey;
 //@property (nonatomic, strong) NSString *contactProviderId;
 @property (nonatomic) NSTimeInterval lastProfileUpdateTimestamp;

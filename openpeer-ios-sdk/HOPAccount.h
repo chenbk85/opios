@@ -51,7 +51,7 @@
 
 - (BOOL) loginWithAccountDelegate:(id<HOPAccountDelegate>) inAccountDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) inConversationThreadDelegate callDelegate:(id<HOPCallDelegate>) inCallDelegate peerContactServiceDomain:(NSString*) inPeerContactServiceDomain identity:(HOPIdentity*) inIdentity;
 
-- (BOOL) reloginWithAccountDelegate:(id<HOPAccountDelegate>) inAccountDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) inConversationThreadDelegate callDelegate:(id<HOPCallDelegate>) inCallDelegate peerFilePrivate:(NSString*) inPeerFilePrivate peerFilePrivateSecret:(NSString*) inPeerFilePrivateSecret;
+- (BOOL) reloginWithAccountDelegate:(id<HOPAccountDelegate>) inAccountDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>) inConversationThreadDelegate callDelegate:(id<HOPCallDelegate>) inCallDelegate peerFilePrivate:(NSString*) inPeerFilePrivate peerFilePrivateSecret:(NSData*) inPeerFilePrivateSecret;
 
 - (HOPAccountState*) getState;
 
@@ -62,7 +62,7 @@
 - (void) shutdown;
 
 - (NSString*) savePeerFilePrivate;
-- (NSString*) getPeerFilePrivateSecret;
+- (NSData*) getPeerFilePrivateSecret;
 
 - (NSArray*) getAssociatedIdentities;
 

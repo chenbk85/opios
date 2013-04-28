@@ -83,7 +83,7 @@
             //self.accountSalt = [aDecoder decodeObjectForKey:archiveAccountSalt];
             //self.passwordNonce = [aDecoder decodeObjectForKey:archivePasswordNonce];
             self.privatePeerFile = [aDecoder decodeObjectForKey:archivePrivatePeerFile];
-            self.privatePeerFileSecret = [aDecoder decodeObjectForKey:archivePrivatePeerFile];
+            self.privatePeerFileSecret = [aDecoder decodeObjectForKey:archivePrivatePeerFileSecret];
             //self.peerFilePassword = [aDecoder decodeObjectForKey:archivePeerFilePassword];
             //NSDictionary* identities = [aDecoder decodeObjectForKey:archiveAssociatedIdentities];
             //self.associatedIdentities = [NSMutableDictionary dictionaryWithDictionary:identities];
@@ -107,7 +107,6 @@
  */
 - (void) saveUserData
 {
-    return;
     self.userId = [[HOPAccount sharedAccount] getUserID];
     //self.contactId = [[HOPProvisioningAccount sharedProvisioningAccount] getContactID];
     //self.accountSalt = [[HOPProvisioningAccount sharedProvisioningAccount] getAccountSalt];

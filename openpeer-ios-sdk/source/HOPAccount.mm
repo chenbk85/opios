@@ -89,7 +89,7 @@ using namespace hookflash::core;
 }
 
 
-- (BOOL)reloginWithAccountDelegate:(id<HOPAccountDelegate>)inAccountDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>)inConversationThreadDelegate callDelegate:(id<HOPCallDelegate>)inCallDelegate peerFilePrivate:(NSString *)inPeerFilePrivate peerFilePrivateSecret:(NSString *)inPeerFilePrivateSecret
+- (BOOL)reloginWithAccountDelegate:(id<HOPAccountDelegate>)inAccountDelegate conversationThreadDelegate:(id<HOPConversationThreadDelegate>)inConversationThreadDelegate callDelegate:(id<HOPCallDelegate>)inCallDelegate peerFilePrivate:(NSString *)inPeerFilePrivate peerFilePrivateSecret:(NSData *)inPeerFilePrivateSecret
 {
     BOOL passedWithoutErrors = NO;
     
@@ -98,7 +98,8 @@ using namespace hookflash::core;
     
     [self setLocalDelegates:inAccountDelegate conversationThread:inConversationThreadDelegate callDelegate:inCallDelegate];
     
-    accountPtr = IAccount::relogin(openpeerAccountDelegatePtr, openpeerConversationDelegatePtr, openpeerCallDelegatePtr, IHelper::createFromString([inPeerFilePrivate UTF8String]), [inPeerFilePrivateSecret UTF8String]);
+    char* peerFilePrivateSecret = (char *)[inPeerFilePrivateSecret bytes];
+    accountPtr = IAccount::relogin(openpeerAccountDelegatePtr, openpeerConversationDelegatePtr, openpeerCallDelegatePtr, IHelper::createFromString([inPeerFilePrivate UTF8String]), peerFilePrivateSecret);
     
     if (accountPtr)
         passedWithoutErrors = YES;
@@ -191,14 +192,17 @@ using namespace hookflash::core;
 }
 
 
-- (NSString*) getPeerFilePrivateSecret
+- (NSData*) getPeerFilePrivateSecret
 {
-    NSString* ret = nil;
+    NSData* ret = nil;
     if(accountPtr)
     {
         SecureByteBlockPtr secure = accountPtr->getPeerFilePrivateSecret();
         if (secure)
         {
+            byte* secureInBytes = secure->BytePtr();
+            int sizeInBytes = secure->SizeInBytes();
+            ret = [NSData dataWithBytes:secureInBytes length:sizeInBytes];
             //SecureByteBlock secureByteBlock = secure.;
             //ret = [NSString stringWithUTF8String: IHelper::convertToString(secureByteBlock)];
         }

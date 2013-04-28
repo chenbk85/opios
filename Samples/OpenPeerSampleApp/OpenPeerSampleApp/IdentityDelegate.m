@@ -48,7 +48,7 @@
             break;
             
         case HOPIdentityStateReady:
-            [[LoginManager sharedLoginManager] onUserLoggedIn];
+            //[[LoginManager sharedLoginManager] onUserLoggedIn];
             break;
             
         case HOPIdentityStateShutdown:

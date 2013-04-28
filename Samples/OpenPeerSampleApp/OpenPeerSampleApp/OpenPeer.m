@@ -116,12 +116,12 @@
     [HOPLogger setLogLevel:HOPLoggerLevelNone];
     [HOPLogger setLogLevelbyName:@"hookflash_gui" level:HOPLoggerLevelNone];
     [HOPLogger setLogLevelbyName:@"hookflash" level:HOPLoggerLevelNone];
-    [HOPLogger setLogLevelbyName:@"hookflash_services" level:HOPLoggerLevelTrace];
+    [HOPLogger setLogLevelbyName:@"hookflash_services" level:HOPLoggerLevelNone];
     [HOPLogger setLogLevelbyName:@"zsLib" level:HOPLoggerLevelNone];
-    [HOPLogger setLogLevelbyName:@"hookflash_services_http" level:HOPLoggerLevelTrace];
-    [HOPLogger setLogLevelbyName:@"hookflash_core" level:HOPLoggerLevelTrace];
-    [HOPLogger setLogLevelbyName:@"hookflash_stack_message" level:HOPLoggerLevelTrace];
-    [HOPLogger setLogLevelbyName:@"hookflash_stack" level:HOPLoggerLevelTrace];
+    [HOPLogger setLogLevelbyName:@"hookflash_services_http" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_core" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_stack_message" level:HOPLoggerLevelNone];
+    [HOPLogger setLogLevelbyName:@"hookflash_stack" level:HOPLoggerLevelNone];
     [HOPLogger setLogLevelbyName:@"hookflash_webrtc" level:HOPLoggerLevelNone];
     //Srart logger without colorized output
     [HOPLogger installStdOutLogger:NO];

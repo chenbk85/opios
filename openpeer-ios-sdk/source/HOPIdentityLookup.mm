@@ -48,7 +48,7 @@
     self = [super init];
     if (self)
     {
-      IdentityURIList identityURIList ;//(new IdentityURIList());
+      IdentityURIList identityURIList;//(new IdentityURIList());
         [self setLocalDelegates:inDelegate];
         if ([inIdentityURIList length] > 0)
             [self convertString:inIdentityURIList toIdentityURIList:identityURIList];
@@ -154,7 +154,7 @@
     openPeerIdentityLookupDelegatePtr = OpenPeerIdentityLookupDelegate::create(inIdentityLookupDelegate);
 }
 
-- (void) convertString:(NSString*) indentityURIListStr toIdentityURIList:(IdentityURIList) outIdentityURIList
+- (void) convertString:(NSString*) indentityURIListStr toIdentityURIList:(IdentityURIList &) outIdentityURIList
 {
     NSArray* uris = [indentityURIListStr componentsSeparatedByString:@","];
     

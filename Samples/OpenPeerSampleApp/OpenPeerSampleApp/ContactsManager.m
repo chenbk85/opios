@@ -167,6 +167,10 @@
     return YES;
 }
 
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    NSLog(@"WebRequest error: %@", [error localizedDescription]);
+}
 /**
  Parse JSON to get the profile for logged user.
  @param input NSString JSON input for processing.

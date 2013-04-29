@@ -478,14 +478,17 @@
 {
     if ([contactPeerFilePublicLookup isComplete])
     {
-        if ([contactPeerFilePublicLookup isComplete])
+        HOPContactPeerFilePublicLookupResult* result = [contactPeerFilePublicLookup getLookupResult];
+    
+        if ([result wasSuccessful])
         {
-            HOPContactPeerFilePublicLookupResult* result = [contactPeerFilePublicLookup getLookupResult];
-        
-            if ([result wasSuccessful])
+            NSArray* contacts = [contactPeerFilePublicLookup getContacts];
+            for (HOPContact* contact in contacts)
             {
-                [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
+                NSString* publicPeerFile = [contact savePeerFilePublic];
+                NSLog(@"Public Peeer File:%@",publicPeerFile);
             }
+            [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
         }
     }
 }

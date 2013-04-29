@@ -35,12 +35,13 @@
 NSString* const provisioningURI = @"provisioning-stable-dev.hookflash.me";
 NSString* const outerFrameURL = @"https://app-light.hookflash.me/outer.html";
 NSString* const afterLoginCompleteURL = @"OpenpeerLoginFinished";
-NSString* const identityProviderDomain = @"example-light.hookflash.me";
+NSString* const identityProviderDomain = @"unstable.hookflash.me";
 NSString* const peerContactServiceDomain = @"unstable.hookflash.me";
+NSString* const contactsLoadingtServiceDomain = @"example-unstable.hookflash.me";
 NSString* const identityFacebookBaseURI = @"identity://facebook.com/";
 NSString* const identityLinkedInBaseURI = @"identity://linkedin.com/";
 
-NSString* const facebookLoginPage = @"fbconnections.html";
+NSString* const facebookContactsLoadingPage = @"fbconnections.html";
 
 NSString * const keyOpenPeerUser = @"keyOpenPeerUser";
 

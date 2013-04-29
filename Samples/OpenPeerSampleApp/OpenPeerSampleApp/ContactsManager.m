@@ -114,7 +114,7 @@
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoadingStarted];
     
     //NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@", @"provisioning-stable-dev.hookflash.me", @"/api_web_res/liconnections.html"];
-    NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@/", identityProviderDomain, facebookLoginPage];
+    NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@", contactsLoadingtServiceDomain, facebookContactsLoadingPage];
     
     NSURL *url = [NSURL URLWithString:urlAddress];
     

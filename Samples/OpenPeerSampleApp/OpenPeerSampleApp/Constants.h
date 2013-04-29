@@ -37,10 +37,11 @@ extern NSString* const outerFrameURL;
 extern NSString* const afterLoginCompleteURL;
 extern NSString* const identityProviderDomain;
 extern NSString* const peerContactServiceDomain;
+extern NSString* const contactsLoadingtServiceDomain;
 extern NSString* const identityFacebookBaseURI;
 extern NSString* const identityLinkedInBaseURI;
 
-extern NSString* const facebookLoginPage;
+extern NSString* const facebookContactsLoadingPage;
 
 extern NSString * const keyOpenPeerUser;
 

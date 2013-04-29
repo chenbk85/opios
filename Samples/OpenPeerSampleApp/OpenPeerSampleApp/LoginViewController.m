@@ -65,7 +65,7 @@
 - (IBAction)actionLoginWithFacebook:(id)sender
 {
 //    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeFacebookID];
-    [[LoginManager sharedLoginManager] startLoginUsingIdentityURI:identityBaseURI];
+    [[LoginManager sharedLoginManager] startLoginUsingIdentityURI:identityFacebookBaseURI];
 }
 
 - (IBAction)actionLoginWithLinkedIn:(id)sender

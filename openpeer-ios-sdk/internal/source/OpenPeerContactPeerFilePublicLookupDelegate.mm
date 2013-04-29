@@ -31,7 +31,7 @@
 
 
 #import "OpenPeerContactPeerFilePublicLookupDelegate.h"
-
+#import "OpenPeerStorageManager.h"
 
 
 OpenPeerContactPeerFilePublicLookupDelegate::OpenPeerContactPeerFilePublicLookupDelegate(id<HOPContactPeerFilePublicLookupDelegate> inContactPeerFilePublicLookupDelegate)
@@ -46,5 +46,6 @@ boost::shared_ptr<OpenPeerContactPeerFilePublicLookupDelegate> OpenPeerContactPe
 
 void OpenPeerContactPeerFilePublicLookupDelegate::onContactPeerFilePublicLookupCompleted(IContactPeerFilePublicLookupPtr lookup)
 {
-//    [contactPeerFilePublicLookupDelegate onContactPeerFilePublicLookupCompleted:<#(HOPContactPeerFilePublicLookup *)#>];
+    HOPContactPeerFilePublicLookup* contactPeerFilePublicLookup = [[OpenPeerStorageManager sharedStorageManager] getContactPeerFilePublicLookupForPUID:lookup->getID()];
+    [contactPeerFilePublicLookupDelegate onContactPeerFilePublicLookupCompleted:contactPeerFilePublicLookup];
 }

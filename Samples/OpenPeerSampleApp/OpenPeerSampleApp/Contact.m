@@ -36,7 +36,7 @@
 
 @implementation Contact
 
-- (id) initWithFullName:(NSString*) inFullName profession:(NSString*) inProfession avatarUrl:(NSString*) inAvatarUrl identityProvider:(HOPProvisioningAccountIdentityTypes) identityProvider identityContactId:(NSString*) identityContactId
+- (id) initWithFullName:(NSString*) inFullName profession:(NSString*) inProfession avatarUrl:(NSString*) inAvatarUrl identityProvider:(NSString*) identityBaseURI identityContactId:(NSString*) identityContactId
 {
     self = [super init];
     if (self)
@@ -50,7 +50,7 @@
         if ([identityContactId length] > 0)
         {
             HOPIdentity* identity = [[HOPIdentity alloc] init];
-            identity.identityType = identityProvider;
+            identity.identityBaseURI = identityBaseURI;
             identity.identityId = identityContactId;
             [self.identities addObject:identity];
         }

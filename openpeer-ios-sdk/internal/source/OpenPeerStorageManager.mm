@@ -62,6 +62,7 @@
     _dictionaryConversationThreads = [[NSMutableDictionary alloc] init];
     _dictionaryIdentities = [[NSMutableDictionary alloc] init];
     _dictionaryIdentityLookups = [[NSMutableDictionary alloc] init];
+    _dictionaryContactPeerFilePublicLookup = [[NSMutableDictionary alloc] init];
 }
 
 
@@ -164,5 +165,14 @@
 - (void) setIdentityLookup:(HOPIdentityLookup*) lookup forPUID:(PUID) puid
 {
     [_dictionaryIdentityLookups setObject:lookup forKey:[NSNumber numberWithInt:puid]];
+}
+
+- (HOPContactPeerFilePublicLookup*) getContactPeerFilePublicLookupForPUID:(PUID) puid
+{
+    return [_dictionaryContactPeerFilePublicLookup objectForKey:[NSNumber numberWithInt:puid]];
+}
+- (void) setContactPeerFilePublicLookup:(HOPContactPeerFilePublicLookup*) lookup forPUID:(PUID) puid
+{
+    [_dictionaryContactPeerFilePublicLookup setObject:lookup forKey:[NSNumber numberWithInt:puid]];
 }
 @end

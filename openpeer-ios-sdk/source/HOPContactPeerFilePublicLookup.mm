@@ -33,6 +33,7 @@
 
 #import "HOPContactPeerFilePublicLookup_Internal.h"
 #import <hookflash/core/IContactPeerFilePublicLookup.h>
+#import <hookflash/core/IContact.h>
 #import "OpenPeerStorageManager.h"
 #import "HOPContact_Internal.h"
 
@@ -50,12 +51,14 @@
         ContactList contactsList;
         [self setLocalDelegates:inDelegate];
         [self convertArrayOfContacts:inContactList toContactList:&contactsList];
-        IContactPeerFilePublicLookup::create(openPeerContactPeerFilePublicLookupDelegatePtr, contactsList);
+        contactPeerFilePublicLookupPtr = IContactPeerFilePublicLookup::create(openPeerContactPeerFilePublicLookupDelegatePtr, contactsList);
+        if (contactPeerFilePublicLookupPtr)
+            [[OpenPeerStorageManager sharedStorageManager] setContactPeerFilePublicLookup:self forPUID:contactPeerFilePublicLookupPtr->getID()];
     }
     return self;
 }
 
-- (BOOL) isComplete;
+- (BOOL) isComplete
 {
     BOOL ret = NO;
     
@@ -106,7 +109,27 @@
 
 - (NSArray*) getContacts
 {
-    return nil;
+    NSMutableArray* ret = nil;
+    if(contactPeerFilePublicLookupPtr)
+    {
+        ContactListPtr contacts = contactPeerFilePublicLookupPtr->getContacts();
+        if (contacts)
+        {
+            ret = [[NSMutableArray alloc] init];
+            for (ContactList::iterator contact = contacts->begin(); contact != contacts->end(); ++contact)
+            {
+                IContactPtr contactPtr = *contact;
+                HOPContact* hopContact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithCString:contactPtr->getStableUniqueID() encoding:NSUTF8StringEncoding]];
+                if (hopContact)
+                    [ret addObject:hopContact];
+            }
+        }
+    }
+    else
+    {
+        [NSException raise:NSInvalidArgumentException format:@"Invalid contact peer file lookup object!"];
+    }
+    return ret;
 }
 
 - (NSString *)description

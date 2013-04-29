@@ -53,6 +53,10 @@
     if (self)
     {
         coreContactPtr = inContactPtr;
+        NSString* stableUniqueId = [NSString stringWithCString:coreContactPtr->getStableUniqueID() encoding:NSUTF8StringEncoding];
+        if ([stableUniqueId length] > 0)
+            [[OpenPeerStorageManager sharedStorageManager] setContact:self forId:stableUniqueId];
+        
     }
     return self;
 }
@@ -73,6 +77,7 @@
                 {
                     //self.peerFile = publicPeerFile;
                     coreContactPtr = tempCoreContactPtr;
+                    [[OpenPeerStorageManager sharedStorageManager] setContact:self forId:previousStableUniqueID];
                 }
         }
         else
@@ -95,10 +100,14 @@
         {
             
             IContactPtr tempCoreContactPtr = IContact::createFromPeerURI([[HOPAccount sharedAccount] getAccountPtr], [peerURI UTF8String], [findSecret UTF8String], [previousStableUniqueID length] > 0 ? [previousStableUniqueID UTF8String] : NULL);
+            if (tempCoreContactPtr)
+            {
+                coreContactPtr = tempCoreContactPtr;
+                [[OpenPeerStorageManager sharedStorageManager] setContact:self forId:previousStableUniqueID];
+            }
         }
         else
         {
-            //[self release];
             self = nil;
         }
     }

@@ -52,11 +52,17 @@
     self = [self init];
     if (self)
     {
-        if (inIdentityLookupInfo.hasData())
+        self.hasData = inIdentityLookupInfo.hasData();
+        if (self.hasData)
         {
-            NSString* contactId = [NSString stringWithCString:inIdentityLookupInfo.mContact->getStableUniqueID() encoding:NSUTF8StringEncoding];
-            if (contactId)
-                self.contact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:contactId];
+            if (inIdentityLookupInfo.mContact)
+            {
+                NSString* stableUniqueId = [NSString stringWithCString:inIdentityLookupInfo.mContact->getStableUniqueID() encoding:NSUTF8StringEncoding];
+                if (stableUniqueId)
+                    self.contact = [[OpenPeerStorageManager sharedStorageManager] getContactForId:stableUniqueId];
+                if (!self.contact)
+                    self.contact = [[HOPContact alloc] initWithCoreContact:inIdentityLookupInfo.mContact];
+            }
     
             self.identityURI = [NSString stringWithCString:inIdentityLookupInfo.mIdentityURI encoding:NSUTF8StringEncoding];
             self.userID = [NSString stringWithCString:inIdentityLookupInfo.mUserID encoding:NSUTF8StringEncoding];
@@ -69,8 +75,7 @@
             
             self.name = [NSString stringWithCString:inIdentityLookupInfo.mName encoding:NSUTF8StringEncoding];
             self.profileURL = [NSString stringWithCString:inIdentityLookupInfo.mProfileURL encoding:NSUTF8StringEncoding];
-            self.vProfileURL = [NSString stringWithCString:inIdentityLookupInfo.mVProfileURL encoding:NSUTF8StringEncoding];
-            
+            self.vProfileURL = [NSString stringWithCString:inIdentityLookupInfo.mVProfileURL encoding:NSUTF8StringEncoding]; 
         }
     }
     return self;

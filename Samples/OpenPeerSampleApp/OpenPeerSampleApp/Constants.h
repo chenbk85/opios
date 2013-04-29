@@ -36,7 +36,8 @@ extern NSString* const provisioningURI;
 extern NSString* const outerFrameURL;
 extern NSString* const afterLoginCompleteURL;
 extern NSString* const identityProviderDomain;
-extern NSString* const identityBaseURI;
+extern NSString* const identityFacebookBaseURI;
+extern NSString* const identityLinkedInBaseURI;
 
 extern NSString * const keyOpenPeerUser;
 

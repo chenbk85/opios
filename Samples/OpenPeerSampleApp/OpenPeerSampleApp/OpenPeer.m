@@ -45,6 +45,8 @@
 #import "AccountDelegate.h"
 #import "IdentityDelegate.h"
 #import "IdentityLookupDelegate.h"
+#import "ContactPeerFilePublicLookupDelegate.h"
+
 //View controllers
 #import "MainViewController.h"
 
@@ -105,6 +107,7 @@
     self.accountDelegate = [[AccountDelegate alloc] init];
     self.identityDelegate = [[IdentityDelegate alloc] init];
     self.identityLookupDelegate = [[IdentityLookupDelegate alloc] init];
+    self.contactPeerFilePublicLookupDelegate = [[ContactPeerFilePublicLookupDelegate alloc] init];
 }
 
 /**

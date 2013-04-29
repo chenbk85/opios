@@ -34,11 +34,13 @@
 
 @class Contact;
 @class HOPIdentityLookup;
+@class HOPContactPeerFilePublicLookup;
 
-@interface ContactsManager : NSObject<UIWebViewDelegate,HOPProvisioningAccountIdentityLookupQueryDelegate,HOPProvisioningAccountPeerFileLookupQueryDelegate>
+@interface ContactsManager : NSObject<UIWebViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *contactArray;
-@property (nonatomic, strong) NSMutableDictionary *contactsDictionaryByProvider; //This is dictionary of dictionaries. Each provider has its own dictionary with contacts whose keys are contact provider id
+//@property (nonatomic, strong) NSMutableDictionary *contactsDictionaryByProvider; //This is dictionary of dictionaries. Each provider has its own dictionary with contacts whose keys are contact provider id
+@property (nonatomic, strong) NSMutableDictionary *contactsDictionaryByIndentityURI;
 @property (nonatomic, strong) NSMutableDictionary *contactsDictionary;
 @property (nonatomic, strong) UIWebView *linkedinContactsWebView;
 
@@ -56,4 +58,5 @@
 - (void) onCheckAvailabilityResponseReceivedForContact:(Contact*) contact withListOfUserIds:(NSString*) userIds;
 
 - (void) updateContactsWithDataFromLookup:(HOPIdentityLookup*) identityLookup;
+- (void) setContactsPeerFiles:(HOPContactPeerFilePublicLookup*) contactPeerFilePublicLookup;
 @end

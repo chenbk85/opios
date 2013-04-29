@@ -97,7 +97,8 @@
         self.linkedinContactsWebView.delegate = self;
         
         self.contactArray = [[NSMutableArray alloc] init];
-        self.contactsDictionaryByProvider = [[NSMutableDictionary alloc] init];
+        //self.contactsDictionaryByProvider = [[NSMutableDictionary alloc] init];
+        self.contactsDictionaryByIndentityURI = [[NSMutableDictionary alloc] init];
         self.contactsDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -208,7 +209,7 @@
     SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
     NSArray *result = [jsonParser objectWithString:input];
     
-    NSNumber* providerKey = [NSNumber numberWithInt:HOPProvisioningAccountIdentityTypeLinkedInID];
+    //NSNumber* providerKey = [NSNumber numberWithInt:HOPProvisioningAccountIdentityTypeLinkedInID];
     NSMutableDictionary* contacts = [[NSMutableDictionary alloc] init];
     
     for (NSDictionary* dict in result)
@@ -223,19 +224,21 @@
                 NSString* profession = [dict objectForKey:keyJSONContactProfession];
                 NSString *avatarUrl = [dict objectForKey:keyJSONContactPictureURL];
                 
-                Contact* contact = [[Contact alloc] initWithFullName:fullName profession:profession avatarUrl:avatarUrl identityProvider:HOPProvisioningAccountIdentityTypeLinkedInID identityContactId:providerContactId];
+                Contact* contact = [[Contact alloc] initWithFullName:fullName profession:profession avatarUrl:avatarUrl identityProvider:identityLinkedInBaseURI identityContactId:providerContactId];
                 
                 [self.contactArray addObject:contact];
                 [contacts setObject:contact forKey:providerContactId];
+                NSString* identityURI = [identityLinkedInBaseURI stringByAppendingString:providerContactId];
+                [self.contactsDictionaryByIndentityURI setObject:contact forKey:identityURI];
             }
         }
     }
-    [self.contactsDictionaryByProvider setObject:contacts forKey:providerKey];
-    
+    //[self.contactsDictionaryByProvider setObject:contacts forKey:identityLinkedInBaseURI];
     
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
     
-    [self contactsLookupQuery:self.contactArray];
+    //[self contactsLookupQuery:self.contactArray];
+    [self contactsLookupQuery:[contacts allValues]];
     //[[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLookupCheckStarted];
 }
 
@@ -247,12 +250,11 @@
 {
     NSString* identities = @"";
     
-    
     for (Contact* contact in self.contactArray)
     {
         if ([contact.identities count] > 0)
         {
-            NSString* contactIdentity = [identityBaseURI stringByAppendingString:((HOPIdentity*)[contact.identities objectAtIndex:0]).identityId];
+            NSString* contactIdentity = [identityFacebookBaseURI stringByAppendingString:((HOPIdentity*)[contact.identities objectAtIndex:0]).identityId];
             if ([contactIdentity length] > 0)
             {
                 if ([identities length] == 0)
@@ -307,7 +309,7 @@
     NSArray *result = [jsonParser objectWithString:input];
     
     //Provider key for Facebook
-    NSNumber* providerKey = [NSNumber numberWithInt:HOPProvisioningAccountIdentityTypeFacebookID];
+    //NSNumber* providerKey = [NSNumber numberWithInt:HOPProvisioningAccountIdentityTypeFacebookID];
     NSMutableDictionary* contacts = [[NSMutableDictionary alloc] init];
     
     for (NSDictionary* dict in result)
@@ -325,20 +327,23 @@
                 NSString *avatarUrl = [dict objectForKey:keyJSONContactPictureURL];
                 
                 //HOP_TODO: Try to get contact for identites, or create it
-                Contact* contact = [[Contact alloc] initWithFullName:fullName profession:@"" avatarUrl:avatarUrl identityProvider:HOPProvisioningAccountIdentityTypeFacebookID identityContactId:providerContactId];
+                Contact* contact = [[Contact alloc] initWithFullName:fullName profession:@"" avatarUrl:avatarUrl identityProvider:identityFacebookBaseURI identityContactId:providerContactId];
                 
                 [self.contactArray addObject:contact];
                 [contacts setObject:contact forKey:providerContactId];
+                NSString* identityURI = [identityFacebookBaseURI stringByAppendingString:providerContactId];
+                [self.contactsDictionaryByIndentityURI setObject:contact forKey:identityURI];
             }
         }
     }
-    [self.contactsDictionaryByProvider setObject:contacts forKey:providerKey];
+    //[self.contactsDictionaryByProvider setObject:contacts forKey:identityFacebookBaseURI];
     
     
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
     
     //HOP_TODO: Do contact lookup
-    [self contactsLookupQuery:self.contactArray];
+    //[self contactsLookupQuery:self.contactArray];
+    [self contactsLookupQuery:[contacts allValues]];
     //[[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLookupCheckStarted];
 }
 
@@ -346,12 +351,13 @@
  Send request to get the peer files for specified list of contacts
  @param contacts NSArray List of contacts.
  */
-/*- (void)peerFileLookupQuery:(NSArray *)contacts
+- (void)peerFileLookupQuery:(NSArray *)contacts
 {
     NSMutableArray* hopContacts = [[NSMutableArray alloc] init];
     
     //Create list of hopContact objects
-    for (Contact* contact in self.contactArray)
+    //for (Contact* contact in self.contactArray)
+    for (Contact* contact in contacts)
     {
         if (contact.hopContact)
             [hopContacts addObject:contact.hopContact];
@@ -360,26 +366,26 @@
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsPeerFilesLoadingStarted];
     
     //Ask for peer files for passed contacts
-    [[HOPProvisioningAccount sharedProvisioningAccount] peerFileLookup:self contacts:hopContacts];
-}*/
+    HOPContactPeerFilePublicLookup* lookup = [[HOPContactPeerFilePublicLookup alloc] initWithDelegate:[[OpenPeer sharedOpenPeer] contactPeerFilePublicLookupDelegate] contactsList:hopContacts];
+}
 
 /**
  Retrieves contact for passed list of identities.
  @param identities NSArray List of identities.
  @return Contact with specified identities.
  */
-- (Contact*) getContactForIdentities:(NSArray*) identities
+/*- (Contact*) getContactForIdentities:(NSArray*) identities
 {
     Contact* contact = nil;
     for (HOPIdentity* identity in identities)
     {
-        contact = [[self.contactsDictionaryByProvider objectForKey:[NSNumber numberWithInt:identity.identityType]] objectForKey:identity.identityId];
+        contact = [[self.contactsDictionaryByProvider objectForKey:identity.identityBaseURI] objectForKey:identity.identityId];
         if (contact)
             break;
     }
     
     return contact;
-}
+}*/
 
 /**
  Retrieves contact for specific user id
@@ -435,19 +441,54 @@
 
 -(void)updateContactsWithDataFromLookup:(HOPIdentityLookup *)identityLookup
 {
-    HOPIdentityLookupResult* result = [identityLookup getLookupResult];
-    if ([result wasSuccessful])
+    NSMutableArray* contacts = [[NSMutableArray alloc] init];
+    if ([identityLookup isComplete])
     {
-        NSArray* identities= [identityLookup getIdentities];
-        for (HOPIdentityLookupInfo* identityInfo in identities)
+        HOPIdentityLookupResult* result = [identityLookup getLookupResult];
+        if ([result wasSuccessful])
         {
-            if ([identityInfo hasData])
+            NSArray* identities= [identityLookup getIdentities];
+            for (HOPIdentityLookupInfo* identityInfo in identities)
             {
+                if ([identityInfo hasData])
+                {
+                    Contact* contact = nil;
+                    if (identityInfo.contact)
+                    {
+                        contact = [[ContactsManager sharedContactsManager] getContactForID:[identityInfo.contact getStableUniqueID]];
+                        if (!contact)
+                        {
+                            contact = [self.contactsDictionaryByIndentityURI objectForKey:identityInfo.identityURI];
+                        }
+                        if (contact)
+                        {
+                            contact.hopContact = identityInfo.contact;
+                            [contacts addObject:contact];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if ([contacts count] > 0)
+        [self peerFileLookupQuery:contacts];
+}
+
+- (void) setContactsPeerFiles:(HOPContactPeerFilePublicLookup*) contactPeerFilePublicLookup
+{
+    if ([contactPeerFilePublicLookup isComplete])
+    {
+        if ([contactPeerFilePublicLookup isComplete])
+        {
+            HOPContactPeerFilePublicLookupResult* result = [contactPeerFilePublicLookup getLookupResult];
+        
+            if ([result wasSuccessful])
+            {
+                [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoaded];
             }
         }
     }
 }
-
 #pragma mark - HOPProvisioningAccountIdentityLookupQueryDelegate
 /*- (void) onAccountIdentityLookupQueryComplete:(HOPProvisioningAccountIdentityLookupQuery*) query
 {

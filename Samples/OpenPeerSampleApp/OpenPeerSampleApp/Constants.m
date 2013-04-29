@@ -36,7 +36,8 @@ NSString* const provisioningURI = @"provisioning-stable-dev.hookflash.me";
 NSString* const outerFrameURL = @"http://app-unstable.hookflash.me/outer.html";
 NSString* const afterLoginCompleteURL = @"OpenpeerLoginFinished";
 NSString* const identityProviderDomain = @"unstable.hookflash.me";
-NSString* const identityBaseURI = @"identity://facebook.com/";
+NSString* const identityFacebookBaseURI = @"identity://facebook.com/";
+NSString* const identityLinkedInBaseURI = @"identity://linkedin.com/";
 
 NSString * const keyOpenPeerUser = @"keyOpenPeerUser";
 

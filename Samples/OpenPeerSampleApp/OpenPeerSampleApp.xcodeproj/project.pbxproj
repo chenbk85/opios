@@ -47,6 +47,7 @@
 		87EE5FF8166E9625002C5FA3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 874ADDB8166E13970095FE33 /* AVFoundation.framework */; };
 		87EE5FFB166F5A7F002C5FA3 /* WebLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87EE5FFA166F5A7F002C5FA3 /* WebLoginViewController.m */; };
 		87EE6070166F667C002C5FA3 /* WebLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 87EE606F166F667B002C5FA3 /* WebLoginViewController.xib */; };
+		87EFADDF172DD56D0008C3DC /* ContactPeerFilePublicLookupDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 87EFADDE172DD56C0008C3DC /* ContactPeerFilePublicLookupDelegate.m */; };
 		87F09EE2171EBB1B0045F6A6 /* ChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 87F09EDD171EBB1A0045F6A6 /* ChatViewController.xib */; };
 		87F09EE3171EBB1B0045F6A6 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87F09EDE171EBB1A0045F6A6 /* ChatViewController.m */; };
 		87F09EE4171EBB1B0045F6A6 /* ChatMessageCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 87F09EE0171EBB1B0045F6A6 /* ChatMessageCell.mm */; };
@@ -160,6 +161,8 @@
 		87EE5FF9166F5A7E002C5FA3 /* WebLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebLoginViewController.h; sourceTree = "<group>"; };
 		87EE5FFA166F5A7F002C5FA3 /* WebLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebLoginViewController.m; sourceTree = "<group>"; };
 		87EE606F166F667B002C5FA3 /* WebLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WebLoginViewController.xib; sourceTree = "<group>"; };
+		87EFADDD172DD56C0008C3DC /* ContactPeerFilePublicLookupDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPeerFilePublicLookupDelegate.h; sourceTree = "<group>"; };
+		87EFADDE172DD56C0008C3DC /* ContactPeerFilePublicLookupDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPeerFilePublicLookupDelegate.m; sourceTree = "<group>"; };
 		87F09EDD171EBB1A0045F6A6 /* ChatViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatViewController.xib; sourceTree = "<group>"; };
 		87F09EDE171EBB1A0045F6A6 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		87F09EDF171EBB1A0045F6A6 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
@@ -402,6 +405,8 @@
 				876CBCBA16F20A88004D542B /* IdentityDelegate.m */,
 				87E3CCE5172A814F00084D2F /* IdentityLookupDelegate.h */,
 				87E3CCE6172A814F00084D2F /* IdentityLookupDelegate.m */,
+				87EFADDD172DD56C0008C3DC /* ContactPeerFilePublicLookupDelegate.h */,
+				87EFADDE172DD56C0008C3DC /* ContactPeerFilePublicLookupDelegate.m */,
 			);
 			name = Delegates;
 			sourceTree = "<group>";
@@ -604,6 +609,7 @@
 				87F09EE4171EBB1B0045F6A6 /* ChatMessageCell.mm in Sources */,
 				87F09EE7171EBB2A0045F6A6 /* Message.m in Sources */,
 				87E3CCE7172A814F00084D2F /* IdentityLookupDelegate.m in Sources */,
+				87EFADDF172DD56D0008C3DC /* ContactPeerFilePublicLookupDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

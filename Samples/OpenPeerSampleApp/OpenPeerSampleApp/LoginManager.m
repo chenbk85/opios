@@ -135,7 +135,7 @@
     
     //Remove all contacts
     [[[ContactsManager sharedContactsManager] contactArray] removeAllObjects];
-    [[[ContactsManager sharedContactsManager] contactsDictionaryByProvider] removeAllObjects];
+    //[[[ContactsManager sharedContactsManager] contactsDictionaryByProvider] removeAllObjects];
     
     //Call to the SDK in order to shutdown Open Peer engine.
     [[HOPAccount sharedAccount] shutdown];

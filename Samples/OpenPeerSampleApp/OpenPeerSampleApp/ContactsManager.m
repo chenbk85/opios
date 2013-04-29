@@ -114,7 +114,7 @@
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsLoadingStarted];
     
     //NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@", @"provisioning-stable-dev.hookflash.me", @"/api_web_res/liconnections.html"];
-    NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@", @"example-unstable.hookflash.me", @"/fbconnections.html"];
+    NSString* urlAddress = [NSString stringWithFormat:@"http://%@/%@/", identityProviderDomain, facebookLoginPage];
     
     NSURL *url = [NSURL URLWithString:urlAddress];
     
@@ -131,6 +131,8 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     NSString *requestString = [[request URL] absoluteString];
+    NSLog(@"Getting contacts - web request: %@", requestString);
+    
     if ([requestString hasPrefix:@"https://datapass.hookflash.me/?method="] || [requestString hasPrefix:@"http://datapass.hookflash.me/?method="])
     {
         NSString *function = [Utility getFunctionNameForRequest:requestString];

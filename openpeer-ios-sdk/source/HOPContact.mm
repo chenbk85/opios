@@ -119,12 +119,10 @@
 {
     HOPContact* ret = nil;
     
-    boost::shared_ptr<hookflash::core::IAccount> tttt = [[HOPAccount sharedAccount] getAccountPtr];
-    //hookflash::core::IContact::getForSelf(tttt);
-    //hookflash::core::IContact::getForSelf(boost::shared_ptr<hookflash::core::IAccount>);
-    //IContactPtr selfContact = IContact::getForSelf([[HOPAccount sharedAccount] getAccountPtr]);
-    
-    //ret = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithCString:selfContact->getStableUniqueID() encoding:NSUTF8StringEncoding]];
+    IContactPtr selfContact = IContact::getForSelf([[HOPAccount sharedAccount] getAccountPtr]);
+    ret = [[OpenPeerStorageManager sharedStorageManager] getContactForId:[NSString stringWithCString:selfContact->getStableUniqueID() encoding:NSUTF8StringEncoding]];
+    if (!ret)
+        ret = [[HOPContact alloc] initWithCoreContact:selfContact];
     
     return ret;
 }

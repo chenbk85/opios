@@ -238,7 +238,10 @@
 
 - (void) onIdentityLoginFinished:(HOPIdentity*) identity
 {
+    [[OpenPeerUser sharedOpenPeerUser] setIdentityURI:[self.loginIdentity getIdentityURI]];
+    
     [[HOPAccount sharedAccount] loginWithAccountDelegate:(id<HOPAccountDelegate>) [[OpenPeer sharedOpenPeer] accountDelegate] conversationThreadDelegate:(id<HOPConversationThreadDelegate>)[[OpenPeer sharedOpenPeer] conversationThreadDelegate]  callDelegate:(id<HOPCallDelegate>)[[OpenPeer sharedOpenPeer] callDelegate] peerContactServiceDomain:peerContactServiceDomain identity:identity];
+    [[OpenPeerUser sharedOpenPeerUser] setIdentityURI:[identity getIdentityURI]];
 }
 
 - (void) onIdentityassociationFinished:(HOPIdentity*) identity
@@ -356,6 +359,7 @@
  */
 - (void) onUserLoggedIn
 {
+    NSLog(@"\n ---------- \n%@ is logged in. \nIdentity URI: %@ \nPeer URI: %@ \n ----------", [[OpenPeerUser sharedOpenPeerUser] fullName],[[OpenPeerUser sharedOpenPeerUser] identityURI],[[OpenPeerUser sharedOpenPeerUser] peerURI]);
     //Login finished. Remove activity indicator
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
     

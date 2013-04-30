@@ -98,7 +98,7 @@
     
     if (!ret)
     {
-        NSLog(@"Create session for contact");
+        NSLog(@"%@ is creating a session with %@", [[OpenPeerUser sharedOpenPeerUser] fullName],[contact fullName]);
         
         //Create user profile which will be passed to other partie.
         NSString* profileBundle = [[OpenPeerUser sharedOpenPeerUser] createProfileBundle];
@@ -133,7 +133,7 @@
 */
 - (Session*) createSessionForContacts:(NSArray*) contacts andConversationThread:(HOPConversationThread*) inConversationThread
 {
-    NSLog(@"Create session for contacts");
+    NSLog(@"%@ initiating a session with %@", [[contacts objectAtIndex:0] fullName], [[OpenPeerUser sharedOpenPeerUser] fullName]);
     Session* ret = [[Session alloc] initWithContacts:contacts conversationThread:inConversationThread];
     
     if (ret)

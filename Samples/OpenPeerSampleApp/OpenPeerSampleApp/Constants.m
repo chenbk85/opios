@@ -48,6 +48,10 @@ NSString * const keyOpenPeerUser = @"keyOpenPeerUser";
 //User defaults keys
 
 NSString * const archiveUserId = @"archiveUserId";
+NSString * const archiveStableUniqueId = @"archiveStableUniqueId";
+NSString * const archiveIdentityURI = @"archiveIdentityURI";
+NSString * const archivePeerURI = @"archivePeerURI";
+NSString * const archiveFullname = @"archiveFullname";
 NSString * const archiveContactId = @"archiveContactId";
 NSString * const archiveAccountSalt = @"archiveAccountSalt";
 NSString * const archivePasswordNonce = @"archivePasswordNonce";

@@ -31,6 +31,7 @@
 
 #import "MainViewController.h"
 #import "OpenPeer.h"
+#import "OpenPeerUser.h"
 #import "Constants.h"
 //SDK
 #import <OpenpeerSDK/HOPConversationThread.h>
@@ -99,11 +100,23 @@
     
     NSString* redialTitle = ![[OpenPeer sharedOpenPeer] isRedialModeOn] ? @"Redial - Turn On" : @"Redial - Turn Off";
     
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Demo options"
+    NSString* loggedUserInfo = [[[OpenPeerUser sharedOpenPeerUser] fullName] length] > 0 ? [[[OpenPeerUser sharedOpenPeerUser] fullName] stringByAppendingString:@" info"] : nil;
+    
+    UIActionSheet *sheet = nil;
+    
+    if (loggedUserInfo)
+        sheet = [[UIActionSheet alloc] initWithTitle:@"Demo options"
                                                        delegate:self
                                               cancelButtonTitle:@"Cancel"
                                          destructiveButtonTitle:nil
-                                              otherButtonTitles:remoteSessionTitle, @"Check availability", faceDectionTitle, redialTitle,nil];
+                                              otherButtonTitles:remoteSessionTitle, @"Check availability", faceDectionTitle, redialTitle, loggedUserInfo, nil];
+    else
+        sheet = [[UIActionSheet alloc] initWithTitle:@"Demo options"
+                                            delegate:self
+                                   cancelButtonTitle:@"Cancel"
+                              destructiveButtonTitle:nil
+                                   otherButtonTitles:remoteSessionTitle, @"Check availability", faceDectionTitle, redialTitle, nil];
+    
     [sheet setActionSheetStyle:UIActionSheetStyleAutomatic];
     
     [sheet setAlpha:0.9];
@@ -403,6 +416,17 @@
             ((OpenPeer*)[OpenPeer sharedOpenPeer]).isRedialModeOn = ![[OpenPeer sharedOpenPeer] isRedialModeOn];
             break;
             
+        case DEMO_LOGGED_USER_INFO:
+        {
+            NSString* info = [NSString stringWithFormat:@"Identity URI: %@ \n Stable Id: %@ \n Peer URI: %@",[[OpenPeerUser sharedOpenPeerUser] identityURI],[[OpenPeerUser sharedOpenPeerUser] stableUniqueId],[[OpenPeerUser sharedOpenPeerUser] peerURI]];
+            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:[[OpenPeerUser sharedOpenPeerUser] fullName]
+                                                                message:info
+                                                               delegate:self
+                                                      cancelButtonTitle:@"Ok"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+            }
+            break;
         default:
             
             break;

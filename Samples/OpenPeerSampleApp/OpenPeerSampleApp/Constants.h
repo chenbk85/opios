@@ -47,6 +47,10 @@ extern NSString * const keyOpenPeerUser;
 
 //User defaults keys
 extern NSString * const archiveUserId;
+extern NSString * const archiveStableUniqueId;
+extern NSString * const archiveIdentityURI;
+extern NSString * const archivePeerURI;
+extern NSString * const archiveFullname;
 extern NSString * const archiveContactId;
 extern NSString * const archiveAccountSalt;
 extern NSString * const archivePasswordNonce;

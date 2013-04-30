@@ -278,6 +278,8 @@
     {
         HOPIdentityLookup* lookup = [[HOPIdentityLookup alloc] initWithDelegate:[[OpenPeer sharedOpenPeer] identityLookupDelegate] identityURIList:identities];
     }
+    
+    NSLog(@"%@ is performing the identiy lookup for the following identities: %@ \n", [[OpenPeerUser sharedOpenPeerUser] fullName],identities);
 }
 
 /**
@@ -291,7 +293,10 @@
     
     NSString *fullName = [[result objectForKey:keyJSONContactFullName] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     if ([fullName length] > 0)
+    {
         [[OpenPeerUser sharedOpenPeerUser] setFullName:fullName];
+        [[OpenPeerUser sharedOpenPeerUser] saveUserData];
+    }
  
  //Provider key for Facebook
  // NSNumber* providerKey = [NSNumber numberWithInt:HOPProvisioningAccountIdentityTypeFacebookID];
@@ -339,6 +344,7 @@
                 [contacts setObject:contact forKey:providerContactId];
                 NSString* identityURI = [identityFacebookBaseURI stringByAppendingString:providerContactId];
                 [self.contactsDictionaryByIndentityURI setObject:contact forKey:identityURI];
+                NSLog(@"\n -------------------- \nContact name: %@ \nIdentity URI: %@ \n --------------------", [contact fullName],identityURI);
             }
         }
     }
@@ -360,19 +366,28 @@
 - (void)peerFileLookupQuery:(NSArray *)contacts
 {
     NSMutableArray* hopContacts = [[NSMutableArray alloc] init];
+    NSString* peerURIs = @"";
     
     //Create list of hopContact objects
     //for (Contact* contact in self.contactArray)
     for (Contact* contact in contacts)
     {
         if (contact.hopContact)
+        {
             [hopContacts addObject:contact.hopContact];
+            if ([peerURIs length] > 0)
+                peerURIs = [NSString stringWithFormat:@"%@,%@",peerURIs,[contact.hopContact getPeerURI]];
+            else
+                peerURIs = [contact.hopContact getPeerURI];
+        }
     }
  
     [[[[OpenPeer sharedOpenPeer] mainViewController] contactsTableViewController] onContactsPeerFilesLoadingStarted];
     
     //Ask for peer files for passed contacts
     HOPContactPeerFilePublicLookup* lookup = [[HOPContactPeerFilePublicLookup alloc] initWithDelegate:[[OpenPeer sharedOpenPeer] contactPeerFilePublicLookupDelegate] contactsList:hopContacts];
+    
+     NSLog(@"%@ is searching peer files for the followin peer uris: %@ \n", [[OpenPeerUser sharedOpenPeerUser] fullName],peerURIs);
 }
 
 /**
@@ -465,6 +480,7 @@
                         if (!contact)
                         {
                             contact = [self.contactsDictionaryByIndentityURI objectForKey:identityInfo.identityURI];
+                            [self.contactsDictionary setObject:contact forKey:[identityInfo.contact getStableUniqueID]];
                         }
                         if (contact)
                         {
@@ -472,6 +488,8 @@
                             [contacts addObject:contact];
                         }
                     }
+                    if (contact)
+                        NSLog(@"\n -------------------- \nContact name: %@ \nIdentity URI: %@, \nPeer URI: %@, \nStable Id: %@ \n --------------------", [contact fullName],identityInfo.identityURI,[contact.hopContact getPeerURI], [contact.hopContact getStableUniqueID]);
                 }
             }
         }

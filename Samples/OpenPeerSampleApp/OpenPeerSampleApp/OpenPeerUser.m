@@ -35,6 +35,7 @@
 #import "OpenPeerUser.h"
 //SDK
 #import <OpenpeerSDK/HOPAccount.h>
+#import <OpenpeerSDK/HOPContact.h>
 //Utility
 #import "XMLWriter.h"
 #import "Constants.h"
@@ -79,12 +80,12 @@
             NSKeyedUnarchiver *aDecoder = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
             
             self.userId = [aDecoder decodeObjectForKey:archiveUserId];
-            //self.contactId = [aDecoder decodeObjectForKey:archiveContactId];
-            //self.accountSalt = [aDecoder decodeObjectForKey:archiveAccountSalt];
-            //self.passwordNonce = [aDecoder decodeObjectForKey:archivePasswordNonce];
+            self.stableUniqueId = [aDecoder decodeObjectForKey:archiveStableUniqueId];
+            self.identityURI = [aDecoder decodeObjectForKey:archiveIdentityURI];
+            self.peerURI = [aDecoder decodeObjectForKey:archivePeerURI];
             self.privatePeerFile = [aDecoder decodeObjectForKey:archivePrivatePeerFile];
             self.privatePeerFileSecret = [aDecoder decodeObjectForKey:archivePrivatePeerFileSecret];
-            //self.peerFilePassword = [aDecoder decodeObjectForKey:archivePeerFilePassword];
+            self.fullName = [aDecoder decodeObjectForKey:archivePeerFilePassword];
             //NSDictionary* identities = [aDecoder decodeObjectForKey:archiveAssociatedIdentities];
             //self.associatedIdentities = [NSMutableDictionary dictionaryWithDictionary:identities];
             self.lastProfileUpdateTimestamp = [aDecoder decodeDoubleForKey:archiveLastProfileUpdateTimestamp];
@@ -108,6 +109,8 @@
 - (void) saveUserData
 {
     self.userId = [[HOPAccount sharedAccount] getUserID];
+    self.stableUniqueId = [[HOPContact getForSelf] getStableUniqueID];
+    self.peerURI = [[HOPContact getForSelf] getPeerURI];
     //self.contactId = [[HOPProvisioningAccount sharedProvisioningAccount] getContactID];
     //self.accountSalt = [[HOPProvisioningAccount sharedProvisioningAccount] getAccountSalt];
     //self.passwordNonce = [[HOPProvisioningAccount sharedProvisioningAccount] getPasswordNonce];
@@ -118,10 +121,10 @@
     
     NSMutableData *data = [NSMutableData data];
     NSKeyedArchiver *aCoder = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-    [aCoder encodeObject:self.userId forKey:archiveUserId];
-    //[aCoder encodeObject:self.contactId forKey:archiveContactId];
-    //[aCoder encodeObject:self.accountSalt forKey:archiveAccountSalt];
-    //[aCoder encodeObject:self.passwordNonce forKey:archivePasswordNonce];
+    [aCoder encodeObject:self.stableUniqueId forKey:archiveStableUniqueId];
+    [aCoder encodeObject:self.identityURI forKey:archiveIdentityURI];
+    [aCoder encodeObject:self.peerURI forKey:archivePeerURI];
+    [aCoder encodeObject:self.fullName forKey:archivePasswordNonce];
     [aCoder encodeObject:self.privatePeerFile forKey:archivePrivatePeerFile];
     [aCoder encodeObject:self.privatePeerFileSecret forKey:archivePrivatePeerFileSecret];
     //[aCoder encodeObject:self.peerFilePassword forKey:archivePeerFilePassword];

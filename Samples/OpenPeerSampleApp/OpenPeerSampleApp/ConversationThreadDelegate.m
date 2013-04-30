@@ -53,10 +53,10 @@
                     //In case profile bundle is required you can get it this way
                     NSString* profile = [conversationThread getProfileBundle:hopContact];
                     //Here you can parse element to identifier contact who initiated communication. This is necessary in case contact is in the list, but it is not marked as openpeer user.
-                    //Contact* contact = [[ContactsManager sharedContactsManager] getContactForIdentities:[hopContact getIdentities]];
+                    Contact* contact = [[ContactsManager sharedContactsManager] getContactForID:[hopContact getStableUniqueID]];
                     
-                    //if (contact)
-                    //  [contacts addObject:contact];
+                    if (contact)
+                      [contacts addObject:contact];
                     
                 }
             }

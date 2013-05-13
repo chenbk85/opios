@@ -86,7 +86,7 @@ using namespace hookflash::core;
 {
     if(mediaEnginePtr)
     {
-        //mediaEnginePtr->setDefaultVideoOrientation((IMediaEngine::VideoOrientations)orientation);
+        mediaEnginePtr->setDefaultVideoOrientation((IMediaEngine::VideoOrientations)orientation);
     }
     else
     {

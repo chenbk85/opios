@@ -1665,7 +1665,9 @@
 					"objective-c++",
 				);
 				OTHER_LDFLAGS = "-ObjC";
+				PRIVATE_HEADERS_FOLDER_PATH = usr/local/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = usr/local/include;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -1704,6 +1706,7 @@
 					"../OP/hookflash-core/webRTC/webRTC_ios/src/modules/video_processing/main/interface",
 					"../OP/hookflash-core/webRTC/webRTC_ios/src/voice_engine/main/interface",
 					"../OP/hookflash-core/webRTC/webRTC_ios/src",
+					"\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../OP/hookflash-staging/iPhoneOS/lib\"";
@@ -1714,7 +1717,9 @@
 					"objective-c++",
 				);
 				OTHER_LDFLAGS = "-ObjC";
+				PRIVATE_HEADERS_FOLDER_PATH = usr/local/include;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = usr/local/include;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

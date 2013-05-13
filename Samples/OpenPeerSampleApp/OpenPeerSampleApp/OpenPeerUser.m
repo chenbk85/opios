@@ -173,7 +173,9 @@
     [xmlWriter writeEndElement];
     
     [xmlWriter writeStartElement:profileXmlTagIdentities];
-    
+
+    //Temporary not in use
+/*
     for (NSString* key in [self.associatedIdentities allKeys])
     {
         [xmlWriter writeStartElement:profileXmlTagIdentityBundle];
@@ -188,7 +190,7 @@
         
         [xmlWriter writeEndElement];
     }
-
+*/
     [xmlWriter writeEndElement];
     
     [xmlWriter writeEndElement];

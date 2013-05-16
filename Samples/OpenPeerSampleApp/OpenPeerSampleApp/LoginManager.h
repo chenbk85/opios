@@ -42,7 +42,6 @@
 + (id) sharedLoginManager;
 
 - (void) startLoginUsingIdentityURI:(NSString*) identityURI;
-- (void) startLoginWithSocialProvider:(HOPProvisioningAccountIdentityTypes) socialProvider;
 - (void) login;
 - (void) loginUsingDomain:(NSString*) identityProviderDomain;
 - (void) logout;
@@ -61,4 +60,5 @@
 - (void) onUserLoggedIn;
 
 - (void) notifyClient:(NSString*) message;
+- (BOOL) isAssociatedIdentity:(NSString*) inBaseIdentityURI;
 @end

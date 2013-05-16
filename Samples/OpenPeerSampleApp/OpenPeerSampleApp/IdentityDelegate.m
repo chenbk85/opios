@@ -33,6 +33,7 @@
 #import <OpenpeerSDK/HOPIdentity.h>
 #import "LoginManager.h"
 #import "Constants.h"
+#import "OpenPeerUser.h"
 
 @implementation IdentityDelegate
 
@@ -50,8 +51,6 @@
             break;
             
         case HOPIdentityStateWaitingToLoadBrowserWindow:
-            //[[LoginManager sharedLoginManager] onLoginUrlReceived:[identity getIdentityLoginURL]];
-            //[[LoginManager sharedLoginManager] onLoginUrlReceived:@"app.unstable.hookflash.me"];
             [[LoginManager sharedLoginManager] onLoginUrlReceived:outerFrameURL forIdentity:identity];
             break;
             
@@ -65,13 +64,11 @@
             break;
             
         case HOPIdentityStateWaitingAssociation:
-            //[[LoginManager sharedLoginManager] onIdentityassociationFinished:identity];
             [[LoginManager sharedLoginManager] onIdentityLoginFinished:identity];
-            //[[LoginManager sharedLoginManager] onUserLoggedIn];
             break;
             
         case HOPIdentityStateReady:
-            //[[LoginManager sharedLoginManager] onUserLoggedIn];
+            //[((OpenPeerUser*)[OpenPeerUser sharedOpenPeerUser]).dictionaryIdentities setObject:[identity getIdentityURI] forKey:[identity identityBaseURI]];
             break;
             
         case HOPIdentityStateShutdown:

@@ -136,6 +136,7 @@
     }
     
     [self removeAllSubViews];
+    [self.loginViewController prepareForLogin];
     [self.view addSubview:self.loginViewController.view];
 }
 
@@ -418,7 +419,20 @@
             
         case DEMO_LOGGED_USER_INFO:
         {
-            NSString* info = [NSString stringWithFormat:@"Identity URI: %@ \n Stable Id: %@ \n Peer URI: %@",[[OpenPeerUser sharedOpenPeerUser] identityURI],[[OpenPeerUser sharedOpenPeerUser] stableUniqueId],[[OpenPeerUser sharedOpenPeerUser] peerURI]];
+            NSString* uris = @"";
+            for (NSString* uri in [[[OpenPeerUser sharedOpenPeerUser] dictionaryIdentities]allValues])
+            {
+                if ([uris length] == 0)
+                {
+                    uris = uri;
+                }
+                else
+                {
+                    uris = [uris stringByAppendingFormat:@"%@,",uri];
+                }
+            }
+            
+            NSString* info = [NSString stringWithFormat:@"Identity URIs: %@ \n Stable Id: %@ \n Peer URI: %@",uris,[[OpenPeerUser sharedOpenPeerUser] stableUniqueId],[[OpenPeerUser sharedOpenPeerUser] peerURI]];
             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:[[OpenPeerUser sharedOpenPeerUser] fullName]
                                                                 message:info
                                                                delegate:self

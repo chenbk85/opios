@@ -36,4 +36,6 @@
 @interface OpenPeerUtility : NSObject
 
 + (NSDate*) convertPosixTimeToDate:(boost::posix_time::ptime) time;
++ (NSString*) getBaseIdentityURIFromURI:(NSString*) identityURI;
++ (BOOL) isBaseIdentityURI:(NSString*) identityURI;
 @end

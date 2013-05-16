@@ -298,10 +298,6 @@
 		8727281D166CBF9B0089CBB6 = {
 			isa = PBXGroup;
 			children = (
-				87FF9891170EDB7D0017C627 /* CoreImage.framework */,
-				87FF988F170EDB6C0017C627 /* MobileCoreServices.framework */,
-				87FF988D170EDB5C0017C627 /* AssetsLibrary.framework */,
-				87FF9861170EDAF00017C627 /* libxml2.dylib */,
 				872729CF166CDF530089CBB6 /* openpeer-ios-sdk.xcodeproj */,
 				87272832166CBF9B0089CBB6 /* OpenPeerSampleApp */,
 				8727282B166CBF9B0089CBB6 /* Frameworks */,
@@ -320,6 +316,10 @@
 		8727282B166CBF9B0089CBB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				87FF9891170EDB7D0017C627 /* CoreImage.framework */,
+				87FF988F170EDB6C0017C627 /* MobileCoreServices.framework */,
+				87FF988D170EDB5C0017C627 /* AssetsLibrary.framework */,
+				87FF9861170EDAF00017C627 /* libxml2.dylib */,
 				87EE5FE8166E917B002C5FA3 /* libresolv.dylib */,
 				874ADDCA166E2B7B0095FE33 /* libboost_date_time.a */,
 				874ADDCB166E2B7B0095FE33 /* libboost_regex.a */,

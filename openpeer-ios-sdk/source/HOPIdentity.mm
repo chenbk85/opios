@@ -36,6 +36,8 @@
 
 #import "OpenPeerStorageManager.h"
 #import "OpenPeerIdentityDelegate.h"
+#import "OpenPeerUtility.h"
+
 @implementation HOPIdentityState
 
 
@@ -273,6 +275,9 @@
     {
         identityPtr = inIdentityPtr;
         openPeerIdentityDelegatePtr = inOpenPeerIdentityDelegate;
+        NSString* uri = [NSString stringWithCString:identityPtr->getIdentityURI() encoding:NSUTF8StringEncoding];
+        if (uri)
+            self.identityBaseURI = [NSString stringWithString:[OpenPeerUtility getBaseIdentityURIFromURI:uri]];
     }
     return self;
 }

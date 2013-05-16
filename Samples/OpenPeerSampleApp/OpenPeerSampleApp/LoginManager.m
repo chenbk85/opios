@@ -54,7 +54,8 @@
 
 @interface LoginManager ()
 
-- (id) initSingleton;
+@property (nonatomic) BOOL isLogin;
+@property (nonatomic) BOOL isAssociation;
 
 @property (nonatomic, weak) HOPIdentity* loginIdentity;
 @end
@@ -71,7 +72,7 @@
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
     dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] initSingleton];
+        _sharedObject = [[self alloc] init];
     });
     return _sharedObject;
 }
@@ -80,11 +81,13 @@
  Initialize singleton object of the Login Manager.
  @return Singleton object of the Login Manager.
  */
-- (id) initSingleton
+- (id) init
 {
     self = [super init];
     if (self)
     {
+        self.isLogin  = NO;
+        self.isAssociation = NO;
     }
     return self;
 }
@@ -110,6 +113,7 @@
     if ([[[OpenPeerUser sharedOpenPeerUser] privatePeerFile] length] == 0)
     {
         [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
+        self.isLogin = YES;
     }
     else
     {
@@ -147,26 +151,16 @@
 
 - (void) startLoginUsingIdentityURI:(NSString*) identityURI
 {
+    NSLog(@"Identity login started");
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting identity login url ..." inView:[[[[OpenPeer sharedOpenPeer] mainViewController] loginViewController] view]];
+    
     HOPIdentity* hopIdentity = [HOPIdentity loginWithDelegate:(id<HOPIdentityDelegate>)[[OpenPeer sharedOpenPeer] identityDelegate] redirectAfterLoginCompleteURL:afterLoginCompleteURL identityURIOridentityBaseURI:identityURI identityProviderDomain:identityProviderDomain];
-    [((OpenPeerUser*)[OpenPeerUser sharedOpenPeerUser]).associatedIdentities setObject:hopIdentity forKey:identityURI];
+    //[((OpenPeerUser*)[OpenPeerUser sharedOpenPeerUser]).associatedIdentities setObject:hopIdentity forKey:identityURI];
     
     //if (hopIdentity)
         //[[HOPAccount sharedAccount] loginWithAccountDelegate:(id<HOPAccountDelegate>)[[OpenPeer sharedOpenPeer] accountDelegate] conversationThreadDelegate:(id<HOPConversationThreadDelegate>) [[OpenPeer sharedOpenPeer] conversationThreadDelegate]  callDelegate:(id<HOPCallDelegate>) [[OpenPeer sharedOpenPeer] callDelegate]  peerContactServiceDomain:identityProviderDomain identity:hopIdentity];
 }
 
-/**
- Initiates login procedure.
- */
-- (void) startLoginWithSocialProvider:(HOPProvisioningAccountIdentityTypes) socialProvider
-{
-    NSLog(@"Login started");
-    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Getting login url ..." inView:[[[[OpenPeer sharedOpenPeer] mainViewController] loginViewController] view]];
-    
-    //Call to the SDK in order to setup delegate for the OAuth Login process, and to initiate first time OAuth login.
-    //[[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" oauthIdentityType:socialProvider];
-    
-    //[[HOPProvisioningAccount sharedProvisioningAccount] firstTimeOAuthLoginWithProvisioningAccountDelegate:(id<HOPProvisioningAccountDelegate>)[[OpenPeer sharedOpenPeer] provisioningAccountDelegate] provisioningURI:provisioningURI deviceToken:@"" oauthIdentityType:HOPProvisioningAccountIdentityTypeFacebookID];
-}
 
 /**
  Initiates relogin procedure.
@@ -196,13 +190,11 @@
 {
     self.loginIdentity = identity;
     
+    //Login url is received. Remove activity indicator
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
+    
     if ([url length] > 0)
-        [self.webLoginViewController openLoginUrl:url];
-    
-//    //Login url is received. Remove activity indicator
-//    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
-//    [[[OpenPeer sharedOpenPeer] mainViewController] showWebLoginView:url];
-    
+        [self.webLoginViewController openLoginUrl:url];    
 }
 
 - (void) onOuterFrameLoaded
@@ -238,10 +230,12 @@
 
 - (void) onIdentityLoginFinished:(HOPIdentity*) identity
 {
-    [[OpenPeerUser sharedOpenPeerUser] setIdentityURI:[self.loginIdentity getIdentityURI]];
+    //[[OpenPeerUser sharedOpenPeerUser] setIdentityURI:[self.loginIdentity getIdentityURI]];
+    [[[OpenPeerUser sharedOpenPeerUser] dictionaryIdentities] setObject:[identity getIdentityURI] forKey:[identity identityBaseURI]];
     
     [[HOPAccount sharedAccount] loginWithAccountDelegate:(id<HOPAccountDelegate>) [[OpenPeer sharedOpenPeer] accountDelegate] conversationThreadDelegate:(id<HOPConversationThreadDelegate>)[[OpenPeer sharedOpenPeer] conversationThreadDelegate]  callDelegate:(id<HOPCallDelegate>)[[OpenPeer sharedOpenPeer] callDelegate] peerContactServiceDomain:peerContactServiceDomain identity:identity];
-    [[OpenPeerUser sharedOpenPeerUser] setIdentityURI:[identity getIdentityURI]];
+    //[[OpenPeerUser sharedOpenPeerUser] setIdentityURI:[identity getIdentityURI]];
+    //[[[OpenPeerUser sharedOpenPeerUser] dictionaryIdentities] setObject:[identity getIdentityURI] forKey:[identity identityBaseURI]];
 }
 
 - (void) onIdentityassociationFinished:(HOPIdentity*) identity
@@ -359,19 +353,63 @@
  */
 - (void) onUserLoggedIn
 {
-    NSLog(@"\n ---------- \n%@ is logged in. \nIdentity URI: %@ \nPeer URI: %@ \n ----------", [[OpenPeerUser sharedOpenPeerUser] fullName],[[OpenPeerUser sharedOpenPeerUser] identityURI],[[OpenPeerUser sharedOpenPeerUser] peerURI]);
+    NSString* uris = @"";
+    for (NSString* uri in [[[OpenPeerUser sharedOpenPeerUser] dictionaryIdentities]allValues])
+    {
+        if ([uris length] == 0)
+        {
+            uris = uri;
+        }
+        else
+        {
+            uris = [uris stringByAppendingFormat:@"%@,",uri];
+        }
+    }
+    NSLog(@"\n ---------- \n%@ is logged in. \nIdentity URIs: %@ \nPeer URI: %@ \n ----------", [[OpenPeerUser sharedOpenPeerUser] fullName],uris,[[OpenPeerUser sharedOpenPeerUser] peerURI]);
+    
     //Login finished. Remove activity indicator
     [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:NO withText:nil inView:nil];
     
     //Save user data on successful login.
     [[OpenPeerUser sharedOpenPeerUser] saveUserData];
 
-    //Start loading contacts.
-    [[ContactsManager sharedContactsManager] loadContacts];
+    if (self.isLogin)
+    {
+        self.isLogin = NO;
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Identity association" message:@"Do you want to associate another social account" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+        
+        [alert show];
+    }
+    else
+    {
+        //Start loading contacts.
+        [[ContactsManager sharedContactsManager] loadContacts];
+    }
 }
 
 - (void) notifyClient:(NSString*) message
 {
     [self.loginIdentity handleMessageFromInnerBrowserWindowFrame:message];
+}
+
+- (BOOL) isAssociatedIdentity:(NSString*) inBaseIdentityURI
+{
+    BOOL ret = [[((OpenPeerUser*)[OpenPeerUser sharedOpenPeerUser]).dictionaryIdentities allKeys] containsObject:inBaseIdentityURI];
+    return ret;
+}
+
+#pragma UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != alertView.cancelButtonIndex)
+    {
+        self.isAssociation = YES;
+        [[[OpenPeer sharedOpenPeer] mainViewController] showLoginView];
+    }
+    else
+    {
+        [[ContactsManager sharedContactsManager] loadContacts];
+    }
 }
 @end

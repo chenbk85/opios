@@ -35,6 +35,8 @@
 #import "Constants.h"
 
 @interface LoginViewController ()
+@property (weak, nonatomic) IBOutlet UIButton *buttonLinkedIn;
+@property (weak, nonatomic) IBOutlet UIButton *buttonFacebook;
 
 @end
 
@@ -53,7 +55,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
 }
 
 - (void)didReceiveMemoryWarning
@@ -64,14 +65,26 @@
 
 - (IBAction)actionLoginWithFacebook:(id)sender
 {
-//    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeFacebookID];
     [[LoginManager sharedLoginManager] startLoginUsingIdentityURI:identityFacebookBaseURI];
 }
 
 - (IBAction)actionLoginWithLinkedIn:(id)sender
 {
-    [[LoginManager sharedLoginManager] startLoginWithSocialProvider:HOPProvisioningAccountIdentityTypeLinkedInID];
+    [[LoginManager sharedLoginManager] startLoginUsingIdentityURI:identityLinkedInBaseURI];
 }
 
 
+- (void)viewDidUnload {
+    [self setButtonLinkedIn:nil];
+    [self setButtonFacebook:nil];
+    [super viewDidUnload];
+}
+
+- (void) prepareForLogin
+{
+    self.buttonLinkedIn.hidden = [[LoginManager sharedLoginManager] isAssociatedIdentity:identityLinkedInBaseURI];
+    self.buttonLinkedIn.enabled = !self.buttonLinkedIn.hidden;
+    self.buttonFacebook.hidden = [[LoginManager sharedLoginManager] isAssociatedIdentity:identityFacebookBaseURI];
+    self.buttonFacebook.enabled = !self.buttonFacebook.hidden;
+}
 @end

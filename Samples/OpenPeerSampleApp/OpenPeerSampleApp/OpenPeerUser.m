@@ -86,21 +86,15 @@
             self.privatePeerFile = [aDecoder decodeObjectForKey:archivePrivatePeerFile];
             self.privatePeerFileSecret = [aDecoder decodeObjectForKey:archivePrivatePeerFileSecret];
             self.fullName = [aDecoder decodeObjectForKey:archivePeerFilePassword];
-            //NSDictionary* identities = [aDecoder decodeObjectForKey:archiveAssociatedIdentities];
-            //self.associatedIdentities = [NSMutableDictionary dictionaryWithDictionary:identities];
-            self.lastProfileUpdateTimestamp = [aDecoder decodeDoubleForKey:archiveLastProfileUpdateTimestamp];
+            self.dictionaryIdentities = [aDecoder decodeObjectForKey:archiveAssociatedIdentities];
             
             [aDecoder finishDecoding];
         }
+        
+        if (!self.dictionaryIdentities)
+            self.dictionaryIdentities = [[NSMutableDictionary alloc] init];
     }
     return self;
-}
-
-- (NSMutableDictionary *)associatedIdentities
-{
-    if (!_associatedIdentities)
-        _associatedIdentities = [[NSMutableDictionary alloc] init];
-    return _associatedIdentities;
 }
 
 /**
@@ -111,13 +105,8 @@
     self.userId = [[HOPAccount sharedAccount] getUserID];
     self.stableUniqueId = [[HOPContact getForSelf] getStableUniqueID];
     self.peerURI = [[HOPContact getForSelf] getPeerURI];
-    //self.contactId = [[HOPProvisioningAccount sharedProvisioningAccount] getContactID];
-    //self.accountSalt = [[HOPProvisioningAccount sharedProvisioningAccount] getAccountSalt];
-    //self.passwordNonce = [[HOPProvisioningAccount sharedProvisioningAccount] getPasswordNonce];
     self.privatePeerFile = [[HOPAccount sharedAccount] savePeerFilePrivate];
     self.privatePeerFileSecret = [[HOPAccount sharedAccount] getPeerFilePrivateSecret];
-    //self.peerFilePassword = [[HOPProvisioningAccount sharedProvisioningAccount] getPassword];
-    //self.lastProfileUpdateTimestamp = [[HOPProvisioningAccount sharedProvisioningAccount] getLastProfileUpdatedTime];
     
     NSMutableData *data = [NSMutableData data];
     NSKeyedArchiver *aCoder = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
@@ -127,9 +116,7 @@
     [aCoder encodeObject:self.fullName forKey:archivePasswordNonce];
     [aCoder encodeObject:self.privatePeerFile forKey:archivePrivatePeerFile];
     [aCoder encodeObject:self.privatePeerFileSecret forKey:archivePrivatePeerFileSecret];
-    //[aCoder encodeObject:self.peerFilePassword forKey:archivePeerFilePassword];
-    //[aCoder encodeObject:self.associatedIdentities forKey:archiveAssociatedIdentities];
-    //[aCoder encodeDouble:self.lastProfileUpdateTimestamp forKey:archiveLastProfileUpdateTimestamp];
+    [aCoder encodeObject:self.dictionaryIdentities forKey:archiveAssociatedIdentities];
     
     [aCoder finishEncoding];
     
@@ -142,15 +129,15 @@
 - (void) deleteUserData
 {
     self.userId = nil;
-    //self.contactId = nil;
-    //self.accountSalt = nil;
-    //self.passwordNonce = nil;
     self.privatePeerFile = nil;
     self.privatePeerFileSecret = nil;
-    //self.peerFilePassword = nil;
-    //self.lastProfileUpdateTimestamp = 0;
     
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:keyOpenPeerUser];
+}
+
+- (void) addIdentityURI:(NSString*) inIdentityURI forBaseIdentityURI:(NSString*) inBaseIdentity
+{
+    [self.dictionaryIdentities setObject:inIdentityURI forKey:inBaseIdentity];
 }
 
 - (NSString*) createProfileBundle

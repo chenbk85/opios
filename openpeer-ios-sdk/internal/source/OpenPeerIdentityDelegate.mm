@@ -34,6 +34,7 @@
 #import "HOPIdentity.h"
 
 #import "OpenPeerStorageManager.h"
+#import "OpenPeerUtility.h"
 
 OpenPeerIdentityDelegate::OpenPeerIdentityDelegate(id<HOPIdentityDelegate> inIdentityDelegate)
 {
@@ -63,17 +64,18 @@ void OpenPeerIdentityDelegate::onIdentityPendingMessageForInnerBrowserWindowFram
 
 HOPIdentity* OpenPeerIdentityDelegate::getHOPIdentity(IIdentityPtr identity)
 {
-    NSString* identityId = [NSString stringWithCString:identity->getIdentityURI() encoding:NSUTF8StringEncoding];
-    HOPIdentity* hopIdentity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:identityId];
+    NSString* identityURI = [NSString stringWithCString:identity->getIdentityURI() encoding:NSUTF8StringEncoding];
+    HOPIdentity* hopIdentity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:identityURI];
     
     //This is temporary hack till 
-    if (!hopIdentity)
+    if (!hopIdentity && ![OpenPeerUtility isBaseIdentityURI:identityURI])
     {
-        if (![identityId isEqualToString:@"identity://facebook.com/"])
+        NSString* uri = [OpenPeerUtility getBaseIdentityURIFromURI:identityURI];
+        if (uri)
         {
-            hopIdentity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:@"identity://facebook.com/"];
+            hopIdentity = [[OpenPeerStorageManager sharedStorageManager] getIdentityForId:uri];
             if (hopIdentity)
-                [[OpenPeerStorageManager sharedStorageManager] setIdentity:hopIdentity forId:identityId];
+                [[OpenPeerStorageManager sharedStorageManager] setIdentity:hopIdentity forId:identityURI];
         }
     }
     return hopIdentity;

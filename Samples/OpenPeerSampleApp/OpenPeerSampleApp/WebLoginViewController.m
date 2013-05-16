@@ -70,8 +70,8 @@
 
 - (void) openLoginUrl:(NSString*) url
 {
+    [[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Opening login page ..." inView:self.view.superview];
     [self.loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
-    //[[ActivityIndicatorViewController sharedActivityIndicator] showActivityIndicator:YES withText:@"Opening login page ..." inView:self.view];
 }
 
 - (void) passMessageToJS:(NSString*) message
@@ -125,9 +125,6 @@
         self.outerFrameInitialised = YES;
         [[LoginManager sharedLoginManager] onOuterFrameLoaded];
     }
-    //Call delegate that will inform that loading of outer frame is finished and to initiate inner frame
-    //NSString* jsMethod = [NSString stringWithFormat:@"initInnerFrame(%@)",]
-    //[self.loginWebView stringByEvaluatingJavaScriptFromString:<#(NSString *)#>]
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error

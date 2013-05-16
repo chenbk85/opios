@@ -40,4 +40,29 @@
     const boost::posix_time::time_duration::sec_type x((time - epoch).total_seconds() );
     return[NSDate dateWithTimeIntervalSince1970:x];
 }
+
++ (NSString*) getBaseIdentityURIFromURI:(NSString*) identityURI
+{
+    NSString* ret = @"";
+    NSArray* identityParts = [identityURI componentsSeparatedByString:@"/"];
+    if ([identityParts count] > 3)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            ret = [ret stringByAppendingFormat:@"%@/",[identityParts objectAtIndex:i]];
+        }
+    }
+    return ret;
+}
+
++ (BOOL) isBaseIdentityURI:(NSString*) identityURI
+{
+    BOOL ret = YES;
+    NSArray* identityParts = [identityURI componentsSeparatedByString:@"/"];
+    if ([identityParts count] > 3)
+    {
+        ret = [[identityParts objectAtIndex:3] length] == 0;
+    }
+    return ret;
+}
 @end

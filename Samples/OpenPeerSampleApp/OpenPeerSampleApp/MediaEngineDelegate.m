@@ -43,9 +43,9 @@
 - (void) onMediaEngineFaceDetected
 {
     dispatch_async(dispatch_get_main_queue(), ^
-                   {
-                       [[SessionManager sharedSessionManager] onFaceDetected];
-                   });
+   {
+       [[SessionManager sharedSessionManager] onFaceDetected];
+   });
 }
 
 - (void) onMediaEngineVideoCaptureRecordStopped
